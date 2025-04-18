@@ -1,0 +1,18 @@
+services:
+  postgres-restaurante:
+    image: postgres
+    hostname: postgres-restaurante
+    environment:
+      POSTGRES_DB: restaurante
+      POSTGRES_USER: restaurante
+      POSTGRES_PASSWORD: restaurante
+    volumes:
+      - './db-restaurante:/var/lib/postgresql/data'
+      - './infrastructure/init-restaurante-schema.sql:/docker-entrypoint-initdb.d/init-restaurante-schema.sql'
+    ports:
+      - '3334:5432'
+    networks:
+      - restaurante-network
+networks:
+  restaurante-network:
+    driver: bridge
