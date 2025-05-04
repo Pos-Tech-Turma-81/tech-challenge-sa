@@ -1,5 +1,6 @@
 package br.com.tech.restauranteapi.produtos.dominio.dtos;
 
+import br.com.tech.restauranteapi.produtos.dominio.Produto;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,4 +21,17 @@ public class ProdutoDto {
     private BigDecimal preco;
     private String descricao;
     private byte[] imagem;
+
+    public static ProdutoDtoBuilder builderProduto(Produto produto){
+
+        return ProdutoDto
+                .builder()
+                .categoria(produto.getCategoria())
+                .id(produto.getId())
+                .descricao(produto.getDescricao())
+                .imagem(produto.getImagem())
+                .nome(produto.getNome())
+                .preco(produto.getPreco());
+
+    }
 }
