@@ -4,6 +4,7 @@ package br.com.tech.restauranteapi.produtos.aplicacao.adaptadores.controllers;
 import br.com.tech.restauranteapi.produtos.dominio.dtos.ProdutoDto;
 import br.com.tech.restauranteapi.produtos.dominio.portas.interfaces.ProdutoServicePort;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,7 @@ public class ProdutoController {
     private final ProdutoServicePort produtoService;
 
     @PostMapping
-    public ResponseEntity<ProdutoDto> salvar(@RequestBody ProdutoDto produto) {
+    public ResponseEntity<ProdutoDto> salvar(@RequestBody @Valid ProdutoDto produto) {
         ProdutoDto produtoResponse = produtoService.salvar(produto);
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoResponse);
     }

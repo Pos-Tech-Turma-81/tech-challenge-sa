@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.math.BigDecimal;
 
 @Data
@@ -16,8 +18,14 @@ import java.math.BigDecimal;
 public class ProdutoDto {
 
     private Integer id;
+
+    @NotNull(message = "Nome do produto é obrigatorio")
     private String nome;
+
+    @NotNull(message = "Categoria do produto é obrigatorio")
     private CategoriaEnum categoria;
+
+    @NotNull(message = "Preço do produto é obrigatorio")
     private BigDecimal preco;
     private String descricao;
     private byte[] imagem;
