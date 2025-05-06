@@ -32,6 +32,15 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoResponse);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ProdutoDto> salvar(
+            @PathVariable("id") Integer id,
+            @RequestBody ProdutoDto produto) {
+        produto.setId(id);
+        ProdutoDto produtoResponse = produtoService.alterar(produto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(produtoResponse);
+    }
+
 
     @GetMapping
     public ResponseEntity<Page<ProdutoDto>> buscar(

@@ -20,6 +20,7 @@ public class ProdutoEntity {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // ou AUTO, SEQUENCE, etc.
     private Integer id;
 
     @Column(name = "nome")

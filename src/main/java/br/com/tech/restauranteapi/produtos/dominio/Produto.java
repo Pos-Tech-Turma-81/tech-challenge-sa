@@ -59,6 +59,7 @@ public class Produto {
     public ProdutoEntity toEntity(){
         return ProdutoEntity
                 .builder()
+                .id(this.id)
                 .nome(this.nome)
                 .preco(this.preco)
                 .categoria(this.categoria)

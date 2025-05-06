@@ -29,6 +29,13 @@ public class ProdutoServiceImpl implements ProdutoServicePort {
     }
 
     @Override
+    public ProdutoDto alterar(ProdutoDto produto) {
+        produtoRepository.buscarPorId(produto.getId());
+
+        return this.salvar(produto);
+    }
+
+    @Override
     public Page<ProdutoDto> buscarPorCategoria(CategoriaEnum categoria, Pageable page) {
         Page<Produto> produtos =
                 produtoRepository.buscarPorCategoria(categoria, page);
