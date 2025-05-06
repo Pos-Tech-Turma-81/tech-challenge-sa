@@ -33,12 +33,12 @@ public class ProdutoController {
     }
 
 
-    @GetMapping("/{nomeCategoria}")
+    @GetMapping
     public ResponseEntity<Page<ProdutoDto>> buscar(
-            @PathVariable("nomeCategoria") String nomeCategoria,
+            @RequestParam(name = "nome_categoria", required = true) String nomeCategoria,
             @PageableDefault(size = 10) Pageable pageable) {
         Page<ProdutoDto> produtosResponse =
-                produtoService.buscarPorCategoria(CategoriaEnum.valueOf(nomeCategoria), pageable);
+                produtoService.buscarPorCategoria(CategoriaEnum.obterPorNome(nomeCategoria), pageable);
         return ResponseEntity.ok(produtosResponse);
     }
 
