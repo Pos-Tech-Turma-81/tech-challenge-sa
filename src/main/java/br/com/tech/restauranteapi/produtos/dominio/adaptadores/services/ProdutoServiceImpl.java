@@ -24,15 +24,17 @@ public class ProdutoServiceImpl implements ProdutoServicePort {
 
     @Override
     public ProdutoDto salvar(ProdutoDto produtoDto) {
+        produtoDto.setId(null);
         Produto produto = Produto.builderProduto(produtoDto);
+
         return produtoRepository.salvar(produto).toProdutoDto();
     }
 
     @Override
-    public ProdutoDto alterar(ProdutoDto produto) {
-        produtoRepository.buscarPorId(produto.getId());
-
-        return this.salvar(produto);
+    public ProdutoDto alterar(ProdutoDto produtoDto) {
+        produtoRepository.buscarPorId(produtoDto.getId());
+        Produto produto = Produto.builderProduto(produtoDto);
+        return produtoRepository.salvar(produto).toProdutoDto();
     }
 
     @Override

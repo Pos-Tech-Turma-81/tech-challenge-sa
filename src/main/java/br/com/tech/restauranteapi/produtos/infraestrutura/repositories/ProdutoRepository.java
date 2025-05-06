@@ -32,6 +32,14 @@ public class ProdutoRepository implements ProdutoRepositoryPort {
         return Produto.builderProduto(produtoResponse);
     }
 
+    private Produto persistir(Produto produto) {
+        ProdutoEntity produtoResponse =
+                this.springProdutoRepository
+                        .save(produto.toEntity());
+
+        return Produto.builderProduto(produtoResponse);
+    }
+
     @Override
     public Page<Produto> buscarPorCategoria(CategoriaEnum categoria, Pageable page) {
         Page<ProdutoEntity> produtosResponse =
