@@ -1,6 +1,7 @@
 package br.com.tech.restauranteapi.produtos.dominio;
 
 import br.com.tech.restauranteapi.produtos.dominio.dtos.ProdutoDto;
+import br.com.tech.restauranteapi.produtos.infraestrutura.entidades.ProdutoEntity;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,7 @@ public class Produto {
     private String descricao;
     private byte[] imagem;
 
-    public static ProdutoBuilder builderProduto(ProdutoDto produtoDto){
+    public static Produto builderProduto(ProdutoDto produtoDto){
 
         return Produto
                 .builder()
@@ -31,11 +32,38 @@ public class Produto {
                 .descricao(produtoDto.getDescricao())
                 .imagem(produtoDto.getImagem())
                 .nome(produtoDto.getNome())
-                .preco(produtoDto.getPreco());
+                .preco(produtoDto.getPreco())
+                .build();
+
+    }
+
+    public static Produto builderProduto(ProdutoEntity produtoEntity){
+
+        return Produto
+                .builder()
+                .categoria(produtoEntity.getCategoria())
+                .id(produtoEntity.getId())
+                .descricao(produtoEntity.getDescricao())
+                .imagem(produtoEntity.getImagem())
+                .nome(produtoEntity.getNome())
+                .preco(produtoEntity.getPreco())
+                .build();
 
     }
 
     public ProdutoDto toProdutoDto(){
-        return ProdutoDto.builderProduto(this).build();
+        return ProdutoDto.builderProduto(this);
+    }
+
+
+    public ProdutoEntity toEntity(){
+        return ProdutoEntity
+                .builder()
+                .nome(this.nome)
+                .preco(this.preco)
+                .categoria(this.categoria)
+                .descricao(this.descricao)
+                .imagem(this.imagem)
+                .build();
     }
 }

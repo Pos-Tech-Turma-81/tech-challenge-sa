@@ -22,7 +22,7 @@ public class ProdutoDto {
     private String descricao;
     private byte[] imagem;
 
-    public static ProdutoDtoBuilder builderProduto(Produto produto){
+    public static ProdutoDto builderProduto(Produto produto){
 
         return ProdutoDto
                 .builder()
@@ -31,7 +31,8 @@ public class ProdutoDto {
                 .descricao(produto.getDescricao())
                 .imagem(produto.getImagem())
                 .nome(produto.getNome())
-                .preco(produto.getPreco());
+                .preco(produto.getPreco())
+                .build();
 
     }
 }

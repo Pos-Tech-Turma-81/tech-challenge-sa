@@ -6,34 +6,38 @@ import br.com.tech.restauranteapi.produtos.dominio.portas.interfaces.ProdutoServ
 import br.com.tech.restauranteapi.produtos.dominio.portas.repositories.ProdutoRepositoryPort;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
+@Component
 public class ProdutoServiceImpl implements ProdutoServicePort {
 
     private final ProdutoRepositoryPort produtoRepository;
 
 
     @Override
-    public Produto salvar(ProdutoDto produtoDto) {
-        Produto produto = Produto.builderProduto(produtoDto).build();
-        return produtoRepository.salvar(produto);
+    public ProdutoDto salvar(ProdutoDto produtoDto) {
+        Produto produto = Produto.builderProduto(produtoDto);
+        return produtoRepository.salvar(produto).toProdutoDto();
     }
 
     @Override
-    public List<ProdutoDto> buscarPorCategoria(CategoriaEnum categoria) {
-        List<Produto> produtos =
-                produtoRepository.buscarPorCategoria(categoria);
+    public Page<ProdutoDto> buscarPorCategoria(CategoriaEnum categoria, Pageable page) {
+        Page<Produto> produtos =
+                produtoRepository.buscarPorCategoria(categoria, page);
 
-        return produtos.stream().map(Produto::toProdutoDto)
-                .collect(Collectors.toList());
+        return produtos.map(Produto::toProdutoDto);
     }
 
     @Override
-    public void remover(UUID produtoId) {
+    public void remover(Integer produtoId) {
         produtoRepository.remover(produtoId);
     }
 }

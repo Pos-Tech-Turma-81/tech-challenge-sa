@@ -1,5 +1,6 @@
 package br.com.tech.restauranteapi.produtos.infraestrutura.entidades;
 
+import br.com.tech.restauranteapi.produtos.dominio.Produto;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,5 +38,7 @@ public class ProdutoEntity {
     @Column(name = "imagem")
     private byte[] imagem;
 
-
+    public Produto toProdutoDomain(){
+        return Produto.builderProduto(this);
+    }
 }

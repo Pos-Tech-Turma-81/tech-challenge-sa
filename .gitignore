@@ -1,5 +1,6 @@
 HELP.md
 target/
+infra/db-restaurante/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
