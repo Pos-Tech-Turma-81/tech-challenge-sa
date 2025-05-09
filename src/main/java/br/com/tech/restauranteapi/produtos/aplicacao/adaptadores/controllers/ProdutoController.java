@@ -4,6 +4,9 @@ package br.com.tech.restauranteapi.produtos.aplicacao.adaptadores.controllers;
 import br.com.tech.restauranteapi.produtos.dominio.dtos.ProdutoDto;
 import br.com.tech.restauranteapi.produtos.dominio.portas.interfaces.ProdutoServicePort;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +24,11 @@ public class ProdutoController {
 
     private final ProdutoServicePort produtoService;
 
+    @Operation(summary = "Cadastrar novo produto")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Produto criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos")
+    })
     @PostMapping
     public ResponseEntity<ProdutoDto> salvar(@RequestBody @Valid ProdutoDto produto) {
         ProdutoDto produtoResponse = produtoService.salvar(produto);
