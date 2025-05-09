@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
+import java.util.Base64;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -28,7 +30,7 @@ public class ProdutoDto {
     @NotNull(message = "Preço do produto é obrigatorio")
     private BigDecimal preco;
     private String descricao;
-    private byte[] imagem;
+    private String imagem;
 
     public static ProdutoDto builderProduto(Produto produto){
 
@@ -37,7 +39,7 @@ public class ProdutoDto {
                 .categoria(produto.getCategoria())
                 .id(produto.getId())
                 .descricao(produto.getDescricao())
-                .imagem(produto.getImagem())
+                .imagem(Objects.nonNull(produto.getImagem()) ? Base64.getEncoder().encodeToString(produto.getImagem()) : null)
                 .nome(produto.getNome())
                 .preco(produto.getPreco())
                 .build();

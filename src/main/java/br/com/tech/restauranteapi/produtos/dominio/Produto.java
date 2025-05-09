@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Base64;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -30,7 +32,7 @@ public class Produto {
                 .categoria(produtoDto.getCategoria())
                 .id(produtoDto.getId())
                 .descricao(produtoDto.getDescricao())
-                .imagem(produtoDto.getImagem())
+                .imagem(Objects.nonNull(produtoDto.getImagem()) ? Base64.getDecoder().decode(produtoDto.getImagem()) : null)
                 .nome(produtoDto.getNome())
                 .preco(produtoDto.getPreco())
                 .build();
