@@ -13,6 +13,16 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>restaurante-api</name>
 	<description>Restaurante tech challange API</description>
+
+	<properties>
+		<sonar.coverage.exclusions>**/br/com/tech/restauranteapi/produtos/infraestrutura/entidades/**/*</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/br/com/tech/restauranteapi/config/**/*</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/br/com/tech/restauranteapi/exceptions/**/*</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/br/com/tech/restauranteapi/produtos/dominio/dtos/**/*</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/br/com/tech/restauranteapi/produtos/dominio/Produto.java</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/br/com/tech/restauranteapi/produtos/portas/repositories/**/*</sonar.coverage.exclusions>
+	</properties>
+
 	<url/>
 	<licenses>
 		<license/>
@@ -72,6 +82,11 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>3.2</version>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
