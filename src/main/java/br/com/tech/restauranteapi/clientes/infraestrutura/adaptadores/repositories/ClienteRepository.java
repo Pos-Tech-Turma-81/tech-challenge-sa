@@ -3,7 +3,9 @@ package br.com.tech.restauranteapi.clientes.infraestrutura.adaptadores.repositor
 import br.com.tech.restauranteapi.clientes.dominio.Cliente;
 import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteEntity;
 import br.com.tech.restauranteapi.clientes.dominio.portas.repositories.ClienteRepositoryPort;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ClienteRepository implements ClienteRepositoryPort {
     private final SpringClienteRepository spring;
 

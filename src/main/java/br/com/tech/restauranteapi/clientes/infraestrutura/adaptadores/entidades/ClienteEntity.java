@@ -5,16 +5,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
-import java.util.UUID;
+import lombok.Data;
 
 @Entity
 @Table(name = "cliente")
+@Data
 public class ClienteEntity {
 
     @Id
     @GeneratedValue
-    private UUID id;
+    private Integer id;
     private String nome;
     private String email;
     private String telefone;

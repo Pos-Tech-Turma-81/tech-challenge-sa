@@ -8,5 +8,4 @@ import java.util.UUID;
 
 @Repository
 public interface SpringClienteRepository extends JpaRepository<ClienteEntity, UUID> {
-    Optional<ClienteEntity> findBySku(String sku);
 }
