@@ -17,4 +17,9 @@ public class ClienteRepository implements ClienteRepositoryPort {
     public void cadastrar(Cliente cliente) {
         this.spring.save(new ClienteEntity(cliente));
     }
+
+    @Override
+    public Cliente getCliente(String cpf) {
+        return this.spring.getCliente(cpf).toCliente();
+    }
 }

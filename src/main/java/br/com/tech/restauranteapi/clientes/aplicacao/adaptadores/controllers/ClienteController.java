@@ -28,4 +28,15 @@ public class ClienteController {
         port.cadastrar(cliente);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Buscar cliente por CPF")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
+            @ApiResponse(responseCode = "400", description = "Cliente não encontrado")
+    })
+    @GetMapping("/{cpf}")
+    public ResponseEntity<ClienteDTO> getCliente(@PathVariable String cpf) {
+        ClienteDTO cliente = port.getCliente(cpf);
+        return ResponseEntity.ok(cliente);
+    }
 }
