@@ -8,7 +8,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PedidosRepository implements PedidosRepositoryPort {
@@ -24,13 +23,7 @@ public class PedidosRepository implements PedidosRepositoryPort {
     }
 
     @Override
-    public Optional<Pedidos> buscarPorId(Integer id) {
-        return Optional.ofNullable(entityManager.find(PedidosEntity.class, id))
-                .map(PedidosEntity::toPedidosDomain);
-    }
-
-    @Override
-    public List<Pedidos> listarTodos() {
+    public List<Pedidos> listarFilaPedidos() {
         String jpql = "SELECT p FROM PedidosEntity p";
         return entityManager.createQuery(jpql, PedidosEntity.class)
                 .getResultList()
@@ -39,15 +32,4 @@ public class PedidosRepository implements PedidosRepositoryPort {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public Optional<Pedidos> buscarProximoNaFila() {
-        String jpql = "SELECT p FROM PedidosEntity p WHERE p.status = 'AGUARDANDO' ORDER BY p.dataHoraInclusaoPedido ASC";
-        List<PedidosEntity> result = entityManager.createQuery(jpql, PedidosEntity.class)
-                .setMaxResults(1)
-                .getResultList();
-
-        return result.stream()
-                .findFirst()
-                .map(PedidosEntity::toPedidosDomain);
-    }
 }

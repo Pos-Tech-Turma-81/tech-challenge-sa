@@ -7,7 +7,5 @@ import java.util.Optional;
 
 public interface PedidosRepositoryPort {
     Pedidos salvar(Pedidos pedidos);
-    Optional<Pedidos> buscarPorId(Integer id);
-    List<Pedidos> listarTodos();
-    Optional<Pedidos> buscarProximoNaFila();
+    List<Pedidos> listarFilaPedidos();
 }

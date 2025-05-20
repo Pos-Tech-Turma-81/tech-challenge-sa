@@ -17,7 +17,7 @@ public class AssociacaoPedidoProdutoDto {
     private Integer pedidoId;
     private Integer produtoId;
     private Integer quantidade;
-    private Double preco;
+    private BigDecimal preco;
 
     public static AssociacaoPedidoProdutoDto builderAssociacao(AssociacaoPedidoProduto associacao) {
         return AssociacaoPedidoProdutoDto.builder()

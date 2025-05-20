@@ -22,7 +22,7 @@ public class Cliente {
         this.endereco = endereco;
     }
 
-    ClienteDTO toClienteDTO() {
+    public ClienteDTO toClienteDTO() {
         return new ClienteDTO(id, nome, email, telefone, cpf, endereco);
     }
 }

@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -34,5 +36,5 @@ public class AssociacaoPedidoProdutoEntity {
     private Integer quantidade;
 
     @Column(name = "preco", nullable = false)
-    private Double preco;
+    private BigDecimal preco;
 }

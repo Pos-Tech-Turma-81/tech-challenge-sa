@@ -3,10 +3,14 @@ package br.com.tech.restauranteapi.associacaoPedidoProduto.dominio;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.dtos.AssociacaoPedidoProdutoDto;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.entidades.AssociacaoPedidoProdutoEntity;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.AssociacaoPedidoProdutoId;
+import br.com.tech.restauranteapi.produtos.dominio.Produto;
+import br.com.tech.restauranteapi.produtos.infraestrutura.entidades.ProdutoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
 @Builder
@@ -16,7 +20,8 @@ public class AssociacaoPedidoProduto {
     private Integer pedidoId;
     private Integer produtoId;
     private Integer quantidade;
-    private Double preco;
+    private BigDecimal preco;
+    private Produto produto;
 
     public static AssociacaoPedidoProduto builderAssociacao(AssociacaoPedidoProdutoDto dto) {
         return AssociacaoPedidoProduto.builder()
@@ -33,6 +38,7 @@ public class AssociacaoPedidoProduto {
                 .produtoId(entity.getId().getProdutosId())
                 .quantidade(entity.getQuantidade())
                 .preco(entity.getPreco())
+                .produto(entity.getProduto() != null ? Produto.builderProduto(entity.getProduto()) : null)
                 .build();
     }
 
@@ -50,6 +56,7 @@ public class AssociacaoPedidoProduto {
                 .id(new AssociacaoPedidoProdutoId(this.pedidoId, this.produtoId))
                 .quantidade(this.quantidade)
                 .preco(this.preco)
+                .produto(this.produto != null ? this.produto.toEntity() : null)
                 .build();
     }
 }
