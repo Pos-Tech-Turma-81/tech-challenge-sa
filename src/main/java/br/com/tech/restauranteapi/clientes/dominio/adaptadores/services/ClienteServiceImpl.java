@@ -25,4 +25,15 @@ public class ClienteServiceImpl implements ClienteServicePort {
                 clienteDto.getEndereco());
         repository.cadastrar(cliente);
     }
+
+    @Override
+    public ClienteDTO getCliente(String cpf) {
+        Cliente cliente =  repository.getCliente(cpf);
+        return new ClienteDTO(cliente.getId(),
+                cliente.getNome(),
+                cliente.getEmail(),
+                cliente.getTelefone(),
+                cliente.getCpf(),
+                cliente.getEndereco());
+    }
 }
