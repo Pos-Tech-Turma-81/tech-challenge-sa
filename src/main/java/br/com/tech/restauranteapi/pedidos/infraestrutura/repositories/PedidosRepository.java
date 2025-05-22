@@ -14,6 +14,10 @@ public class PedidosRepository implements PedidosRepositoryPort {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public PedidosRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     @Override
     @Transactional
     public Pedidos salvar(Pedidos pedidos) {
