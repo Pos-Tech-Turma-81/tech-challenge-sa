@@ -203,7 +203,7 @@ Documentação interativa das APIs REST disponibilizadas no backend.
 ### Pré-requisitos
 
 - Docker
-- Docker Compose
+- Maven
 
 ### Passos
 
@@ -213,13 +213,28 @@ git clone https://github.com/eusoumabel/tech-challenge-sa.git
 cd tech-challenge-sa
 ```
 
-2. Suba os containers:
+2. Builda e gera o JAR:
 ```bash
-docker-compose up --build
+mvn clean package -DskipTests
 ```
 
-3. Acesse a API (Swagger):
+3. Gera a imagem docker:
+```bash
+docker build -t restaurante-app .
 ```
-http://localhost:8080/swagger
+
+4. Navega para `/infra`:
+```bash
+cd infra
+```
+
+5. Gera os Containers:
+```bash
+docker-compose up
+```
+
+6. Acesse a API (Swagger):
+```
+http://localhost:8080/swagger-ui/index.html#/
 ```
 ---
