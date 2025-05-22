@@ -15,6 +15,17 @@ services:
       - '3334:5432'
     networks:
       - restaurante-network
+
+  app:
+    build:
+      context: ..
+    container_name: restaurante-app
+    depends_on:
+      - postgres-restaurante
+    ports:
+      - "8080:8080"
+    networks:
+      - restaurante-network
 networks:
   restaurante-network:
     driver: bridge
