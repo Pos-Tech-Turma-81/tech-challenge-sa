@@ -2,6 +2,7 @@ package br.com.tech.restauranteapi.pedidos.aplicacao.adaptadores.controllers;
 
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.*;
 import br.com.tech.restauranteapi.pedidos.dominio.portas.interfaces.PedidosServicePort;
+import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ class PedidosControllerTest {
         PedidoResponseDto response = PedidoResponseDto.builder()
                 .pedidoId(1)
                 .clienteId(1)
-                .status("AGUARDANDO")
+                .status(StatusEnum.AGUARDANDO)
                 .dataHora(new Timestamp(System.currentTimeMillis()))
                 .produtos(List.of(
                         ProdutoPedidoResponseDto.builder()
@@ -80,7 +81,7 @@ class PedidosControllerTest {
         PedidoResponseDto response = PedidoResponseDto.builder()
                 .pedidoId(2)
                 .clienteId(null)
-                .status("AGUARDANDO")
+                .status(StatusEnum.AGUARDANDO)
                 .dataHora(new Timestamp(System.currentTimeMillis()))
                 .produtos(List.of(
                         ProdutoPedidoResponseDto.builder()
@@ -109,7 +110,7 @@ class PedidosControllerTest {
     void deveListarPedidosAguardando() throws Exception {
         PedidosDto pedido = PedidosDto.builder()
                 .id(1)
-                .status("AGUARDANDO")
+                .status(StatusEnum.AGUARDANDO)
                 .dataHoraInclusaoPedido(new Timestamp(System.currentTimeMillis()))
                 .build();
 

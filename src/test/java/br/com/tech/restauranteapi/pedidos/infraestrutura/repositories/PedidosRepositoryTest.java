@@ -4,6 +4,7 @@ import br.com.tech.restauranteapi.clientes.dominio.Cliente;
 import br.com.tech.restauranteapi.pedidos.dominio.Pedidos;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.PedidosEntity;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.repositories.PedidosRepository;
+import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -31,7 +32,7 @@ class PedidosRepositoryTest {
     @Test
     void deveSalvarPedidoComSucesso() {
         Pedidos pedido = new Pedidos();
-        pedido.setStatus("AGUARDANDO");
+        pedido.setStatus(StatusEnum.AGUARDANDO);
         pedido.setDataHoraInclusaoPedido(Timestamp.from(Instant.now()));
 
         // Mocka o comportamento do entityManager.persist
@@ -41,7 +42,7 @@ class PedidosRepositoryTest {
         Pedidos salvo = pedidosRepository.salvar(pedido);
 
         assertNotNull(salvo);
-        assertEquals("AGUARDANDO", salvo.getStatus());
+        assertEquals(StatusEnum.AGUARDANDO, salvo.getStatus());
         verify(entityManager, times(1)).persist(any());
     }
 
@@ -60,7 +61,7 @@ class PedidosRepositoryTest {
 
         // Mocka o toPedidosDomain para retornar um objeto Pedidos válido
         when(pedidosEntityMock.toPedidosDomain()).thenReturn(
-                new Pedidos(1, clienteMock, "AGUARDANDO", Timestamp.from(Instant.now()), null)
+                new Pedidos(1, clienteMock, StatusEnum.AGUARDANDO, Timestamp.from(Instant.now()), null)
         );
 
         List<PedidosEntity> listaMock = List.of(pedidosEntityMock);
@@ -74,7 +75,7 @@ class PedidosRepositoryTest {
         // Verificações
         assertNotNull(pedidos);
         assertFalse(pedidos.isEmpty());
-        assertEquals("AGUARDANDO", pedidos.get(0).getStatus());
+        assertEquals(StatusEnum.AGUARDANDO, pedidos.get(0).getStatus());
 
         verify(entityManager, times(1)).createQuery(jpql, PedidosEntity.class);
         verify(typedQuery, times(1)).getResultList();

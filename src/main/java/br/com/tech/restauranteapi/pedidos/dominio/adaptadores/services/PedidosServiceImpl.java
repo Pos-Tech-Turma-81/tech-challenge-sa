@@ -10,6 +10,7 @@ import br.com.tech.restauranteapi.pedidos.dominio.dtos.PedidosDto;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.ProdutoPedidoResponseDto;
 import br.com.tech.restauranteapi.pedidos.dominio.portas.interfaces.PedidosServicePort;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.repositories.PedidosRepository;
+import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class PedidosServiceImpl implements PedidosServicePort {
         Pedidos pedido = new Pedidos();
         pedido.setCliente(new Cliente(dto.getClienteId(), null, null, null, null, null));
         pedido.setDataHoraInclusaoPedido(Timestamp.from(Instant.now()));
-        pedido.setStatus("AGUARDANDO");
+        pedido.setStatus(StatusEnum.AGUARDANDO);
 
         // Salva o pedido primeiro para ter o ID
         Pedidos pedidoSalvo = pedidosRepository.salvar(pedido);

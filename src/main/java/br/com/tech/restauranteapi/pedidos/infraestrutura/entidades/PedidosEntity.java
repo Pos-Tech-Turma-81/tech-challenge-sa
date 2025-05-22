@@ -3,6 +3,7 @@ package br.com.tech.restauranteapi.pedidos.infraestrutura.entidades;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.entidades.AssociacaoPedidoProdutoEntity;
 import br.com.tech.restauranteapi.pedidos.dominio.Pedidos;
 import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteEntity;
+import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,8 +30,8 @@ public class PedidosEntity {
     private ClienteEntity clientId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private String status;
+    @Column(name = "status", nullable = false)
+    private StatusEnum status;
 
     @Column(name = "data_hora_inclusao_pedido")
     private Timestamp dataHoraInclusaoPedido;

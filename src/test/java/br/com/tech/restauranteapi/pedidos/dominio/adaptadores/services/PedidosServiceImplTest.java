@@ -6,6 +6,7 @@ import br.com.tech.restauranteapi.pedidos.dominio.Pedidos;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.CriarPedidoDto;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.ProdutoPedidoDto;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.repositories.PedidosRepository;
+import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -51,7 +52,7 @@ class PedidosServiceImplTest {
         Pedidos pedidoSalvo = new Pedidos();
         pedidoSalvo.setId(100);
         pedidoSalvo.setCliente(dto.getClienteId() != null ? new br.com.tech.restauranteapi.clientes.dominio.Cliente(dto.getClienteId(), null, null, null, null, null) : null);
-        pedidoSalvo.setStatus("AGUARDANDO");
+        pedidoSalvo.setStatus(StatusEnum.AGUARDANDO);
         pedidoSalvo.setDataHoraInclusaoPedido(Timestamp.from(Instant.now()));
 
         when(pedidosRepository.salvar(any())).thenReturn(pedidoSalvo);
@@ -62,7 +63,7 @@ class PedidosServiceImplTest {
         // Assert
         assertNotNull(response);
         assertEquals(100, response.getPedidoId());
-        assertEquals("AGUARDANDO", response.getStatus());
+        assertEquals(StatusEnum.AGUARDANDO, response.getStatus());
         assertEquals(1, response.getClienteId());
         assertEquals(1, response.getProdutos().size());
         assertEquals(10, response.getProdutos().get(0).getProdutoId());

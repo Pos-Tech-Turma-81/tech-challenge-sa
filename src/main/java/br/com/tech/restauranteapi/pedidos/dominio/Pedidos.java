@@ -6,6 +6,7 @@ import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteEntity;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.PedidosDto;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.PedidosEntity;
 import br.com.tech.restauranteapi.clientes.dominio.Cliente;
+import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,7 @@ public class Pedidos {
 
     private Integer id;
     private Cliente cliente;
-    private String status;
+    private StatusEnum status;
     private Timestamp dataHoraInclusaoPedido;
     private List<AssociacaoPedidoProduto> associacoes;
 
