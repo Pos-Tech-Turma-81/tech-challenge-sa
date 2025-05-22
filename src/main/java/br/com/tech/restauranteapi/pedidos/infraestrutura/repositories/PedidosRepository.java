@@ -8,7 +8,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PedidosRepository implements PedidosRepositoryPort {
     @PersistenceContext
@@ -28,12 +27,11 @@ public class PedidosRepository implements PedidosRepositoryPort {
 
     @Override
     public List<Pedidos> listarFilaPedidos() {
-        String jpql = "SELECT p FROM PedidosEntity p";
+        String jpql = "SELECT p FROM PedidosEntity p ORDER BY p.dataHoraInclusaoPedido ASC";
         return entityManager.createQuery(jpql, PedidosEntity.class)
                 .getResultList()
                 .stream()
                 .map(PedidosEntity::toPedidosDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
-
 }

@@ -47,7 +47,7 @@ class PedidosRepositoryTest {
 
     @Test
     void deveListarPedidosComSucesso() {
-        String jpql = "SELECT p FROM PedidosEntity p";
+        String jpql = "SELECT p FROM PedidosEntity p ORDER BY p.dataHoraInclusaoPedido ASC";
 
         // Mock do TypedQuery<PedidosEntity>
         TypedQuery<PedidosEntity> typedQuery = mock(TypedQuery.class);
