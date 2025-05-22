@@ -213,7 +213,7 @@ git clone https://github.com/eusoumabel/tech-challenge-sa.git
 cd tech-challenge-sa
 ```
 
-2. Builda e gera o JAR:
+2. Compile e gere o JAR:
 ```bash
 mvn clean package
 ```
