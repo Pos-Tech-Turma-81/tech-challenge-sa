@@ -21,6 +21,9 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+
 
 @WebMvcTest(PedidosController.class)
 class PedidosControllerTest {
@@ -40,7 +43,7 @@ class PedidosControllerTest {
         CriarPedidoDto dto = new CriarPedidoDto();
         dto.setClienteId(1);
         dto.setProdutos(List.of(
-                new ProdutoPedidoDto(1, 2, new BigDecimal("10.50"))
+                new ProdutoPedidoDto(1, 2)
         ));
 
         PedidoResponseDto response = PedidoResponseDto.builder()
@@ -73,9 +76,9 @@ class PedidosControllerTest {
     @DisplayName("Deve criar um pedido sem cliente com sucesso")
     void deveCriarPedidoSemClienteComSucesso() throws Exception {
         CriarPedidoDto dto = new CriarPedidoDto();
-        dto.setClienteId(null); // Cliente não identificado
+        dto.setClienteId(null);
         dto.setProdutos(List.of(
-                new ProdutoPedidoDto(1, 2, new BigDecimal("10.50"))
+                new ProdutoPedidoDto(1, 2)
         ));
 
         PedidoResponseDto response = PedidoResponseDto.builder()
@@ -100,7 +103,7 @@ class PedidosControllerTest {
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pedidoId").value(2))
-                .andExpect(jsonPath("$.clienteId").doesNotExist()) // ou .value(null) dependendo do seu JSON
+                .andExpect(jsonPath("$.clienteId").doesNotExist())
                 .andExpect(jsonPath("$.status").value("AGUARDANDO"));
     }
 
@@ -114,9 +117,12 @@ class PedidosControllerTest {
                 .dataHoraInclusaoPedido(new Timestamp(System.currentTimeMillis()))
                 .build();
 
-        Mockito.when(pedidosService.listarFilaPedidos()).thenReturn(List.of(pedido));
+        // Mock do service com filtro de status
+        Mockito.when(pedidosService.listarPedidos(eq(StatusEnum.AGUARDANDO), isNull()))
+                .thenReturn(List.of(pedido));
 
-        mockMvc.perform(get("/pedidos/fila"))
+        mockMvc.perform(get("/pedidos/listarPedidos")
+                        .param("status", "AGUARDANDO"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].status").value("AGUARDANDO"));

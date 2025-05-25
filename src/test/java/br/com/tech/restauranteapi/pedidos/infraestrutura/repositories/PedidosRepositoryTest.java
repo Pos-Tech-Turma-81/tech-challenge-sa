@@ -1,84 +1,70 @@
 package br.com.tech.restauranteapi.pedidos.infraestrutura.repositories;
 
-import br.com.tech.restauranteapi.clientes.dominio.Cliente;
 import br.com.tech.restauranteapi.pedidos.dominio.Pedidos;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.PedidosEntity;
-import br.com.tech.restauranteapi.pedidos.infraestrutura.repositories.PedidosRepository;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import jakarta.persistence.EntityManager;
 
 import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class PedidosRepositoryTest {
 
     private EntityManager entityManager;
+    private SpringPedidosRepository springPedidosRepository;
     private PedidosRepository pedidosRepository;
 
     @BeforeEach
     void setUp() {
         entityManager = mock(EntityManager.class);
-        pedidosRepository = new PedidosRepository(entityManager);
+        springPedidosRepository = mock(SpringPedidosRepository.class);
+        pedidosRepository = new PedidosRepository(entityManager, springPedidosRepository);
     }
 
     @Test
     void deveSalvarPedidoComSucesso() {
         Pedidos pedido = new Pedidos();
         pedido.setStatus(StatusEnum.AGUARDANDO);
-        pedido.setDataHoraInclusaoPedido(Timestamp.from(Instant.now()));
 
-        // Mocka o comportamento do entityManager.persist
-        doNothing().when(entityManager).persist(any());
+        doNothing().when(entityManager).persist(any(PedidosEntity.class));
 
-        // Testa salvar
         Pedidos salvo = pedidosRepository.salvar(pedido);
 
         assertNotNull(salvo);
         assertEquals(StatusEnum.AGUARDANDO, salvo.getStatus());
-        verify(entityManager, times(1)).persist(any());
+        verify(entityManager, times(1)).persist(any(PedidosEntity.class));
     }
 
     @Test
-    void deveListarPedidosComSucesso() {
-        String jpql = "SELECT p FROM PedidosEntity p ORDER BY p.dataHoraInclusaoPedido ASC";
+    void deveListarPedidosUsandoSpringData() {
+        PedidosEntity entity = new PedidosEntity();
+        entity.setStatus(StatusEnum.AGUARDANDO);
 
-        // Mock do TypedQuery<PedidosEntity>
-        TypedQuery<PedidosEntity> typedQuery = mock(TypedQuery.class);
+        List<PedidosEntity> listaEntities = List.of(entity);
 
-        // Mock do PedidosEntity retornado
-        PedidosEntity pedidosEntityMock = mock(PedidosEntity.class);
+        when(springPedidosRepository.listarPedidos(
+                eq(StatusEnum.AGUARDANDO),
+                eq(123))
+        ).thenReturn(listaEntities);
 
-        // Cria mocks dos objetos necessários para construir Pedidos
-        Cliente clienteMock = mock(Cliente.class);
-
-        // Mocka o toPedidosDomain para retornar um objeto Pedidos válido
-        when(pedidosEntityMock.toPedidosDomain()).thenReturn(
-                new Pedidos(1, clienteMock, StatusEnum.AGUARDANDO, Timestamp.from(Instant.now()), null)
+        List<Pedidos> resultado = pedidosRepository.listarPedidos(
+                StatusEnum.AGUARDANDO,
+                123
         );
 
-        List<PedidosEntity> listaMock = List.of(pedidosEntityMock);
+        assertNotNull(resultado);
+        assertEquals(1, resultado.size());
+        assertEquals(StatusEnum.AGUARDANDO, resultado.get(0).getStatus());
 
-        when(entityManager.createQuery(jpql, PedidosEntity.class)).thenReturn(typedQuery);
-        when(typedQuery.getResultList()).thenReturn(listaMock);
-
-        // Executa o método a ser testado
-        List<Pedidos> pedidos = pedidosRepository.listarFilaPedidos();
-
-        // Verificações
-        assertNotNull(pedidos);
-        assertFalse(pedidos.isEmpty());
-        assertEquals(StatusEnum.AGUARDANDO, pedidos.get(0).getStatus());
-
-        verify(entityManager, times(1)).createQuery(jpql, PedidosEntity.class);
-        verify(typedQuery, times(1)).getResultList();
-        verify(pedidosEntityMock, times(1)).toPedidosDomain();
+        verify(springPedidosRepository, times(1)).listarPedidos(
+                eq(StatusEnum.AGUARDANDO),
+                eq(123));
     }
 }

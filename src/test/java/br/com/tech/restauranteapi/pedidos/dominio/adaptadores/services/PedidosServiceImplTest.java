@@ -6,6 +6,8 @@ import br.com.tech.restauranteapi.pedidos.dominio.Pedidos;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.CriarPedidoDto;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.ProdutoPedidoDto;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.repositories.PedidosRepository;
+import br.com.tech.restauranteapi.produtos.dominio.Produto;
+import br.com.tech.restauranteapi.produtos.infraestrutura.repositories.ProdutoRepository;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,9 @@ class PedidosServiceImplTest {
     @Mock
     private AssociacaoPedidoProdutoServicePort associacaoService;
 
+    @Mock
+    private ProdutoRepository produtoRepository;
+
     @InjectMocks
     private PedidosServiceImpl pedidosService;
 
@@ -37,14 +42,22 @@ class PedidosServiceImplTest {
 
     @Test
     void deveRealizarCheckoutComSucesso() {
-        // Arrange
+        // Mock do Produto que será retornado pelo produtoRepository
+        Produto produtoMock = Produto.builder()
+                .id(10)
+                .nome("Produto Teste")
+                .preco(new BigDecimal("50.00"))
+                .build();
+
+        // Configura mock do produtoRepository para retornar o produtoMock quando buscarPorId(10) for chamado
+        when(produtoRepository.buscarPorId(10)).thenReturn(produtoMock);
+
         CriarPedidoDto dto = CriarPedidoDto.builder()
                 .clienteId(1)
                 .produtos(List.of(
                         ProdutoPedidoDto.builder()
                                 .produtoId(10)
                                 .quantidade(2)
-                                .preco(BigDecimal.valueOf(19.90))
                                 .build()
                 ))
                 .build();
@@ -57,10 +70,8 @@ class PedidosServiceImplTest {
 
         when(pedidosRepository.salvar(any())).thenReturn(pedidoSalvo);
 
-        // Act
         var response = pedidosService.realizarCheckout(dto);
 
-        // Assert
         assertNotNull(response);
         assertEquals(100, response.getPedidoId());
         assertEquals(StatusEnum.AGUARDANDO, response.getStatus());
@@ -71,5 +82,6 @@ class PedidosServiceImplTest {
 
         verify(pedidosRepository, times(1)).salvar(any());
         verify(associacaoService, times(1)).salvar(any());
+        verify(produtoRepository, times(1)).buscarPorId(10);  // verifica se buscou o produto
     }
 }

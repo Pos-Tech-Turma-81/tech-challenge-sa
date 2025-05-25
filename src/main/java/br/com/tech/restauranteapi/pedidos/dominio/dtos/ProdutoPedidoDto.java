@@ -13,5 +13,4 @@ import java.math.BigDecimal;
 public class ProdutoPedidoDto {
     private Integer produtoId;
     private Integer quantidade;
-    private BigDecimal preco;
 }

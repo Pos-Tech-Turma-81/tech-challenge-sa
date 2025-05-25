@@ -77,17 +77,19 @@ public class Pedidos {
     public PedidosDto toPedidosDto(){return PedidosDto.builderPedidos(this);
     }
 
-    public PedidosEntity toEntity(){
-        return PedidosEntity
-                .builder()
+    public PedidosEntity toEntity() {
+        PedidosEntity.PedidosEntityBuilder builder = PedidosEntity.builder()
                 .id(this.id)
-                .clientId(
-                        this.cliente != null
-                                ? new ClienteEntity(this.cliente)
-                                : null
-                )
-                .status(this.status)
                 .dataHoraInclusaoPedido(this.dataHoraInclusaoPedido)
-                .build();
+                .status(this.status);
+
+        if (this.cliente != null && this.cliente.getId() != null) {
+            ClienteEntity clienteEntity = new ClienteEntity();
+            clienteEntity.setId(this.cliente.getId());
+            builder.clientId(clienteEntity);
+        }
+
+        return builder.build();
     }
+
 }

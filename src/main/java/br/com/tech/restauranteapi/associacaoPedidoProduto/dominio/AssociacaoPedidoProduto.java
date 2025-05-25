@@ -3,6 +3,7 @@ package br.com.tech.restauranteapi.associacaoPedidoProduto.dominio;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.dtos.AssociacaoPedidoProdutoDto;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.entidades.AssociacaoPedidoProdutoEntity;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.AssociacaoPedidoProdutoId;
+import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.PedidosEntity;
 import br.com.tech.restauranteapi.produtos.dominio.Produto;
 import br.com.tech.restauranteapi.produtos.infraestrutura.entidades.ProdutoEntity;
 import lombok.AllArgsConstructor;
@@ -56,7 +57,9 @@ public class AssociacaoPedidoProduto {
                 .id(new AssociacaoPedidoProdutoId(this.pedidoId, this.produtoId))
                 .quantidade(this.quantidade)
                 .preco(this.preco)
-                .produto(this.produto != null ? this.produto.toEntity() : null)
+                .pedido(PedidosEntity.builder().id(this.pedidoId).build())
+                .produto(this.produto != null ? this.produto.toEntity() : ProdutoEntity.builder().id(this.produtoId).build())
                 .build();
     }
+
 }
