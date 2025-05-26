@@ -21,8 +21,8 @@ public class AssociacaoPedidoProdutoDto {
 
     public static AssociacaoPedidoProdutoDto builderAssociacao(AssociacaoPedidoProduto associacao) {
         return AssociacaoPedidoProdutoDto.builder()
-                .pedidoId(associacao.getPedidoId())
-                .produtoId(associacao.getProdutoId())
+                .pedidoId(associacao.getPedido().getId())
+                .produtoId(associacao.getProduto().getId())
                 .quantidade(associacao.getQuantidade())
                 .preco(associacao.getPreco())
                 .build();

@@ -7,8 +7,11 @@ import br.com.tech.restauranteapi.pedidos.dominio.portas.interfaces.PedidosServi
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
@@ -17,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/pedidos")
 @AllArgsConstructor
+@Transactional
 public class PedidosController {
 
     private final PedidosServicePort pedidosService;
@@ -34,8 +38,8 @@ public class PedidosController {
 
     @Operation(summary = "Listar pedidos na fila (status AGUARDANDO)")
     @GetMapping("/fila")
-    public ResponseEntity<List<PedidoDto>> listarFilaPedidos() {
-        List<PedidoDto> pedidos = pedidosService.listarFilaPedidos();
+    public ResponseEntity<List<PedidoDto>> listarFilaPedidos(@PageableDefault(size = 10) Pageable pageable) {
+        List<PedidoDto> pedidos = pedidosService.listarFilaPedidos(pageable);
         return ResponseEntity.ok(pedidos);
     }
 

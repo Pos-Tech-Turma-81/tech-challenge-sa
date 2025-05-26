@@ -2,6 +2,7 @@ package br.com.tech.restauranteapi.associacaoPedidoProduto.dominio;
 
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.dtos.AssociacaoPedidoProdutoDto;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.entidades.AssociacaoPedidoProdutoEntity;
+import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.AssociacaoPedidoProdutoId;
 import br.com.tech.restauranteapi.produtos.dominio.Produto;
 import br.com.tech.restauranteapi.produtos.infraestrutura.entidades.ProdutoEntity;
@@ -17,35 +18,33 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AssociacaoPedidoProduto {
-    private Integer pedidoId;
-    private Integer produtoId;
     private Integer quantidade;
+    private Pedido pedido;
     private BigDecimal preco;
     private Produto produto;
 
-    public static AssociacaoPedidoProduto builderAssociacao(AssociacaoPedidoProdutoDto dto) {
+    /*public static AssociacaoPedidoProduto builderAssociacao(AssociacaoPedidoProdutoDto dto) {
         return AssociacaoPedidoProduto.builder()
-                .pedidoId(dto.getPedidoId())
-                .produtoId(dto.getProdutoId())
+                .produto(dto.getProdutoId())
                 .quantidade(dto.getQuantidade())
                 .preco(dto.getPreco())
                 .build();
-    }
+    }*/
 
     public static AssociacaoPedidoProduto builderAssociacao(AssociacaoPedidoProdutoEntity entity) {
         return AssociacaoPedidoProduto.builder()
-                .pedidoId(entity.getId().getPedidoId())
-                .produtoId(entity.getId().getProdutosId())
+                .pedido(entity.getId().getPedido().toPedidosDomain())
+                .produto(entity.getId().getProduto().toProdutoDomain())
                 .quantidade(entity.getQuantidade())
                 .preco(entity.getPreco())
-                .produto(entity.getProduto() != null ? Produto.builderProduto(entity.getProduto()) : null)
+                .produto(Produto.builderProduto(entity.getId().getProduto()))
                 .build();
     }
 
     public AssociacaoPedidoProdutoDto toDto() {
         return AssociacaoPedidoProdutoDto.builder()
-                .pedidoId(this.pedidoId)
-                .produtoId(this.produtoId)
+                .pedidoId(this.pedido.getId())
+                .produtoId(this.produto.getId())
                 .quantidade(this.quantidade)
                 .preco(this.preco)
                 .build();
@@ -53,10 +52,9 @@ public class AssociacaoPedidoProduto {
 
     public AssociacaoPedidoProdutoEntity toEntity() {
         return AssociacaoPedidoProdutoEntity.builder()
-                .id(new AssociacaoPedidoProdutoId(this.pedidoId, this.produtoId))
+                .id(new AssociacaoPedidoProdutoId(this.pedido.toEntity(), this.produto.toEntity()))
                 .quantidade(this.quantidade)
-                .preco(this.preco)
-                .produto(this.produto != null ? this.produto.toEntity() : null)
+                .preco(this.produto.getPreco())
                 .build();
     }
 }

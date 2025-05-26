@@ -22,16 +22,6 @@ public class AssociacaoPedidoProdutoEntity {
     @EmbeddedId
     private AssociacaoPedidoProdutoId id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("pedidoId")
-    @JoinColumn(name = "pedido_id", referencedColumnName = "id")
-    private PedidoEntity pedido;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("produtosId")
-    @JoinColumn(name = "produtos_id", referencedColumnName = "id")
-    private ProdutoEntity produto;
-
     @Column(name = "quantidade", nullable = false)
     private Integer quantidade;
 

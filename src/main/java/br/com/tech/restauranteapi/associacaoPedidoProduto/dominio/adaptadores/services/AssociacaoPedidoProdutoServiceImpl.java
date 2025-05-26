@@ -13,14 +13,10 @@ import java.util.List;
 public class AssociacaoPedidoProdutoServiceImpl implements AssociacaoPedidoProdutoServicePort {
     private final AssociacaoPedidoProdutoRepository associacaoRepository;
 
+
     public List<AssociacaoPedidoProduto> salvarTodas(List<AssociacaoPedidoProduto> associacoes) {
         return associacoes.stream()
                 .map(associacaoRepository::salvar)
                 .toList();
-    }
-
-    @Override
-    public AssociacaoPedidoProduto salvar(AssociacaoPedidoProduto associacao) {
-        return null;
     }
 }

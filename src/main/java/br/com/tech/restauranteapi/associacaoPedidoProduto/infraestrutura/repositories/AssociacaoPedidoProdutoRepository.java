@@ -7,26 +7,24 @@ import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.AssociacaoPed
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class AssociacaoPedidoProdutoRepository implements AssociacaoPedidoProdutoRepositoryPort {
-    @PersistenceContext
-    private EntityManager entityManager;
+
+    private final AssociacaoPedidoProdutoJpaRepository repository;
 
     @Override
-    @Transactional
     public AssociacaoPedidoProduto salvar(AssociacaoPedidoProduto associacao) {
-        AssociacaoPedidoProdutoEntity entity = associacao.toEntity();
-        if (entityManager.contains(entity) || entity.getId() != null) {
-            entity = entityManager.merge(entity);
-        } else {
-            entityManager.persist(entity);
-        }
-        return AssociacaoPedidoProduto.builderAssociacao(entity);
+        AssociacaoPedidoProdutoEntity assEntity = associacao.toEntity();
+        AssociacaoPedidoProdutoEntity ass = repository.save(assEntity);
+
+        return AssociacaoPedidoProduto.builderAssociacao(ass);
     }
 
 }

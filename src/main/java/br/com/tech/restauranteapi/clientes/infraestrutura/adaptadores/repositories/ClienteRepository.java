@@ -30,6 +30,6 @@ public class ClienteRepository implements ClienteRepositoryPort {
     public Cliente findById(Integer id) {
         Optional<ClienteEntity> cliente = this.spring.findById(id);
 
-        return cliente.orElseThrow(() -> new NotFoundException(String.format("Nao existe cliente com o id %n", id))).toCliente();
+        return cliente.orElseThrow(() -> new NotFoundException(String.format("Nao existe cliente com o id %s.", id))).toCliente();
     }
 }

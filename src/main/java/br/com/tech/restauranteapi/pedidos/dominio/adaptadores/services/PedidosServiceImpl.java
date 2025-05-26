@@ -10,10 +10,14 @@ import br.com.tech.restauranteapi.pedidos.dominio.dtos.PedidoDto;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.ProdutoPedidoResponseDto;
 import br.com.tech.restauranteapi.pedidos.dominio.portas.interfaces.PedidosServicePort;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.repositories.PedidosRepository;
+import br.com.tech.restauranteapi.produtos.dominio.Produto;
+import br.com.tech.restauranteapi.produtos.dominio.portas.repositories.ProdutoRepositoryPort;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,6 +27,7 @@ public class PedidosServiceImpl implements PedidosServicePort {
 
     private final PedidosRepository pedidosRepository;
     private final ClienteRepositoryPort clienteRepository;
+    private final ProdutoRepositoryPort produtosPort;
     private final AssociacaoPedidoProdutoServicePort associacaoPedidoProdutoService;
 
     @Override
@@ -38,23 +43,23 @@ public class PedidosServiceImpl implements PedidosServicePort {
         Pedido pedidoSalvo = pedidosRepository.salvar(pedido);
 
         List<AssociacaoPedidoProduto> associacoes = dto.getProdutos().stream()
-                .map(produtoDto -> AssociacaoPedidoProduto.builder()
-                        .pedidoId(pedidoSalvo.getId()) // seto o id do pedido salvo
-                        .produtoId(produtoDto.getProdutoId())
-                        .quantidade(produtoDto.getQuantidade())
-                        .preco(produtoDto.getPreco())
-                        .build())
+                .map(produtoDto -> {
+                    Produto produto = produtosPort.buscarPorId(produtoDto.getProdutoId());
+                    return AssociacaoPedidoProduto.builder()
+                            .produto(produto)
+                            .pedido(pedidoSalvo)
+                            .quantidade(produtoDto.getQuantidade())
+                            .preco(produto.getPreco().multiply(BigDecimal.valueOf(produtoDto.getQuantidade())))
+                            .build();
+                } )
                 .toList();
 
-        // Salva cada associação no banco via service
-        associacoes.forEach(associacaoPedidoProdutoService::salvar);
-
-        pedidoSalvo.setAssociacoes(associacoes);
+        pedidoSalvo.setAssociacoes(associacaoPedidoProdutoService.salvarTodas(associacoes));
 
         // Mapear resposta
-        List<ProdutoPedidoResponseDto> produtos = associacoes.stream()
+        List<ProdutoPedidoResponseDto> produtos = pedidoSalvo.getAssociacoes().stream()
                 .map(assoc -> ProdutoPedidoResponseDto.builder()
-                        .produtoId(assoc.getProdutoId())
+                        .produtoId(assoc.getProduto().getId())
                         .nomeProduto(assoc.getProduto() != null ? assoc.getProduto().getNome() : "Produto não encontrado")
                         .quantidade(assoc.getQuantidade())
                         .preco(assoc.getPreco())
@@ -71,10 +76,9 @@ public class PedidosServiceImpl implements PedidosServicePort {
     }
 
     @Override
-    public List<PedidoDto> listarFilaPedidos() {
-        return pedidosRepository.listarFilaPedidos()
+    public List<PedidoDto> listarFilaPedidos(Pageable pageable) {
+        return pedidosRepository.listarFilaPedidos(pageable)
                 .stream()
-                .filter(p -> StatusEnum.EM_PREPARACAO.equals(p.getStatus()))
                 .map(Pedido::toPedidosDto)
                 .toList();
     }
