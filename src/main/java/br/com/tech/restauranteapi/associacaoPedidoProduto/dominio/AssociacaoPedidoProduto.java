@@ -47,7 +47,7 @@ public class AssociacaoPedidoProduto {
 
                 .id(new AssociacaoPedidoProdutoId(this.pedido.toEntity(), this.produto.toEntity()))
                 .quantidade(this.quantidade)
-                .preco(this.produto.getPreco())
+                .preco(this.preco)
                 .build();
     }
 
