@@ -3,7 +3,10 @@ package br.com.tech.restauranteapi.clientes.infraestrutura.adaptadores.repositor
 import br.com.tech.restauranteapi.clientes.dominio.Cliente;
 import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteEntity;
 import br.com.tech.restauranteapi.clientes.dominio.portas.repositories.ClienteRepositoryPort;
+import br.com.tech.restauranteapi.exceptions.NotFoundException;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 public class ClienteRepository implements ClienteRepositoryPort {
@@ -21,5 +24,12 @@ public class ClienteRepository implements ClienteRepositoryPort {
     @Override
     public Cliente getCliente(String cpf) {
         return this.spring.getCliente(cpf).toCliente();
+    }
+
+    @Override
+    public Cliente findById(Integer id) {
+        Optional<ClienteEntity> cliente = this.spring.findById(id);
+
+        return cliente.orElseThrow(() -> new NotFoundException(String.format("Nao existe cliente com o id %s.", id))).toCliente();
     }
 }
