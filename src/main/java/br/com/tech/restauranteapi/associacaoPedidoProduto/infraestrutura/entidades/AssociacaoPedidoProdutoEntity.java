@@ -1,7 +1,7 @@
 package br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.entidades;
 
 import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.AssociacaoPedidoProdutoId;
-import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.PedidosEntity;
+import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.PedidoEntity;
 import br.com.tech.restauranteapi.produtos.infraestrutura.entidades.ProdutoEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,16 +21,6 @@ public class AssociacaoPedidoProdutoEntity {
 
     @EmbeddedId
     private AssociacaoPedidoProdutoId id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("pedidoId")
-    @JoinColumn(name = "pedido_id", referencedColumnName = "id")
-    private PedidosEntity pedido;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("produtosId")
-    @JoinColumn(name = "produtos_id", referencedColumnName = "id")
-    private ProdutoEntity produto;
 
     @Column(name = "quantidade", nullable = false)
     private Integer quantidade;

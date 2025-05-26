@@ -1,13 +1,10 @@
 package br.com.tech.restauranteapi.pedidos.dominio.portas.repositories;
 
-import br.com.tech.restauranteapi.pedidos.dominio.Pedidos;
-import br.com.tech.restauranteapi.utils.enums.StatusEnum;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface PedidosRepositoryPort {
-    Pedidos salvar(Pedidos pedidos);
-    List<Pedidos> listarPedidos(StatusEnum status, Integer clienteId);
+    Pedido salvar(Pedido pedidos);
+    Page<Pedido> listarFilaPedidos(Pageable page);
 }

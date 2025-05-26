@@ -9,7 +9,7 @@ import static java.lang.String.format;
 public enum CategoriaEnum {
     LANCHE,
     ACOMPANHAMENTO,
-    BEBIBA,
+    BEBIDA,
     SOBREMESA;
 
     @JsonCreator

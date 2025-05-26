@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -16,6 +17,6 @@ public class PedidoResponseDto {
     private Integer pedidoId;
     private Integer clienteId;
     private StatusEnum status;
-    private Timestamp dataHora;
+    private LocalDateTime dataHora;
     private List<ProdutoPedidoResponseDto> produtos;
 }

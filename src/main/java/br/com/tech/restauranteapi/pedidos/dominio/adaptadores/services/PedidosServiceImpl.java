@@ -2,65 +2,64 @@ package br.com.tech.restauranteapi.pedidos.dominio.adaptadores.services;
 
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedidoProduto;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.portas.interfaces.AssociacaoPedidoProdutoServicePort;
-import br.com.tech.restauranteapi.clientes.dominio.Cliente;
-import br.com.tech.restauranteapi.pedidos.dominio.Pedidos;
+import br.com.tech.restauranteapi.clientes.dominio.portas.repositories.ClienteRepositoryPort;
+import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.CriarPedidoDto;
+import br.com.tech.restauranteapi.pedidos.dominio.dtos.PedidoDto;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.PedidoResponseDto;
-import br.com.tech.restauranteapi.pedidos.dominio.dtos.PedidosDto;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.ProdutoPedidoResponseDto;
 import br.com.tech.restauranteapi.pedidos.dominio.portas.interfaces.PedidosServicePort;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.repositories.PedidosRepository;
 import br.com.tech.restauranteapi.produtos.dominio.Produto;
-import br.com.tech.restauranteapi.produtos.infraestrutura.repositories.ProdutoRepository;
+import br.com.tech.restauranteapi.produtos.dominio.portas.repositories.ProdutoRepositoryPort;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class PedidosServiceImpl implements PedidosServicePort {
 
     private final PedidosRepository pedidosRepository;
-    private final ProdutoRepository produtoRepository;
+    private final ClienteRepositoryPort clienteRepository;
+    private final ProdutoRepositoryPort produtosPort;
     private final AssociacaoPedidoProdutoServicePort associacaoPedidoProdutoService;
 
     @Override
     public PedidoResponseDto realizarCheckout(CriarPedidoDto dto) {
-        Pedidos pedido = new Pedidos();
-        pedido.setCliente(new Cliente(dto.getClienteId(), null, null, null, null, null));
-        pedido.setDataHoraInclusaoPedido(Timestamp.from(Instant.now()));
-        pedido.setStatus(StatusEnum.AGUARDANDO);
+        Pedido pedido = new Pedido();
 
-        Pedidos pedidoSalvo = pedidosRepository.salvar(pedido);
+        if(Objects.nonNull(dto.getClienteId())){
+            pedido.setCliente(clienteRepository.findById(dto.getClienteId()));
+        }
+        pedido.setStatus(StatusEnum.EM_PREPARACAO);
+
+        // Salva o pedido primeiro para ter o ID
+        Pedido pedidoSalvo = pedidosRepository.salvar(pedido);
 
         List<AssociacaoPedidoProduto> associacoes = dto.getProdutos().stream()
                 .map(produtoDto -> {
-                    Produto produtoCompleto = produtoRepository.buscarPorId(produtoDto.getProdutoId());
-
+                    Produto produto = produtosPort.buscarPorId(produtoDto.getProdutoId());
                     return AssociacaoPedidoProduto.builder()
-                            .pedidoId(pedidoSalvo.getId())
-                            .produtoId(produtoCompleto.getId())
+                            .produto(produto)
+                            .pedido(pedidoSalvo)
                             .quantidade(produtoDto.getQuantidade())
-                            .preco(produtoCompleto.getPreco())
-                            .produto(produtoCompleto)
+                            .preco(produto.getPreco().multiply(BigDecimal.valueOf(produtoDto.getQuantidade())))
                             .build();
-                })
+                } )
                 .toList();
 
-        associacoes.forEach(associacaoPedidoProdutoService::salvar);
+        pedidoSalvo.setAssociacoes(associacaoPedidoProdutoService.salvarTodas(associacoes));
 
-        pedidoSalvo.setAssociacoes(associacoes);
-
-        List<ProdutoPedidoResponseDto> produtos = associacoes.stream()
+        // Mapear resposta
+        List<ProdutoPedidoResponseDto> produtos = pedidoSalvo.getAssociacoes().stream()
                 .map(assoc -> ProdutoPedidoResponseDto.builder()
-                        .produtoId(assoc.getProdutoId())
+                        .produtoId(assoc.getProduto().getId())
                         .nomeProduto(assoc.getProduto() != null ? assoc.getProduto().getNome() : "Produto não encontrado")
                         .quantidade(assoc.getQuantidade())
                         .preco(assoc.getPreco())
@@ -77,10 +76,10 @@ public class PedidosServiceImpl implements PedidosServicePort {
     }
 
     @Override
-    public List<PedidosDto> listarPedidos(StatusEnum status, Integer clienteId) {
-        return pedidosRepository.listarPedidos(status, clienteId)
+    public List<PedidoDto> listarFilaPedidos(Pageable pageable) {
+        return pedidosRepository.listarFilaPedidos(pageable)
                 .stream()
-                .map(Pedidos::toPedidosDto)
+                .map(Pedido::toPedidosDto)
                 .toList();
     }
 }

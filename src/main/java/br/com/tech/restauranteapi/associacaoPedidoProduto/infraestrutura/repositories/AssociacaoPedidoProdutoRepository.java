@@ -6,19 +6,24 @@ import br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.entidad
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Repository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
-@Repository
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Component
+@RequiredArgsConstructor
 public class AssociacaoPedidoProdutoRepository implements AssociacaoPedidoProdutoRepositoryPort {
-    @PersistenceContext
-    private EntityManager entityManager;
+
+    private final AssociacaoPedidoProdutoJpaRepository repository;
 
     @Override
-    @Transactional
     public AssociacaoPedidoProduto salvar(AssociacaoPedidoProduto associacao) {
-        AssociacaoPedidoProdutoEntity entity = associacao.toEntity();
-        entity = entityManager.merge(entity);
-        return AssociacaoPedidoProduto.builderAssociacao(entity);
+        AssociacaoPedidoProdutoEntity assEntity = associacao.toEntity();
+        AssociacaoPedidoProdutoEntity ass = repository.save(assEntity);
+
+        return AssociacaoPedidoProduto.builderAssociacao(ass);
     }
 
 }

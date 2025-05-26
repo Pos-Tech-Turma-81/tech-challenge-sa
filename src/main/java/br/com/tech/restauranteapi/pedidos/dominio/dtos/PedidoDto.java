@@ -1,7 +1,7 @@
 package br.com.tech.restauranteapi.pedidos.dominio.dtos;
 
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedidoProduto;
-import br.com.tech.restauranteapi.pedidos.dominio.Pedidos;
+import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
 import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteDTO;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import lombok.AllArgsConstructor;
@@ -9,25 +9,25 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PedidosDto {
+public class PedidoDto {
 
     private Integer id;
     private ClienteDTO cliente;
     private StatusEnum status;
-    private Timestamp dataHoraInclusaoPedido;
+    private LocalDateTime dataHoraInclusaoPedido;
     private List<AssociacaoPedidoProduto> associacoes;
 
 
-    public static PedidosDto builderPedidos(Pedidos pedidos){
+    public static PedidoDto builderPedidos(Pedido pedidos){
 
-        return PedidosDto
+        return PedidoDto
                 .builder()
                 .id(pedidos.getId())
                 .cliente(pedidos.getCliente() != null ? pedidos.getCliente().toClienteDTO() : null)

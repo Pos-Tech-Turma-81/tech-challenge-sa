@@ -1,16 +1,18 @@
 package br.com.tech.restauranteapi.pedidos.infraestrutura.entidades;
 
 import br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.entidades.AssociacaoPedidoProdutoEntity;
-import br.com.tech.restauranteapi.pedidos.dominio.Pedidos;
 import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteEntity;
+import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -18,8 +20,9 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "Pedidos")
-public class PedidosEntity {
+public class PedidoEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,17 +33,18 @@ public class PedidosEntity {
     private ClienteEntity clientId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status")
     private StatusEnum status;
 
     @Column(name = "data_hora_inclusao_pedido")
-    private Timestamp dataHoraInclusaoPedido;
+    @CreatedDate
+    private LocalDateTime dataHoraInclusaoPedido;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "id.pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AssociacaoPedidoProdutoEntity> associacoes;
 
-    public Pedidos toPedidosDomain(){
-        return Pedidos.builderPedidos(this);
+    public Pedido toPedidosDomain(){
+        return Pedido.builderPedidos(this);
     }
 }
 

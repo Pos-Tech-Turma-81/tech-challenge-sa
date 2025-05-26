@@ -10,5 +10,6 @@ public interface ProdutoServicePort {
     ProdutoDto salvar(ProdutoDto produto);
     ProdutoDto alterar(ProdutoDto produto);
     Page<ProdutoDto> buscarPorCategoria(CategoriaEnum categoria, Pageable page);
+
     void remover(Integer produtoId);
 }

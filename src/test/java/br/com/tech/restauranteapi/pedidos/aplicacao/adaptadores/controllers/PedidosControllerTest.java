@@ -111,7 +111,7 @@ class PedidosControllerTest {
     @Test
     @DisplayName("Deve retornar lista de pedidos com status AGUARDANDO")
     void deveListarPedidosAguardando() throws Exception {
-        PedidosDto pedido = PedidosDto.builder()
+        PedidoDto pedido = PedidoDto.builder()
                 .id(1)
                 .status(StatusEnum.AGUARDANDO)
                 .dataHoraInclusaoPedido(new Timestamp(System.currentTimeMillis()))
