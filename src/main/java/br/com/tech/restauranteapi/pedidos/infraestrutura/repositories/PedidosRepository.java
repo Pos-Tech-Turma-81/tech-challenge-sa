@@ -1,37 +1,36 @@
 package br.com.tech.restauranteapi.pedidos.infraestrutura.repositories;
 
-import br.com.tech.restauranteapi.pedidos.dominio.Pedidos;
+import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
 import br.com.tech.restauranteapi.pedidos.dominio.portas.repositories.PedidosRepositoryPort;
-import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.PedidosEntity;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.PedidoEntity;
+import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
-
+@Component
+@RequiredArgsConstructor
 public class PedidosRepository implements PedidosRepositoryPort {
-    @PersistenceContext
-    private EntityManager entityManager;
 
-    public PedidosRepository(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+    private final SpringPedidoRepository repository;
 
     @Override
     @Transactional
-    public Pedidos salvar(Pedidos pedidos) {
-        PedidosEntity entity = pedidos.toEntity();
-        entityManager.persist(entity);
-        return entity.toPedidosDomain();
+    public Pedido salvar(Pedido pedidos) {
+        PedidoEntity pedidoResponse =
+                this.repository
+                        .save(pedidos.toEntity());
+
+        return pedidoResponse.toPedidosDomain();
     }
 
     @Override
-    public List<Pedidos> listarFilaPedidos() {
-        String jpql = "SELECT p FROM PedidosEntity p ORDER BY p.dataHoraInclusaoPedido ASC";
-        return entityManager.createQuery(jpql, PedidosEntity.class)
-                .getResultList()
-                .stream()
-                .map(PedidosEntity::toPedidosDomain)
-                .toList();
+    public Page<Pedido> listarFilaPedidos(Pageable page) {
+        Page<PedidoEntity> pedidosResponse =
+                this.repository.getByPedidosPreparacao(StatusEnum.EM_PREPARACAO, page);
+
+        return pedidosResponse.map(PedidoEntity::toPedidosDomain);
     }
 }

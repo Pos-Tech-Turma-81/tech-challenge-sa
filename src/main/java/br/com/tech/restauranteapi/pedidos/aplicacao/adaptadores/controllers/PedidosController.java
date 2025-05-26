@@ -2,7 +2,7 @@ package br.com.tech.restauranteapi.pedidos.aplicacao.adaptadores.controllers;
 
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.CriarPedidoDto;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.PedidoResponseDto;
-import br.com.tech.restauranteapi.pedidos.dominio.dtos.PedidosDto;
+import br.com.tech.restauranteapi.pedidos.dominio.dtos.PedidoDto;
 import br.com.tech.restauranteapi.pedidos.dominio.portas.interfaces.PedidosServicePort;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -35,8 +34,8 @@ public class PedidosController {
 
     @Operation(summary = "Listar pedidos na fila (status AGUARDANDO)")
     @GetMapping("/fila")
-    public ResponseEntity<List<PedidosDto>> listarFilaPedidos() {
-        List<PedidosDto> pedidos = pedidosService.listarFilaPedidos();
+    public ResponseEntity<List<PedidoDto>> listarFilaPedidos() {
+        List<PedidoDto> pedidos = pedidosService.listarFilaPedidos();
         return ResponseEntity.ok(pedidos);
     }
 

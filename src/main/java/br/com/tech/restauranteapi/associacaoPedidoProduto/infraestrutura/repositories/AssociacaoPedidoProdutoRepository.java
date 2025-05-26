@@ -7,10 +7,12 @@ import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.AssociacaoPed
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class AssociacaoPedidoProdutoRepository implements AssociacaoPedidoProdutoRepositoryPort {
     @PersistenceContext
     private EntityManager entityManager;

@@ -1,10 +1,12 @@
 package br.com.tech.restauranteapi.pedidos.dominio.dtos;
+import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -14,7 +16,7 @@ import java.util.List;
 public class PedidoResponseDto {
     private Integer pedidoId;
     private Integer clienteId;
-    private String status;
-    private Timestamp dataHora;
+    private StatusEnum status;
+    private LocalDateTime dataHora;
     private List<ProdutoPedidoResponseDto> produtos;
 }

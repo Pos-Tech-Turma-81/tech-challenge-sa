@@ -2,39 +2,40 @@ package br.com.tech.restauranteapi.pedidos.dominio.adaptadores.services;
 
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedidoProduto;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.portas.interfaces.AssociacaoPedidoProdutoServicePort;
-import br.com.tech.restauranteapi.clientes.dominio.Cliente;
-import br.com.tech.restauranteapi.pedidos.dominio.Pedidos;
+import br.com.tech.restauranteapi.clientes.dominio.portas.repositories.ClienteRepositoryPort;
+import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.CriarPedidoDto;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.PedidoResponseDto;
-import br.com.tech.restauranteapi.pedidos.dominio.dtos.PedidosDto;
+import br.com.tech.restauranteapi.pedidos.dominio.dtos.PedidoDto;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.ProdutoPedidoResponseDto;
 import br.com.tech.restauranteapi.pedidos.dominio.portas.interfaces.PedidosServicePort;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.repositories.PedidosRepository;
+import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class PedidosServiceImpl implements PedidosServicePort {
 
     private final PedidosRepository pedidosRepository;
+    private final ClienteRepositoryPort clienteRepository;
     private final AssociacaoPedidoProdutoServicePort associacaoPedidoProdutoService;
 
     @Override
     public PedidoResponseDto realizarCheckout(CriarPedidoDto dto) {
-        Pedidos pedido = new Pedidos();
-        pedido.setCliente(new Cliente(dto.getClienteId(), null, null, null, null, null));
-        pedido.setDataHoraInclusaoPedido(Timestamp.from(Instant.now()));
-        pedido.setStatus("AGUARDANDO");
+        Pedido pedido = new Pedido();
+
+        if(Objects.nonNull(dto.getClienteId())){
+            pedido.setCliente(clienteRepository.findById(dto.getClienteId()));
+        }
+        pedido.setStatus(StatusEnum.EM_PREPARACAO);
 
         // Salva o pedido primeiro para ter o ID
-        Pedidos pedidoSalvo = pedidosRepository.salvar(pedido);
+        Pedido pedidoSalvo = pedidosRepository.salvar(pedido);
 
         List<AssociacaoPedidoProduto> associacoes = dto.getProdutos().stream()
                 .map(produtoDto -> AssociacaoPedidoProduto.builder()
@@ -70,11 +71,11 @@ public class PedidosServiceImpl implements PedidosServicePort {
     }
 
     @Override
-    public List<PedidosDto> listarFilaPedidos() {
+    public List<PedidoDto> listarFilaPedidos() {
         return pedidosRepository.listarFilaPedidos()
                 .stream()
-                .filter(p -> "AGUARDANDO".equals(p.getStatus()))
-                .map(Pedidos::toPedidosDto)
+                .filter(p -> StatusEnum.EM_PREPARACAO.equals(p.getStatus()))
+                .map(Pedido::toPedidosDto)
                 .toList();
     }
 }

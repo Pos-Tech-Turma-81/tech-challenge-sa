@@ -5,5 +5,5 @@ import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedi
 import java.util.List;
 
 public interface AssociacaoPedidoProdutoServicePort {
-    AssociacaoPedidoProduto salvar(AssociacaoPedidoProduto associacao);
+    public List<AssociacaoPedidoProduto> salvarTodas(List<AssociacaoPedidoProduto> associacoes);
 }
