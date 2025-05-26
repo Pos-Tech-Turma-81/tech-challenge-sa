@@ -6,11 +6,16 @@ import br.com.tech.restauranteapi.produtos.fixture.StringUtils;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -19,9 +24,11 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ProdutoController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class ProdutoControllerTest {
 
     @Autowired
@@ -39,8 +46,8 @@ class ProdutoControllerTest {
         String nomeProduto = "Água";
         String descricao = StringUtils.text(20);
         BigDecimal preco = new BigDecimal(3);
-        ProdutoDto dto = new ProdutoDto(null, nomeProduto, CategoriaEnum.BEBIBA, preco, descricao, null);
-        ProdutoDto salvo = new ProdutoDto(id, nomeProduto, CategoriaEnum.BEBIBA, preco, descricao, null);
+        ProdutoDto dto = new ProdutoDto(null, nomeProduto, CategoriaEnum.BEBIDA, preco, descricao, null);
+        ProdutoDto salvo = new ProdutoDto(id, nomeProduto, CategoriaEnum.BEBIDA, preco, descricao, null);
 
         Mockito.when(produtoService.salvar(Mockito.any())).thenReturn(salvo);
 
@@ -58,7 +65,7 @@ class ProdutoControllerTest {
         String nomeProduto = "Café";
         String descricao = StringUtils.text(20);
         BigDecimal preco = new BigDecimal(5);
-        ProdutoDto dto = new ProdutoDto(id, nomeProduto, CategoriaEnum.BEBIBA, preco, descricao, null);
+        ProdutoDto dto = new ProdutoDto(id, nomeProduto, CategoriaEnum.BEBIDA, preco, descricao, null);
 
         Mockito.when(produtoService.alterar(Mockito.any())).thenReturn(dto);
 

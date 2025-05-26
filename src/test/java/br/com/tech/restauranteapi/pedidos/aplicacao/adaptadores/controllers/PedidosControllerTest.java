@@ -6,26 +6,27 @@ import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest(PedidosController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class PedidosControllerTest {
 
     @Autowired
@@ -49,8 +50,7 @@ class PedidosControllerTest {
         PedidoResponseDto response = PedidoResponseDto.builder()
                 .pedidoId(1)
                 .clienteId(1)
-                .status(StatusEnum.AGUARDANDO)
-                .dataHora(new Timestamp(System.currentTimeMillis()))
+                .status(StatusEnum.EM_PREPARACAO)
                 .produtos(List.of(
                         ProdutoPedidoResponseDto.builder()
                                 .produtoId(1)
@@ -69,7 +69,7 @@ class PedidosControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pedidoId").value(1))
                 .andExpect(jsonPath("$.clienteId").value(1))
-                .andExpect(jsonPath("$.status").value("AGUARDANDO"));
+                .andExpect(jsonPath("$.status").value(StatusEnum.EM_PREPARACAO.toString()));
     }
 
     @Test
@@ -84,8 +84,7 @@ class PedidosControllerTest {
         PedidoResponseDto response = PedidoResponseDto.builder()
                 .pedidoId(2)
                 .clienteId(null)
-                .status(StatusEnum.AGUARDANDO)
-                .dataHora(new Timestamp(System.currentTimeMillis()))
+                .status(StatusEnum.EM_PREPARACAO)
                 .produtos(List.of(
                         ProdutoPedidoResponseDto.builder()
                                 .produtoId(1)
@@ -104,7 +103,7 @@ class PedidosControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pedidoId").value(2))
                 .andExpect(jsonPath("$.clienteId").doesNotExist())
-                .andExpect(jsonPath("$.status").value("AGUARDANDO"));
+                .andExpect(jsonPath("$.status").value(StatusEnum.EM_PREPARACAO.toString()));
     }
 
 
@@ -113,18 +112,18 @@ class PedidosControllerTest {
     void deveListarPedidosAguardando() throws Exception {
         PedidoDto pedido = PedidoDto.builder()
                 .id(1)
-                .status(StatusEnum.AGUARDANDO)
-                .dataHoraInclusaoPedido(new Timestamp(System.currentTimeMillis()))
+                .status(StatusEnum.EM_PREPARACAO)
                 .build();
 
         // Mock do service com filtro de status
-        Mockito.when(pedidosService.listarPedidos(eq(StatusEnum.AGUARDANDO), isNull()))
+        Mockito.when(pedidosService.listarFilaPedidos(any()))
                 .thenReturn(List.of(pedido));
 
-        mockMvc.perform(get("/pedidos/listarPedidos")
-                        .param("status", "AGUARDANDO"))
+        mockMvc.perform(get("/pedidos/fila")
+                        .param("page", "0")
+                        .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].status").value("AGUARDANDO"));
+                .andExpect(jsonPath("$[0].status").value(StatusEnum.EM_PREPARACAO.toString()));
     }
 }

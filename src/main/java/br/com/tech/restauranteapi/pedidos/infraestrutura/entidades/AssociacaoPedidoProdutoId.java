@@ -3,6 +3,7 @@ package br.com.tech.restauranteapi.pedidos.infraestrutura.entidades;
 import br.com.tech.restauranteapi.produtos.infraestrutura.entidades.ProdutoEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Embeddable
 public class AssociacaoPedidoProdutoId implements Serializable {
 

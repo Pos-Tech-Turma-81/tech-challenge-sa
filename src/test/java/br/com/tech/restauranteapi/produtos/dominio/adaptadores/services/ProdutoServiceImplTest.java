@@ -56,7 +56,7 @@ class ProdutoServiceImplTest {
         String nomeProduto = "Suco";
         String descricao = StringUtils.text(20);
         BigDecimal preco = new BigDecimal(8);
-        ProdutoDto dto = new ProdutoDto(id, nomeProduto, CategoriaEnum.BEBIBA, preco, descricao, null);
+        ProdutoDto dto = new ProdutoDto(id, nomeProduto, CategoriaEnum.BEBIDA, preco, descricao, null);
         Produto produto = Produto.builderProduto(dto);
 
         when(produtoRepository.buscarPorId(dto.getId())).thenReturn(produto);
