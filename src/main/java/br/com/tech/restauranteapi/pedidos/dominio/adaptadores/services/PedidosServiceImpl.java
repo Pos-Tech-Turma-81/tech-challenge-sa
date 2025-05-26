@@ -1,6 +1,7 @@
 package br.com.tech.restauranteapi.pedidos.dominio.adaptadores.services;
 
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedidoProduto;
+import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoProduto;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.portas.interfaces.AssociacaoPedidoProdutoServicePort;
 import br.com.tech.restauranteapi.clientes.dominio.portas.repositories.ClienteRepositoryPort;
 import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +56,8 @@ public class PedidosServiceImpl implements PedidosServicePort {
                 } )
                 .toList();
 
-        pedidoSalvo.setAssociacoes(associacaoPedidoProdutoService.salvarTodas(associacoes));
+        List<AssociacaoPedidoProduto> associcaoProdutos = associacaoPedidoProdutoService.salvarTodas(associacoes);
+        pedidoSalvo.setAssociacoes(associcaoProdutos.stream().map(AssociacaoProduto::builderAssociacao).collect(Collectors.toList()));
 
         // Mapear resposta
         List<ProdutoPedidoResponseDto> produtos = pedidoSalvo.getAssociacoes().stream()

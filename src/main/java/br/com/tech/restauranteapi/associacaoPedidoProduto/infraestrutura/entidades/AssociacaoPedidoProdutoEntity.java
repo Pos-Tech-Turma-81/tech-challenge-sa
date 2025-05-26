@@ -22,6 +22,7 @@ public class AssociacaoPedidoProdutoEntity {
     @EmbeddedId
     private AssociacaoPedidoProdutoId id;
 
+
     @Column(name = "quantidade", nullable = false)
     private Integer quantidade;
 

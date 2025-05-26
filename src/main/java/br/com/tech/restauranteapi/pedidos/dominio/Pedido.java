@@ -1,6 +1,7 @@
 package br.com.tech.restauranteapi.pedidos.dominio;
 
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedidoProduto;
+import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoProduto;
 import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteEntity;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.PedidoDto;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.PedidoEntity;
@@ -24,7 +25,7 @@ public class Pedido {
     private Cliente cliente;
     private StatusEnum status;
     private LocalDateTime dataHoraInclusaoPedido;
-    private List<AssociacaoPedidoProduto> associacoes;
+    private List<AssociacaoProduto> associacoes;
 
     public static Pedido builderPedidos(PedidoDto pedidoDto){
 
@@ -45,7 +46,9 @@ public class Pedido {
                 )
                 .status(pedidoDto.getStatus())
                 .dataHoraInclusaoPedido(pedidoDto.getDataHoraInclusaoPedido())
-                .associacoes(pedidoDto.getAssociacoes())
+                .associacoes(
+                        pedidoDto.getAssociacoes()
+                )
                 .build();
 
     }
@@ -65,7 +68,7 @@ public class Pedido {
                 .associacoes(
                         pedidoEntity.getAssociacoes() != null
                                 ? pedidoEntity.getAssociacoes().stream()
-                                .map(AssociacaoPedidoProduto::builderAssociacao)
+                                .map(AssociacaoProduto::builderAssociacao)
                                 .toList()
                                 : null
                 )

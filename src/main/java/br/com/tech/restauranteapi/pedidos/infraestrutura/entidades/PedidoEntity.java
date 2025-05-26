@@ -40,7 +40,7 @@ public class PedidoEntity {
     @CreatedDate
     private LocalDateTime dataHoraInclusaoPedido;
 
-    @OneToMany(mappedBy = "id.pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "id.pedido", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<AssociacaoPedidoProdutoEntity> associacoes;
 
     public Pedido toPedidosDomain(){
