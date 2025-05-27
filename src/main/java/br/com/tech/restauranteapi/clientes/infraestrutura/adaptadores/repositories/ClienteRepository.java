@@ -3,7 +3,13 @@ package br.com.tech.restauranteapi.clientes.infraestrutura.adaptadores.repositor
 import br.com.tech.restauranteapi.clientes.dominio.Cliente;
 import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteEntity;
 import br.com.tech.restauranteapi.clientes.dominio.portas.repositories.ClienteRepositoryPort;
+import br.com.tech.restauranteapi.exceptions.AlreadyExistsException;
+import br.com.tech.restauranteapi.exceptions.NotFoundException;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
+
+import static java.lang.String.format;
 
 @Component
 public class ClienteRepository implements ClienteRepositoryPort {
@@ -15,11 +21,19 @@ public class ClienteRepository implements ClienteRepositoryPort {
 
     @Override
     public void cadastrar(Cliente cliente) {
+        boolean duplicate = spring.getCliente(cliente.getCpf()).isPresent();
+        if (duplicate) {
+            throw new AlreadyExistsException(cliente.getCpf());
+        }
+
         this.spring.save(new ClienteEntity(cliente));
     }
 
     @Override
     public Cliente getCliente(String cpf) {
-        return this.spring.getCliente(cpf).toCliente();
+        Optional<ClienteEntity> cliente = this.spring.getCliente(cpf);
+
+        return cliente.orElseThrow(() -> new NotFoundException(format(
+                "Cliente não encontrado. CPF: %s.", cpf))).toCliente();
     }
 }

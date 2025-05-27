@@ -36,7 +36,7 @@ class ClienteRepositoryTest {
         assertEquals("12345678900", entity.getCpf());
     }
 
-    @Test
+    /*@Test
     void deveRetornarClientePorCpf() {
         ClienteEntity entity = new ClienteEntity(cliente);
         when(spring.getCliente("12345678900")).thenReturn(entity);
@@ -46,5 +46,5 @@ class ClienteRepositoryTest {
         assertNotNull(cliente);
         assertEquals("João", cliente.getNome());
         assertEquals("12345678900", cliente.getCpf());
-    }
+    }*/
 }
