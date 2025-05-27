@@ -5,14 +5,9 @@ import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteEntity;
 import br.com.tech.restauranteapi.clientes.dominio.portas.repositories.ClienteRepositoryPort;
 import br.com.tech.restauranteapi.exceptions.NotFoundException;
 import br.com.tech.restauranteapi.exceptions.AlreadyExistsException;
-import br.com.tech.restauranteapi.exceptions.NotFoundException;
 import org.springframework.stereotype.Component;
-
 import java.util.Optional;
-
 import static java.lang.String.format;
-
-import java.util.Optional;
 
 @Component
 public class ClienteRepository implements ClienteRepositoryPort {
@@ -26,7 +21,8 @@ public class ClienteRepository implements ClienteRepositoryPort {
     public void cadastrar(Cliente cliente) {
         boolean duplicate = spring.getCliente(cliente.getCpf()).isPresent();
         if (duplicate) {
-            throw new AlreadyExistsException(cliente.getCpf());
+            throw new AlreadyExistsException(format(
+                    "Cliente já cadastrado. CPF: %s.", cliente.getCpf()));
         }
 
         this.spring.save(new ClienteEntity(cliente));

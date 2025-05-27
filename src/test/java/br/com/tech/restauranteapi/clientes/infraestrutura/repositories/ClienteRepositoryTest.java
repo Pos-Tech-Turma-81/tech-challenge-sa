@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -36,15 +38,15 @@ class ClienteRepositoryTest {
         assertEquals("12345678900", entity.getCpf());
     }
 
-    /*@Test
+    @Test
     void deveRetornarClientePorCpf() {
         ClienteEntity entity = new ClienteEntity(cliente);
-        when(spring.getCliente("12345678900")).thenReturn(entity);
+        when(spring.getCliente("12345678900")).thenReturn(Optional.of(entity));
 
         Cliente cliente = repository.getCliente("12345678900");
 
         assertNotNull(cliente);
         assertEquals("João", cliente.getNome());
         assertEquals("12345678900", cliente.getCpf());
-    }*/
+    }
 }
