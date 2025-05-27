@@ -4,14 +4,17 @@ import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteDTO;
 import br.com.tech.restauranteapi.clientes.dominio.portas.interfaces.ClienteServicePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class ClienteControllerTest {
 
     @Mock
@@ -24,8 +27,6 @@ class ClienteControllerTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-
         mockCliente = new ClienteDTO();
         mockCliente.setNome("Fulano");
         mockCliente.setCpf("12345678900");

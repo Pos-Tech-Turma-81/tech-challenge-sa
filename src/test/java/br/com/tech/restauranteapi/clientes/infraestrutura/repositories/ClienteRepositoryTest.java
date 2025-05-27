@@ -6,24 +6,27 @@ import br.com.tech.restauranteapi.clientes.infraestrutura.adaptadores.repositori
 import br.com.tech.restauranteapi.clientes.infraestrutura.adaptadores.repositories.SpringClienteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class ClienteRepositoryTest {
 
-    private SpringClienteRepository spring;
+    @InjectMocks
     private ClienteRepository repository;
+
+    @Mock
+    private SpringClienteRepository spring;
     Cliente cliente = new Cliente(1, "João", "joao@email.com", "11999999999", "12345678900", "Rua A");
 
-    @BeforeEach
-    void setUp() {
-        spring = mock(SpringClienteRepository.class);
-        repository = new ClienteRepository(spring);
-    }
 
     @Test
     void deveSalvarClienteComSucesso() {

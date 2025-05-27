@@ -11,19 +11,23 @@ import br.com.tech.restauranteapi.pedidos.infraestrutura.repositories.PedidosRep
 import br.com.tech.restauranteapi.produtos.dominio.Produto;
 import br.com.tech.restauranteapi.produtos.infraestrutura.repositories.ProdutoRepository;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class PedidosServiceImplTest {
+
+    @InjectMocks
+    private PedidosServiceImpl pedidosService;
 
     @Mock
     private PedidosRepository pedidosRepository;
@@ -37,13 +41,6 @@ class PedidosServiceImplTest {
     @Mock
     private ClienteRepositoryPort clienteRepository;
 
-    @InjectMocks
-    private PedidosServiceImpl pedidosService;
-
-    @BeforeEach
-    void setup() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void deveRealizarCheckoutComSucesso() {

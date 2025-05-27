@@ -11,7 +11,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -27,14 +31,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class PedidosRepositoryTest { private SpringPedidoRepository springPedidoRepository;
+@ExtendWith(MockitoExtension.class)
+class PedidosRepositoryTest {
+
+    @InjectMocks
     private PedidosRepository pedidosRepository;
 
-    @BeforeEach
-    void setup() {
-        springPedidoRepository = mock(SpringPedidoRepository.class);
-        pedidosRepository = new PedidosRepository(springPedidoRepository);
-    }
+    @Mock
+    private SpringPedidoRepository springPedidoRepository;
 
     @Test
     void deveSalvarPedidoComSucesso() {

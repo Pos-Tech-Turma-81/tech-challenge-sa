@@ -5,13 +5,15 @@ import br.com.tech.restauranteapi.produtos.dominio.Produto;
 import br.com.tech.restauranteapi.produtos.fixture.StringUtils;
 import br.com.tech.restauranteapi.produtos.infraestrutura.entidades.ProdutoEntity;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
-import net.bytebuddy.utility.RandomString;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.text.RandomStringGenerator;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.springframework.data.domain.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,19 +21,16 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.apache.commons.text.CharacterPredicates.DIGITS;
-import static org.apache.commons.text.CharacterPredicates.LETTERS;
 
+@ExtendWith(MockitoExtension.class)
 class ProdutoRepositoryTest {
 
-    private SpringProdutoRepository springProdutoRepository;
+    @InjectMocks
     private ProdutoRepository produtoRepository;
 
-    @BeforeEach
-    void setUp() {
-        springProdutoRepository = mock(SpringProdutoRepository.class);
-        produtoRepository = new ProdutoRepository(springProdutoRepository);
-    }
+    @Mock
+    private SpringProdutoRepository springProdutoRepository;
+
 
     @Test
     void deveSalvarProdutoComSucesso() {
