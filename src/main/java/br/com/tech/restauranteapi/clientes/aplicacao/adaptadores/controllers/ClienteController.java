@@ -23,7 +23,7 @@ public class ClienteController {
             @ApiResponse(responseCode = "201", description = "Cliente cadastrado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos")
     })
-    @PostMapping("/cadastrar")
+    @PostMapping()
     public ResponseEntity<Void> cadastrar(@RequestBody @Valid ClienteDTO cliente) {
         port.cadastrar(cliente);
         return ResponseEntity.noContent().build();
