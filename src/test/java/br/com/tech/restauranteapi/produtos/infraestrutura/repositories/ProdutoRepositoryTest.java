@@ -40,7 +40,7 @@ class ProdutoRepositoryTest {
         BigDecimal preco = new BigDecimal(10);
         Produto produto = new Produto(1,
                 nomeProduto,
-                CategoriaEnum.BEBIBA,
+                CategoriaEnum.BEBIDA,
                 preco,
                 descricao,
                 null);
@@ -82,7 +82,7 @@ class ProdutoRepositoryTest {
         String nomeProduto = "Refrigerante";
         String descricao = StringUtils.text(20);
         BigDecimal preco = new BigDecimal(7);
-        ProdutoEntity entity = new ProdutoEntity(1, nomeProduto, CategoriaEnum.BEBIBA, preco, descricao, null);
+        ProdutoEntity entity = new ProdutoEntity(1, nomeProduto, CategoriaEnum.BEBIDA, preco, descricao, null);
 
         when(springProdutoRepository.findById(1)).thenReturn(Optional.of(entity));
 
@@ -92,7 +92,7 @@ class ProdutoRepositoryTest {
         assertEquals(nomeProduto, produto.getNome());
         assertEquals(1, produto.getId());
         assertEquals(preco, produto.getPreco());
-        assertEquals(CategoriaEnum.BEBIBA, produto.getCategoria());
+        assertEquals(CategoriaEnum.BEBIDA, produto.getCategoria());
         assertEquals(descricao, produto.getDescricao());
     }
 
