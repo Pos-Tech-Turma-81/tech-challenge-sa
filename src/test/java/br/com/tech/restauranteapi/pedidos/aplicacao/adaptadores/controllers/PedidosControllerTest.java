@@ -2,22 +2,35 @@ package br.com.tech.restauranteapi.pedidos.aplicacao.adaptadores.controllers;
 
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.*;
 import br.com.tech.restauranteapi.pedidos.dominio.portas.interfaces.PedidosServicePort;
+import br.com.tech.restauranteapi.produtos.dominio.adaptadores.services.ProdutoServiceImpl;
+import br.com.tech.restauranteapi.produtos.dominio.dtos.ProdutoDto;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -25,18 +38,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class PedidosControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @InjectMocks
+    private PedidosController controller;
 
-    @MockBean
+    @Mock
     private PedidosServicePort pedidosService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     @DisplayName("Deve criar um pedido com sucesso")
@@ -47,7 +57,7 @@ class PedidosControllerTest {
                 new ProdutoPedidoDto(1, 2)
         ));
 
-        PedidoResponseDto response = PedidoResponseDto.builder()
+        PedidoResponseDto pedidoResponse = PedidoResponseDto.builder()
                 .pedidoId(1)
                 .clienteId(1)
                 .status(StatusEnum.EM_PREPARACAO)
@@ -61,15 +71,14 @@ class PedidosControllerTest {
                 ))
                 .build();
 
-        Mockito.when(pedidosService.realizarCheckout(Mockito.any())).thenReturn(response);
+        Mockito.when(pedidosService.realizarCheckout(Mockito.any())).thenReturn(pedidoResponse);
 
-        mockMvc.perform(post("/pedidos/checkout")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.pedidoId").value(1))
-                .andExpect(jsonPath("$.clienteId").value(1))
-                .andExpect(jsonPath("$.status").value(StatusEnum.EM_PREPARACAO.toString()));
+        ResponseEntity<PedidoResponseDto> response =  controller.realizarCheckout(dto);
+
+        assertEquals(1, response.getBody().getPedidoId());
+        assertEquals(1, response.getBody().getClienteId());
+        assertEquals(StatusEnum.EM_PREPARACAO, response.getBody().getStatus());
+
     }
 
     @Test
@@ -81,7 +90,7 @@ class PedidosControllerTest {
                 new ProdutoPedidoDto(1, 2)
         ));
 
-        PedidoResponseDto response = PedidoResponseDto.builder()
+        PedidoResponseDto pedidoResponse = PedidoResponseDto.builder()
                 .pedidoId(2)
                 .clienteId(null)
                 .status(StatusEnum.EM_PREPARACAO)
@@ -95,15 +104,13 @@ class PedidosControllerTest {
                 ))
                 .build();
 
-        Mockito.when(pedidosService.realizarCheckout(Mockito.any())).thenReturn(response);
+        Mockito.when(pedidosService.realizarCheckout(Mockito.any())).thenReturn(pedidoResponse);
 
-        mockMvc.perform(post("/pedidos/checkout")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.pedidoId").value(2))
-                .andExpect(jsonPath("$.clienteId").doesNotExist())
-                .andExpect(jsonPath("$.status").value(StatusEnum.EM_PREPARACAO.toString()));
+        ResponseEntity<PedidoResponseDto> response =  controller.realizarCheckout(dto);
+
+        assertEquals(2, response.getBody().getPedidoId());
+        assertNull(response.getBody().getClienteId());
+        assertEquals(StatusEnum.EM_PREPARACAO, response.getBody().getStatus());
     }
 
 
@@ -115,15 +122,16 @@ class PedidosControllerTest {
                 .status(StatusEnum.EM_PREPARACAO)
                 .build();
 
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<PedidoDto> page = new PageImpl<>(List.of(pedido), pageable, 1);
+
         // Mock do service com filtro de status
         Mockito.when(pedidosService.listarFilaPedidos(any()))
-                .thenReturn(List.of(pedido));
+                .thenReturn(page);
 
-        mockMvc.perform(get("/pedidos/fila")
-                        .param("page", "0")
-                        .param("size", "10"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].status").value(StatusEnum.EM_PREPARACAO.toString()));
+        ResponseEntity<Page<PedidoDto>> response =  controller.listarFilaPedidos(PageRequest.of(0, 10));
+
+        assertEquals(1, response.getBody().getContent().get(0).getId());
+        assertEquals(StatusEnum.EM_PREPARACAO, response.getBody().getContent().get(0).getStatus());
     }
 }

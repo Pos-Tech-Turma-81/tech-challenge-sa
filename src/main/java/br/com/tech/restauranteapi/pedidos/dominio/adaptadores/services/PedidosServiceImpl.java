@@ -15,6 +15,7 @@ import br.com.tech.restauranteapi.produtos.dominio.Produto;
 import br.com.tech.restauranteapi.produtos.dominio.portas.repositories.ProdutoRepositoryPort;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -79,10 +80,8 @@ public class PedidosServiceImpl implements PedidosServicePort {
     }
 
     @Override
-    public List<PedidoDto> listarFilaPedidos(Pageable pageable) {
+    public Page<PedidoDto> listarFilaPedidos(Pageable pageable) {
         return pedidosRepository.listarFilaPedidos(pageable)
-                .stream()
-                .map(Pedido::toPedidosDto)
-                .toList();
+                .map(Pedido::toPedidosDto);
     }
 }

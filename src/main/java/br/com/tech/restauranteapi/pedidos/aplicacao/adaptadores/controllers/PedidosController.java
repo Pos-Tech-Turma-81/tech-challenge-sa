@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
@@ -40,8 +41,8 @@ public class PedidosController {
 
     @Operation(summary = "Listar pedidos na fila (status AGUARDANDO)")
     @GetMapping("/fila")
-    public ResponseEntity<List<PedidoDto>> listarFilaPedidos(@PageableDefault(size = 10) Pageable pageable) {
-        List<PedidoDto> pedidos = pedidosService.listarFilaPedidos(pageable);
+    public ResponseEntity<Page<PedidoDto>> listarFilaPedidos(@PageableDefault(size = 10) Pageable pageable) {
+        Page<PedidoDto> pedidos = pedidosService.listarFilaPedidos(pageable);
         return ResponseEntity.ok(pedidos);
     }
 }

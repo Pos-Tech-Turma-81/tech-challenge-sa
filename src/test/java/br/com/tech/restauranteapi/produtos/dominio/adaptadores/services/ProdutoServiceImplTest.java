@@ -7,7 +7,11 @@ import br.com.tech.restauranteapi.produtos.fixture.StringUtils;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
 import java.math.BigDecimal;
@@ -16,16 +20,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class ProdutoServiceImplTest {
 
-    private ProdutoRepositoryPort produtoRepository;
+    @InjectMocks
     private ProdutoServiceImpl produtoService;
 
-    @BeforeEach
-    void setUp() {
-        produtoRepository = mock(ProdutoRepositoryPort.class);
-        produtoService = new ProdutoServiceImpl(produtoRepository);
-    }
+    @Mock
+    private ProdutoRepositoryPort produtoRepository;
+
 
     @Test
     void deveSalvarProdutoComSucesso() {
