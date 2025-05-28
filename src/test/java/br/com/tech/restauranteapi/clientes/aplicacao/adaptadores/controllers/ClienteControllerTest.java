@@ -37,13 +37,13 @@ class ClienteControllerTest {
     @Test
     void deveCadastrarClienteERetornarNoContent() {
         // Arrange
-        doNothing().when(servicePort).cadastrar(any(ClienteDTO.class));
-
+        when(servicePort.cadastrar(any())).thenReturn(mockCliente);
         // Act
-        ResponseEntity<Void> response = controller.cadastrar(mockCliente);
+        ResponseEntity<ClienteDTO> response = controller.cadastrar(mockCliente);
 
         // Assert
-        assertEquals(204, response.getStatusCodeValue());
+        assertEquals(201, response.getStatusCodeValue());
+        assertEquals(mockCliente.getId(), response.getBody().getId());
         verify(servicePort, times(1)).cadastrar(mockCliente);
     }
 

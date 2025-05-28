@@ -30,15 +30,13 @@ class ClienteRepositoryTest {
 
     @Test
     void deveSalvarClienteComSucesso() {
+        ClienteEntity entity = new ClienteEntity(cliente);
+        when(spring.save(any())).thenReturn(entity);
+        Cliente clienteResponse = repository.cadastrar(cliente);
 
-        repository.cadastrar(cliente);
 
-        ArgumentCaptor<ClienteEntity> captor = ArgumentCaptor.forClass(ClienteEntity.class);
-        verify(spring).save(captor.capture());
-
-        ClienteEntity entity = captor.getValue();
-        assertEquals("João", entity.getNome());
-        assertEquals("12345678900", entity.getCpf());
+        assertEquals(entity.getNome(), clienteResponse.getNome());
+        assertEquals(entity.getCpf(), clienteResponse.getCpf());
     }
 
     @Test

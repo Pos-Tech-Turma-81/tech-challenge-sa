@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,14 +29,13 @@ class ClienteServiceImplTest {
     void deveCadastrarClienteComSucesso() {
         ClienteDTO dto = new ClienteDTO(1, "João", "joao@email.com", "11999999999", "12345678900", "Rua A");
 
-        service.cadastrar(dto);
+        Cliente cliente = new Cliente(1, "João", "joao@email.com", "11999999999", "12345678900", "Rua A");
+        when(repository.cadastrar(any())).thenReturn(cliente);
 
-        ArgumentCaptor<Cliente> captor = ArgumentCaptor.forClass(Cliente.class);
-        verify(repository).cadastrar(captor.capture());
+        ClienteDTO response = service.cadastrar(dto);
 
-        Cliente capturado = captor.getValue();
-        assertEquals("João", capturado.getNome());
-        assertEquals("12345678900", capturado.getCpf());
+        assertEquals("João", response.getNome());
+        assertEquals("12345678900", response.getCpf());
     }
 
     @Test
