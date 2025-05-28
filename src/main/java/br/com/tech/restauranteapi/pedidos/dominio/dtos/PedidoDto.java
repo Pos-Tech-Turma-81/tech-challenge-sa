@@ -5,6 +5,7 @@ import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoProd
 import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
 import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteDTO;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,8 @@ public class PedidoDto {
     private Integer id;
     private ClienteDTO cliente;
     private StatusEnum status;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime dataHoraInclusaoPedido;
     private List<AssociacaoProduto> associacoes;
 

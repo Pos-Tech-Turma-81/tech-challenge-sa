@@ -1,8 +1,10 @@
 package br.com.tech.restauranteapi.clientes.dominio.dtos;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class ClienteDTO {
 
     private Integer id;

@@ -18,14 +18,14 @@ public class ClienteRepository implements ClienteRepositoryPort {
     }
 
     @Override
-    public void cadastrar(Cliente cliente) {
+    public Cliente cadastrar(Cliente cliente) {
         boolean duplicate = spring.getCliente(cliente.getCpf()).isPresent();
         if (duplicate) {
             throw new AlreadyExistsException(format(
                     "Cliente já cadastrado. CPF: %s.", cliente.getCpf()));
         }
 
-        this.spring.save(new ClienteEntity(cliente));
+        return this.spring.save(new ClienteEntity(cliente)).toCliente();
     }
 
     @Override

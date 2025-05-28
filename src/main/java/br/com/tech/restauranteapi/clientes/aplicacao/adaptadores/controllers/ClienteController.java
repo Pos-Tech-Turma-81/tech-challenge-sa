@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +25,10 @@ public class ClienteController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos")
     })
     @PostMapping()
-    public ResponseEntity<Void> cadastrar(@RequestBody @Valid ClienteDTO cliente) {
-        port.cadastrar(cliente);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ClienteDTO> cadastrar(@RequestBody @Valid ClienteDTO cliente) {
+        ClienteDTO clienteResponse = port.cadastrar(cliente);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(clienteResponse);
     }
 
     @Operation(summary = "Buscar cliente por CPF")
