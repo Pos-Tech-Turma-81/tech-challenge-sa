@@ -215,7 +215,7 @@ cd tech-challenge-sa
 
 2. Compile e gere o JAR:
 ```bash
-mvn clean package
+mvn clean install
 ```
 
 3. Gera a imagem docker:
