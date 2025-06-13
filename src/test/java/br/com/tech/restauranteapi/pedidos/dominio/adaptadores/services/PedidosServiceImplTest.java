@@ -2,7 +2,7 @@ package br.com.tech.restauranteapi.pedidos.dominio.adaptadores.services;
 
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedidoProduto;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.portas.interfaces.AssociacaoPedidoProdutoServicePort;
-import br.com.tech.restauranteapi.clientes.dominio.Cliente;
+import br.com.tech.restauranteapi.gateway.domain.Cliente;
 import br.com.tech.restauranteapi.clientes.dominio.portas.repositories.ClienteRepositoryPort;
 import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.CriarPedidoDto;
@@ -81,7 +81,7 @@ class PedidosServiceImplTest {
 
         Pedido pedidoSalvo = new Pedido();
         pedidoSalvo.setId(100);
-        pedidoSalvo.setCliente(dto.getClienteId() != null ? new br.com.tech.restauranteapi.clientes.dominio.Cliente(dto.getClienteId(), null, null, null, null, null) : null);
+        pedidoSalvo.setCliente(dto.getClienteId() != null ? new Cliente(dto.getClienteId(), null, null, null, null, null) : null);
         pedidoSalvo.setStatus(StatusEnum.EM_PREPARACAO);
 
         when(pedidosRepository.salvar(any())).thenReturn(pedidoSalvo);
@@ -144,7 +144,7 @@ class PedidosServiceImplTest {
 
         Pedido pedidoSalvo = new Pedido();
         pedidoSalvo.setId(100);
-        pedidoSalvo.setCliente(dto.getClienteId() != null ? new br.com.tech.restauranteapi.clientes.dominio.Cliente(dto.getClienteId(), null, null, null, null, null) : null);
+        pedidoSalvo.setCliente(dto.getClienteId() != null ? new Cliente(dto.getClienteId(), null, null, null, null, null) : null);
         pedidoSalvo.setStatus(StatusEnum.EM_PREPARACAO);
 
         when(pedidosRepository.salvar(any())).thenReturn(pedidoSalvo);
@@ -201,7 +201,7 @@ class PedidosServiceImplTest {
 
         Pedido pedidoSalvo = new Pedido();
         pedidoSalvo.setId(100);
-        pedidoSalvo.setCliente(dto.getClienteId() != null ? new br.com.tech.restauranteapi.clientes.dominio.Cliente(dto.getClienteId(), null, null, null, null, null) : null);
+        pedidoSalvo.setCliente(dto.getClienteId() != null ? new Cliente(dto.getClienteId(), null, null, null, null, null) : null);
         pedidoSalvo.setStatus(StatusEnum.EM_PREPARACAO);
 
         when(pedidosRepository.salvar(any())).thenReturn(pedidoSalvo);

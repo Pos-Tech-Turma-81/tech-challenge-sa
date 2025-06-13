@@ -1,7 +1,7 @@
 package br.com.tech.restauranteapi.pedidos.infraestrutura.entidades;
 
 import br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.entidades.AssociacaoPedidoProdutoEntity;
-import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteEntity;
+import br.com.tech.restauranteapi.gateway.entity.ClienteEntity;
 import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import jakarta.persistence.*;

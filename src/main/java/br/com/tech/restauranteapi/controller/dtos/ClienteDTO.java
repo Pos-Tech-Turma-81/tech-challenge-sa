@@ -1,4 +1,4 @@
-package br.com.tech.restauranteapi.clientes.dominio.dtos;
+package br.com.tech.restauranteapi.controller.dtos;
 
 import lombok.Builder;
 import lombok.Data;

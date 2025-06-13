@@ -1,7 +1,7 @@
-package br.com.tech.restauranteapi.clientes.dominio;
+package br.com.tech.restauranteapi.gateway.domain;
 
 
-import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteDTO;
+import br.com.tech.restauranteapi.controller.dtos.ClienteDTO;
 import lombok.Builder;
 import lombok.Data;
 

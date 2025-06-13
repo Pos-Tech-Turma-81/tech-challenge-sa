@@ -3,7 +3,7 @@ package br.com.tech.restauranteapi.pedidos.dominio.adaptadores.services;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedidoProduto;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoProduto;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.portas.interfaces.AssociacaoPedidoProdutoServicePort;
-import br.com.tech.restauranteapi.clientes.dominio.portas.repositories.ClienteRepositoryPort;
+import br.com.tech.restauranteapi.gateway.ClienteGateway;
 import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.*;
 import br.com.tech.restauranteapi.pedidos.dominio.portas.interfaces.PedidosServicePort;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class PedidosServiceImpl implements PedidosServicePort {
 
     private final PedidosRepository pedidosRepository;
-    private final ClienteRepositoryPort clienteRepository;
+    private final ClienteGateway clienteGateway;
     private final ProdutoRepositoryPort produtosPort;
     private final AssociacaoPedidoProdutoServicePort associacaoPedidoProdutoService;
 
@@ -36,7 +36,7 @@ public class PedidosServiceImpl implements PedidosServicePort {
         Pedido pedido = new Pedido();
 
         if(Objects.nonNull(dto.getClienteId())){
-            pedido.setCliente(clienteRepository.findById(dto.getClienteId()));
+            pedido.setCliente(clienteGateway.buscarPorId(dto.getClienteId()));
         }
         pedido.setStatus(StatusEnum.EM_PREPARACAO);
 

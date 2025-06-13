@@ -1,6 +1,6 @@
-package br.com.tech.restauranteapi.clientes.dominio.dtos;
+package br.com.tech.restauranteapi.gateway.entity;
 
-import br.com.tech.restauranteapi.clientes.dominio.Cliente;
+import br.com.tech.restauranteapi.gateway.domain.Cliente;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -8,7 +8,6 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "clientes")

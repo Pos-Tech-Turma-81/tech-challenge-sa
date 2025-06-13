@@ -1,9 +1,8 @@
 package br.com.tech.restauranteapi.pedidos.dominio.dtos;
 
-import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedidoProduto;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoProduto;
 import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
-import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteDTO;
+import br.com.tech.restauranteapi.controller.dtos.ClienteDTO;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

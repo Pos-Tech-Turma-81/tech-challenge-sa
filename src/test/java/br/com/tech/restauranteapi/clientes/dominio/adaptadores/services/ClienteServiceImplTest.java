@@ -1,11 +1,11 @@
 package br.com.tech.restauranteapi.clientes.dominio.adaptadores.services;
 
-import br.com.tech.restauranteapi.clientes.dominio.Cliente;
-import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteDTO;
 import br.com.tech.restauranteapi.clientes.dominio.portas.repositories.ClienteRepositoryPort;
+import br.com.tech.restauranteapi.controller.dtos.ClienteDTO;
+import br.com.tech.restauranteapi.gateway.domain.Cliente;
+import br.com.tech.restauranteapi.gateway.impl.ClienteGatewayImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,14 +13,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ClienteServiceImplTest {
 
     @InjectMocks
-    private ClienteServiceImpl service;
+    private ClienteGatewayImpl service;
 
     @Mock
     private ClienteRepositoryPort repository;

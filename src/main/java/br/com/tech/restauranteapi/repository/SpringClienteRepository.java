@@ -1,12 +1,11 @@
-package br.com.tech.restauranteapi.clientes.infraestrutura.adaptadores.repositories;
+package br.com.tech.restauranteapi.repository;
 
-import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteEntity;
+import br.com.tech.restauranteapi.gateway.entity.ClienteEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public interface SpringClienteRepository extends JpaRepository<ClienteEntity, Integer> {
