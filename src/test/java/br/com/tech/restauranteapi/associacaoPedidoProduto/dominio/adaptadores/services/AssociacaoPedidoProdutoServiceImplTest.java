@@ -2,7 +2,7 @@ package br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.adaptadores.s
 
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedidoProduto;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.repositories.AssociacaoPedidoProdutoRepository;
-import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
+import br.com.tech.restauranteapi.gateway.domain.Pedido;
 import br.com.tech.restauranteapi.gateway.domain.Produto;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;

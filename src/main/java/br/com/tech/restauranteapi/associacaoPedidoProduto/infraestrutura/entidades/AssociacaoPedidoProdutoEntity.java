@@ -1,6 +1,6 @@
 package br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.entidades;
 
-import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.AssociacaoPedidoProdutoId;
+import br.com.tech.restauranteapi.gateway.entity.id.AssociacaoPedidoProdutoId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

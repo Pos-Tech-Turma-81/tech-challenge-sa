@@ -2,9 +2,9 @@ package br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.reposi
 
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedidoProduto;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.entidades.AssociacaoPedidoProdutoEntity;
-import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
-import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.AssociacaoPedidoProdutoId;
-import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.PedidoEntity;
+import br.com.tech.restauranteapi.gateway.domain.Pedido;
+import br.com.tech.restauranteapi.gateway.entity.id.AssociacaoPedidoProdutoId;
+import br.com.tech.restauranteapi.gateway.entity.PedidoEntity;
 import br.com.tech.restauranteapi.gateway.domain.Produto;
 import br.com.tech.restauranteapi.gateway.entity.ProdutoEntity;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;

@@ -1,6 +1,6 @@
-package br.com.tech.restauranteapi.pedidos.infraestrutura.repositories;
+package br.com.tech.restauranteapi.repository;
 
-import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.PedidoEntity;
+import br.com.tech.restauranteapi.gateway.entity.PedidoEntity;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

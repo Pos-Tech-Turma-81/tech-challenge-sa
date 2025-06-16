@@ -2,8 +2,10 @@ package br.com.tech.restauranteapi.pedidos.infraestrutura.repositories;
 
 import br.com.tech.restauranteapi.gateway.domain.Cliente;
 import br.com.tech.restauranteapi.gateway.entity.ClienteEntity;
-import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
-import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.PedidoEntity;
+import br.com.tech.restauranteapi.gateway.domain.Pedido;
+import br.com.tech.restauranteapi.gateway.entity.PedidoEntity;
+import br.com.tech.restauranteapi.gateway.impl.PedidosGatewayImpl;
+import br.com.tech.restauranteapi.repository.SpringPedidoRepository;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +29,7 @@ import static org.mockito.Mockito.*;
 class PedidosRepositoryTest {
 
     @InjectMocks
-    private PedidosRepository pedidosRepository;
+    private PedidosGatewayImpl pedidosRepository;
 
     @Mock
     private SpringPedidoRepository springPedidoRepository;

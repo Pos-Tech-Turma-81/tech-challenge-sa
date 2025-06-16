@@ -2,8 +2,8 @@ package br.com.tech.restauranteapi.associacaoPedidoProduto.dominio;
 
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.dtos.AssociacaoPedidoProdutoDto;
 import br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.entidades.AssociacaoPedidoProdutoEntity;
-import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
-import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.AssociacaoPedidoProdutoId;
+import br.com.tech.restauranteapi.gateway.domain.Pedido;
+import br.com.tech.restauranteapi.gateway.entity.id.AssociacaoPedidoProdutoId;
 import br.com.tech.restauranteapi.gateway.domain.Produto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,8 +1,9 @@
-package br.com.tech.restauranteapi.pedidos.infraestrutura.repositories;
+package br.com.tech.restauranteapi.gateway.impl;
 
-import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
-import br.com.tech.restauranteapi.pedidos.dominio.portas.repositories.PedidosRepositoryPort;
-import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.PedidoEntity;
+import br.com.tech.restauranteapi.gateway.domain.Pedido;
+import br.com.tech.restauranteapi.gateway.PedidosGateway;
+import br.com.tech.restauranteapi.gateway.entity.PedidoEntity;
+import br.com.tech.restauranteapi.repository.SpringPedidoRepository;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class PedidosRepository implements PedidosRepositoryPort {
+public class PedidosGatewayImpl implements PedidosGateway {
 
     private final SpringPedidoRepository repository;
 

@@ -1,4 +1,4 @@
-package br.com.tech.restauranteapi.pedidos.dominio.dtos;
+package br.com.tech.restauranteapi.controller.dtos;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +10,9 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProdutoPedidoDto {
+public class ProdutoPedidoResponseDto {
     private Integer produtoId;
+    private String nomeProduto;
     private Integer quantidade;
+    private BigDecimal preco;
 }

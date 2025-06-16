@@ -14,31 +14,31 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProdutoUsecaseImpl implements ProdutoUsecase {
 
-    private final ProdutoGateway produtoRepository;
+    private final ProdutoGateway gateway;
 
 
     @Override
     public Produto salvar(Produto produto) {
         produto.setId(null);
 
-        return produtoRepository.salvar(produto);
+        return gateway.salvar(produto);
     }
 
 
     @Override
     public Produto alterar(Produto produto) {
-        produtoRepository.buscarPorId(produto.getId());
+        gateway.buscarPorId(produto.getId());
 
-        return produtoRepository.salvar(produto);
+        return gateway.salvar(produto);
     }
 
     @Override
     public Page<Produto> buscarPorCategoria(CategoriaEnum categoria, Pageable page) {
-        return produtoRepository.buscarPorCategoria(categoria, page);
+        return gateway.buscarPorCategoria(categoria, page);
     }
 
     @Override
     public void remover(Integer produtoId) {
-        produtoRepository.remover(produtoId);
+        gateway.remover(produtoId);
     }
 }

@@ -1,4 +1,5 @@
-package br.com.tech.restauranteapi.pedidos.dominio.dtos;
+package br.com.tech.restauranteapi.gateway.domain;
+import br.com.tech.restauranteapi.controller.dtos.ProdutoPedidoDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CriarPedidoDto {
+public class CriarPedido {
     private Integer clienteId;
-    private List<ProdutoPedidoDto> produtos;
+    private List<ProdutoPedido> produtos;
 }

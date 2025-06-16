@@ -1,18 +1,14 @@
-package br.com.tech.restauranteapi.pedidos.dominio.dtos;
+package br.com.tech.restauranteapi.gateway.domain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProdutoPedidoResponseDto {
+public class ProdutoPedido {
     private Integer produtoId;
-    private String nomeProduto;
     private Integer quantidade;
-    private BigDecimal preco;
 }

@@ -4,12 +4,13 @@ import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedi
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.portas.interfaces.AssociacaoPedidoProdutoServicePort;
 import br.com.tech.restauranteapi.gateway.domain.Cliente;
 import br.com.tech.restauranteapi.clientes.dominio.portas.repositories.ClienteRepositoryPort;
-import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
-import br.com.tech.restauranteapi.pedidos.dominio.dtos.CriarPedidoDto;
-import br.com.tech.restauranteapi.pedidos.dominio.dtos.ProdutoPedidoDto;
-import br.com.tech.restauranteapi.pedidos.infraestrutura.repositories.PedidosRepository;
+import br.com.tech.restauranteapi.gateway.domain.Pedido;
+import br.com.tech.restauranteapi.controller.dtos.CriarPedidoDto;
+import br.com.tech.restauranteapi.controller.dtos.ProdutoPedidoDto;
+import br.com.tech.restauranteapi.gateway.impl.PedidosGatewayImpl;
 import br.com.tech.restauranteapi.gateway.domain.Produto;
 import br.com.tech.restauranteapi.gateway.impl.ProdutoGatewayImpl;
+import br.com.tech.restauranteapi.usecase.impl.PedidosUsecaseImpl;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,10 +28,10 @@ import static org.mockito.Mockito.*;
 class PedidosServiceImplTest {
 
     @InjectMocks
-    private PedidosServiceImpl pedidosService;
+    private PedidosUsecaseImpl pedidosService;
 
     @Mock
-    private PedidosRepository pedidosRepository;
+    private PedidosGatewayImpl pedidosRepository;
 
     @Mock
     private AssociacaoPedidoProdutoServicePort associacaoService;

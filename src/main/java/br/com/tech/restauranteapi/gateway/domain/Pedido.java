@@ -1,10 +1,9 @@
-package br.com.tech.restauranteapi.pedidos.dominio;
+package br.com.tech.restauranteapi.gateway.domain;
 
 import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoProduto;
 import br.com.tech.restauranteapi.gateway.entity.ClienteEntity;
-import br.com.tech.restauranteapi.pedidos.dominio.dtos.PedidoDto;
-import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.PedidoEntity;
-import br.com.tech.restauranteapi.gateway.domain.Cliente;
+import br.com.tech.restauranteapi.controller.dtos.PedidoDto;
+import br.com.tech.restauranteapi.gateway.entity.PedidoEntity;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

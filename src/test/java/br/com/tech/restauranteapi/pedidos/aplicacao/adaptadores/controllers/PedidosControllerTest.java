@@ -1,7 +1,8 @@
 package br.com.tech.restauranteapi.pedidos.aplicacao.adaptadores.controllers;
 
-import br.com.tech.restauranteapi.pedidos.dominio.dtos.*;
-import br.com.tech.restauranteapi.pedidos.dominio.portas.interfaces.PedidosServicePort;
+import br.com.tech.restauranteapi.controller.PedidosController;
+import br.com.tech.restauranteapi.controller.dtos.*;
+import br.com.tech.restauranteapi.usecase.PedidosUsecase;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ class PedidosControllerTest {
     private PedidosController controller;
 
     @Mock
-    private PedidosServicePort pedidosService;
+    private PedidosUsecase pedidosService;
 
 
     @Test

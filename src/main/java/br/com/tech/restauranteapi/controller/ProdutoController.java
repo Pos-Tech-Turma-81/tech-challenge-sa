@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProdutoController {
 
 
-    private final ProdutoUsecase produtoService;
+    private final ProdutoUsecase usecase;
 
     @Operation(summary = "Cadastrar novo produto")
     @ApiResponses(value = {
@@ -32,7 +32,7 @@ public class ProdutoController {
     @PostMapping
     public ResponseEntity<ProdutoDto> salvar(@RequestBody @Valid ProdutoDto produtoDto) {
         Produto produto = Produto.builderProduto(produtoDto);
-        Produto produtoResponse = produtoService.salvar(produto);
+        Produto produtoResponse = usecase.salvar(produto);
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoResponse.toProdutoDto());
     }
 
@@ -42,7 +42,7 @@ public class ProdutoController {
             @RequestBody ProdutoDto produtoDto) {
         produtoDto.setId(id);
         Produto produto = Produto.builderProduto(produtoDto);
-        Produto produtoResponse = produtoService.alterar(produto);
+        Produto produtoResponse = usecase.alterar(produto);
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoResponse.toProdutoDto());
     }
 
@@ -52,13 +52,13 @@ public class ProdutoController {
             @RequestParam(name = "nome_categoria", required = true) String nomeCategoria,
             @PageableDefault(size = 10) Pageable pageable) {
         Page<Produto> produtosResponse =
-                produtoService.buscarPorCategoria(CategoriaEnum.obterPorNome(nomeCategoria), pageable);
+                usecase.buscarPorCategoria(CategoriaEnum.obterPorNome(nomeCategoria), pageable);
         return ResponseEntity.ok(produtosResponse.map(Produto::toProdutoDto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remover(@PathVariable("id") Integer id) {
-        produtoService.remover(id);
+        usecase.remover(id);
         return ResponseEntity.noContent().build();
     }
 
