@@ -8,8 +8,8 @@ import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.CriarPedidoDto;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.ProdutoPedidoDto;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.repositories.PedidosRepository;
-import br.com.tech.restauranteapi.produtos.dominio.Produto;
-import br.com.tech.restauranteapi.produtos.infraestrutura.repositories.ProdutoRepository;
+import br.com.tech.restauranteapi.gateway.domain.Produto;
+import br.com.tech.restauranteapi.gateway.impl.ProdutoGatewayImpl;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +36,7 @@ class PedidosServiceImplTest {
     private AssociacaoPedidoProdutoServicePort associacaoService;
 
     @Mock
-    private ProdutoRepository produtoRepository;
+    private ProdutoGatewayImpl produtoRepository;
 
     @Mock
     private ClienteRepositoryPort clienteRepository;

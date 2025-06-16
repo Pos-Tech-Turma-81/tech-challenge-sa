@@ -1,9 +1,11 @@
 package br.com.tech.restauranteapi.produtos.infraestrutura.repositories;
 
 import br.com.tech.restauranteapi.exceptions.NotFoundException;
-import br.com.tech.restauranteapi.produtos.dominio.Produto;
+import br.com.tech.restauranteapi.gateway.domain.Produto;
+import br.com.tech.restauranteapi.gateway.impl.ProdutoGatewayImpl;
 import br.com.tech.restauranteapi.produtos.fixture.StringUtils;
-import br.com.tech.restauranteapi.produtos.infraestrutura.entidades.ProdutoEntity;
+import br.com.tech.restauranteapi.gateway.entity.ProdutoEntity;
+import br.com.tech.restauranteapi.repository.SpringProdutoRepository;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +28,7 @@ import static org.mockito.Mockito.*;
 class ProdutoRepositoryTest {
 
     @InjectMocks
-    private ProdutoRepository produtoRepository;
+    private ProdutoGatewayImpl produtoRepository;
 
     @Mock
     private SpringProdutoRepository springProdutoRepository;

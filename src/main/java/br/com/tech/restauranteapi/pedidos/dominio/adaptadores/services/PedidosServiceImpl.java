@@ -8,8 +8,8 @@ import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
 import br.com.tech.restauranteapi.pedidos.dominio.dtos.*;
 import br.com.tech.restauranteapi.pedidos.dominio.portas.interfaces.PedidosServicePort;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.repositories.PedidosRepository;
-import br.com.tech.restauranteapi.produtos.dominio.Produto;
-import br.com.tech.restauranteapi.produtos.dominio.portas.repositories.ProdutoRepositoryPort;
+import br.com.tech.restauranteapi.gateway.domain.Produto;
+import br.com.tech.restauranteapi.gateway.ProdutoGateway;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,7 +28,7 @@ public class PedidosServiceImpl implements PedidosServicePort {
 
     private final PedidosRepository pedidosRepository;
     private final ClienteGateway clienteGateway;
-    private final ProdutoRepositoryPort produtosPort;
+    private final ProdutoGateway produtosPort;
     private final AssociacaoPedidoProdutoServicePort associacaoPedidoProdutoService;
 
     @Override

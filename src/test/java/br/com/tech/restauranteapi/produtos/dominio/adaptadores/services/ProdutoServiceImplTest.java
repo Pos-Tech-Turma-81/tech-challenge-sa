@@ -1,14 +1,13 @@
 package br.com.tech.restauranteapi.produtos.dominio.adaptadores.services;
 
-import br.com.tech.restauranteapi.produtos.dominio.Produto;
-import br.com.tech.restauranteapi.produtos.dominio.dtos.ProdutoDto;
-import br.com.tech.restauranteapi.produtos.dominio.portas.repositories.ProdutoRepositoryPort;
+import br.com.tech.restauranteapi.gateway.domain.Produto;
+import br.com.tech.restauranteapi.controller.dtos.ProdutoDto;
+import br.com.tech.restauranteapi.gateway.ProdutoGateway;
 import br.com.tech.restauranteapi.produtos.fixture.StringUtils;
+import br.com.tech.restauranteapi.usecase.impl.ProdutoUsecaseImpl;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,10 +23,10 @@ import static org.mockito.Mockito.*;
 class ProdutoServiceImplTest {
 
     @InjectMocks
-    private ProdutoServiceImpl produtoService;
+    private ProdutoUsecaseImpl produtoService;
 
     @Mock
-    private ProdutoRepositoryPort produtoRepository;
+    private ProdutoGateway produtoRepository;
 
 
     @Test

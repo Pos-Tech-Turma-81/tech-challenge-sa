@@ -1,6 +1,6 @@
-package br.com.tech.restauranteapi.produtos.infraestrutura.repositories;
+package br.com.tech.restauranteapi.repository;
 
-import br.com.tech.restauranteapi.produtos.infraestrutura.entidades.ProdutoEntity;
+import br.com.tech.restauranteapi.gateway.entity.ProdutoEntity;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

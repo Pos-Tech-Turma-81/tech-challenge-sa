@@ -4,7 +4,7 @@ import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.dtos.Associaca
 import br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.entidades.AssociacaoPedidoProdutoEntity;
 import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
 import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.AssociacaoPedidoProdutoId;
-import br.com.tech.restauranteapi.produtos.dominio.Produto;
+import br.com.tech.restauranteapi.gateway.domain.Produto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,8 +1,8 @@
-package br.com.tech.restauranteapi.produtos.aplicacao.adaptadores.controllers;
+package br.com.tech.restauranteapi.controller;
 
-
-import br.com.tech.restauranteapi.produtos.dominio.dtos.ProdutoDto;
-import br.com.tech.restauranteapi.produtos.dominio.portas.interfaces.ProdutoServicePort;
+import br.com.tech.restauranteapi.controller.dtos.ProdutoDto;
+import br.com.tech.restauranteapi.gateway.domain.Produto;
+import br.com.tech.restauranteapi.usecase.ProdutoUsecase;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProdutoController {
 
 
-    private final ProdutoServicePort produtoService;
+    private final ProdutoUsecase produtoService;
 
     @Operation(summary = "Cadastrar novo produto")
     @ApiResponses(value = {
@@ -30,18 +30,20 @@ public class ProdutoController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos")
     })
     @PostMapping
-    public ResponseEntity<ProdutoDto> salvar(@RequestBody @Valid ProdutoDto produto) {
-        ProdutoDto produtoResponse = produtoService.salvar(produto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(produtoResponse);
+    public ResponseEntity<ProdutoDto> salvar(@RequestBody @Valid ProdutoDto produtoDto) {
+        Produto produto = Produto.builderProduto(produtoDto);
+        Produto produtoResponse = produtoService.salvar(produto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(produtoResponse.toProdutoDto());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProdutoDto> salvar(
             @PathVariable("id") Integer id,
-            @RequestBody ProdutoDto produto) {
-        produto.setId(id);
-        ProdutoDto produtoResponse = produtoService.alterar(produto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(produtoResponse);
+            @RequestBody ProdutoDto produtoDto) {
+        produtoDto.setId(id);
+        Produto produto = Produto.builderProduto(produtoDto);
+        Produto produtoResponse = produtoService.alterar(produto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(produtoResponse.toProdutoDto());
     }
 
 
@@ -49,9 +51,9 @@ public class ProdutoController {
     public ResponseEntity<Page<ProdutoDto>> buscar(
             @RequestParam(name = "nome_categoria", required = true) String nomeCategoria,
             @PageableDefault(size = 10) Pageable pageable) {
-        Page<ProdutoDto> produtosResponse =
+        Page<Produto> produtosResponse =
                 produtoService.buscarPorCategoria(CategoriaEnum.obterPorNome(nomeCategoria), pageable);
-        return ResponseEntity.ok(produtosResponse);
+        return ResponseEntity.ok(produtosResponse.map(Produto::toProdutoDto));
     }
 
     @DeleteMapping("/{id}")

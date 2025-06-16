@@ -1,7 +1,7 @@
-package br.com.tech.restauranteapi.produtos.dominio;
+package br.com.tech.restauranteapi.gateway.domain;
 
-import br.com.tech.restauranteapi.produtos.dominio.dtos.ProdutoDto;
-import br.com.tech.restauranteapi.produtos.infraestrutura.entidades.ProdutoEntity;
+import br.com.tech.restauranteapi.controller.dtos.ProdutoDto;
+import br.com.tech.restauranteapi.gateway.entity.ProdutoEntity;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
