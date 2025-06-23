@@ -1,9 +1,10 @@
 package br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.adaptadores.services;
 
-import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedidoProduto;
-import br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.repositories.AssociacaoPedidoProdutoRepository;
+import br.com.tech.restauranteapi.gateway.domain.AssociacaoPedidoProduto;
+import br.com.tech.restauranteapi.gateway.impl.AssociacaoPedidoGatewayImpl;
 import br.com.tech.restauranteapi.gateway.domain.Pedido;
 import br.com.tech.restauranteapi.gateway.domain.Produto;
+import br.com.tech.restauranteapi.usecase.impl.AssociacaoPedidoProdutoUsecaseImpl;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import org.junit.jupiter.api.Test;
@@ -23,10 +24,10 @@ import static org.mockito.Mockito.*;
 class AssociacaoPedidoProdutoServiceImplTest {
 
     @InjectMocks
-    private AssociacaoPedidoProdutoServiceImpl service;
+    private AssociacaoPedidoProdutoUsecaseImpl service;
 
     @Mock
-    private AssociacaoPedidoProdutoRepository associacaoRepository;
+    private AssociacaoPedidoGatewayImpl associacaoRepository;
 
 
     @Test

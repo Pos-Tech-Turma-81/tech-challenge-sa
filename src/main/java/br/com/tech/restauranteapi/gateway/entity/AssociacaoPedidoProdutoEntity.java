@@ -1,4 +1,4 @@
-package br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.entidades;
+package br.com.tech.restauranteapi.gateway.entity;
 
 import br.com.tech.restauranteapi.gateway.entity.id.AssociacaoPedidoProdutoId;
 import jakarta.persistence.*;

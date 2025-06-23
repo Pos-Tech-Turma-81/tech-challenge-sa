@@ -1,6 +1,6 @@
 package br.com.tech.restauranteapi.controller.dtos;
 
-import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoProduto;
+import br.com.tech.restauranteapi.gateway.domain.AssociacaoProduto;
 import br.com.tech.restauranteapi.gateway.domain.Pedido;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;

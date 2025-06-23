@@ -1,7 +1,7 @@
 package br.com.tech.restauranteapi.pedidos.dominio.adaptadores.services;
 
-import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedidoProduto;
-import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.portas.interfaces.AssociacaoPedidoProdutoServicePort;
+import br.com.tech.restauranteapi.gateway.domain.AssociacaoPedidoProduto;
+import br.com.tech.restauranteapi.usecase.AssociacaoPedidoProdutoUsecase;
 import br.com.tech.restauranteapi.gateway.domain.Cliente;
 import br.com.tech.restauranteapi.clientes.dominio.portas.repositories.ClienteRepositoryPort;
 import br.com.tech.restauranteapi.gateway.domain.Pedido;
@@ -34,7 +34,7 @@ class PedidosServiceImplTest {
     private PedidosGatewayImpl pedidosRepository;
 
     @Mock
-    private AssociacaoPedidoProdutoServicePort associacaoService;
+    private AssociacaoPedidoProdutoUsecase associacaoService;
 
     @Mock
     private ProdutoGatewayImpl produtoRepository;

@@ -1,9 +1,8 @@
 package br.com.tech.restauranteapi.usecase.impl;
 
-import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedidoProduto;
-import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoProduto;
-import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.portas.interfaces.AssociacaoPedidoProdutoServicePort;
-import br.com.tech.restauranteapi.controller.dtos.ProdutoPedidoDto;
+import br.com.tech.restauranteapi.gateway.domain.AssociacaoPedidoProduto;
+import br.com.tech.restauranteapi.gateway.domain.AssociacaoProduto;
+import br.com.tech.restauranteapi.usecase.AssociacaoPedidoProdutoUsecase;
 import br.com.tech.restauranteapi.gateway.ClienteGateway;
 import br.com.tech.restauranteapi.gateway.ProdutoGateway;
 import br.com.tech.restauranteapi.gateway.domain.CriarPedido;
@@ -31,7 +30,7 @@ public class PedidosUsecaseImpl implements PedidosUsecase {
     private final PedidosGatewayImpl pedidosRepository;
     private final ClienteGateway clienteGateway;
     private final ProdutoGateway produtoGateway;
-    private final AssociacaoPedidoProdutoServicePort associacaoPedidoProdutoService;
+    private final AssociacaoPedidoProdutoUsecase associacaoPedidoProdutoUsecase;
 
     @Override
     public Pedido realizarCheckout(CriarPedido criarPedido) {
@@ -47,7 +46,7 @@ public class PedidosUsecaseImpl implements PedidosUsecase {
 
         List<AssociacaoPedidoProduto> associacoes = agruparProdutos(criarPedido, pedidoSalvo);
 
-        List<AssociacaoPedidoProduto> associcaoProdutos = associacaoPedidoProdutoService.salvarTodas(associacoes);
+        List<AssociacaoPedidoProduto> associcaoProdutos = associacaoPedidoProdutoUsecase.salvarTodas(associacoes);
         pedidoSalvo.setAssociacoes(associcaoProdutos.stream().map(AssociacaoProduto::builderAssociacao).collect(Collectors.toList()));
 
 

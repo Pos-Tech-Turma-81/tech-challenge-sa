@@ -1,6 +1,6 @@
-package br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.dtos;
+package br.com.tech.restauranteapi.controller.dtos;
 
-import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedidoProduto;
+import br.com.tech.restauranteapi.gateway.domain.AssociacaoPedidoProduto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

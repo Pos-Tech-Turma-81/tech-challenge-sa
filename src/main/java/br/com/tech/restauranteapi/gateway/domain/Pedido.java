@@ -1,6 +1,5 @@
 package br.com.tech.restauranteapi.gateway.domain;
 
-import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoProduto;
 import br.com.tech.restauranteapi.gateway.entity.ClienteEntity;
 import br.com.tech.restauranteapi.controller.dtos.PedidoDto;
 import br.com.tech.restauranteapi.gateway.entity.PedidoEntity;
