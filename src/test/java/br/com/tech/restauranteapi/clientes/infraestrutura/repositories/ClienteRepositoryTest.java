@@ -1,13 +1,11 @@
 package br.com.tech.restauranteapi.clientes.infraestrutura.repositories;
 
-import br.com.tech.restauranteapi.clientes.dominio.Cliente;
-import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteEntity;
+import br.com.tech.restauranteapi.gateway.domain.Cliente;
+import br.com.tech.restauranteapi.gateway.entity.ClienteEntity;
 import br.com.tech.restauranteapi.clientes.infraestrutura.adaptadores.repositories.ClienteRepository;
-import br.com.tech.restauranteapi.clientes.infraestrutura.adaptadores.repositories.SpringClienteRepository;
-import org.junit.jupiter.api.BeforeEach;
+import br.com.tech.restauranteapi.repository.SpringClienteRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;

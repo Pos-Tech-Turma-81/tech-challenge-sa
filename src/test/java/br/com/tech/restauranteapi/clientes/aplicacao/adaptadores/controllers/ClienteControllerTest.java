@@ -1,13 +1,13 @@
 package br.com.tech.restauranteapi.clientes.aplicacao.adaptadores.controllers;
 
-import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteDTO;
-import br.com.tech.restauranteapi.clientes.dominio.portas.interfaces.ClienteServicePort;
+import br.com.tech.restauranteapi.controller.dtos.ClienteDTO;
+import br.com.tech.restauranteapi.gateway.ClienteGateway;
+import br.com.tech.restauranteapi.controller.ClienteController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 class ClienteControllerTest {
 
     @Mock
-    private ClienteServicePort servicePort;
+    private ClienteGateway servicePort;
 
     @InjectMocks
     private ClienteController controller;

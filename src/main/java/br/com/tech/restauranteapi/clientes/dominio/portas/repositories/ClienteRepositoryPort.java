@@ -1,9 +1,0 @@
-package br.com.tech.restauranteapi.clientes.dominio.portas.repositories;
-
-import br.com.tech.restauranteapi.clientes.dominio.Cliente;
-
-public interface ClienteRepositoryPort {
-    Cliente cadastrar(Cliente cliente);
-    Cliente getCliente(String cpf);
-    Cliente findById(Integer id);
-}

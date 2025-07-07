@@ -1,18 +1,15 @@
 package br.com.tech.restauranteapi.produtos.aplicacao.adaptadores.controllers;
 
-import br.com.tech.restauranteapi.produtos.dominio.adaptadores.services.ProdutoServiceImpl;
-import br.com.tech.restauranteapi.produtos.dominio.dtos.ProdutoDto;
-import br.com.tech.restauranteapi.produtos.dominio.portas.interfaces.ProdutoServicePort;
-import br.com.tech.restauranteapi.produtos.dominio.portas.repositories.ProdutoRepositoryPort;
+import br.com.tech.restauranteapi.controller.ClienteController;
+import br.com.tech.restauranteapi.controller.dtos.ProdutoDto;
+import br.com.tech.restauranteapi.usecase.ProdutoUsecase;
 import br.com.tech.restauranteapi.produtos.fixture.StringUtils;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -30,9 +27,9 @@ import static org.mockito.Mockito.mock;
 @ExtendWith(MockitoExtension.class)
 class ProdutoControllerTest {
     @InjectMocks
-    private ProdutoController controller;
+    private ClienteController.ProdutoController controller;
     @Mock
-    private ProdutoServicePort produtoService;
+    private ProdutoUsecase produtoService;
 
     @Test
     void deveSalvarProdutoComSucesso() throws Exception {

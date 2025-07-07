@@ -1,11 +1,9 @@
 package br.com.tech.restauranteapi.pedidos.aplicacao.adaptadores.controllers;
 
-import br.com.tech.restauranteapi.pedidos.dominio.dtos.*;
-import br.com.tech.restauranteapi.pedidos.dominio.portas.interfaces.PedidosServicePort;
-import br.com.tech.restauranteapi.produtos.dominio.adaptadores.services.ProdutoServiceImpl;
-import br.com.tech.restauranteapi.produtos.dominio.dtos.ProdutoDto;
+import br.com.tech.restauranteapi.controller.PedidosController;
+import br.com.tech.restauranteapi.controller.dtos.*;
+import br.com.tech.restauranteapi.usecase.PedidosUsecase;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,18 +11,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -35,7 +26,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -45,7 +35,7 @@ class PedidosControllerTest {
     private PedidosController controller;
 
     @Mock
-    private PedidosServicePort pedidosService;
+    private PedidosUsecase pedidosService;
 
 
     @Test

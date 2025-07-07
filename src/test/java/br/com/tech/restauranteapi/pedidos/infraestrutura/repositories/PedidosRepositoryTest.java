@@ -1,16 +1,14 @@
 package br.com.tech.restauranteapi.pedidos.infraestrutura.repositories;
 
-import br.com.tech.restauranteapi.clientes.dominio.Cliente;
-import br.com.tech.restauranteapi.clientes.dominio.dtos.ClienteEntity;
-import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
-import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.PedidoEntity;
+import br.com.tech.restauranteapi.gateway.domain.Cliente;
+import br.com.tech.restauranteapi.gateway.entity.ClienteEntity;
+import br.com.tech.restauranteapi.gateway.domain.Pedido;
+import br.com.tech.restauranteapi.gateway.entity.PedidoEntity;
+import br.com.tech.restauranteapi.gateway.impl.PedidosGatewayImpl;
+import br.com.tech.restauranteapi.repository.SpringPedidoRepository;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -21,21 +19,17 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PedidosRepositoryTest {
 
     @InjectMocks
-    private PedidosRepository pedidosRepository;
+    private PedidosGatewayImpl pedidosRepository;
 
     @Mock
     private SpringPedidoRepository springPedidoRepository;

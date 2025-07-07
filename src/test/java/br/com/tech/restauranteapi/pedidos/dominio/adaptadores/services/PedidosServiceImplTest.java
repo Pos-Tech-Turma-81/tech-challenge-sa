@@ -1,15 +1,16 @@
 package br.com.tech.restauranteapi.pedidos.dominio.adaptadores.services;
 
-import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedidoProduto;
-import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.portas.interfaces.AssociacaoPedidoProdutoServicePort;
-import br.com.tech.restauranteapi.clientes.dominio.Cliente;
+import br.com.tech.restauranteapi.gateway.domain.AssociacaoPedidoProduto;
+import br.com.tech.restauranteapi.usecase.AssociacaoPedidoProdutoUsecase;
+import br.com.tech.restauranteapi.gateway.domain.Cliente;
 import br.com.tech.restauranteapi.clientes.dominio.portas.repositories.ClienteRepositoryPort;
-import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
-import br.com.tech.restauranteapi.pedidos.dominio.dtos.CriarPedidoDto;
-import br.com.tech.restauranteapi.pedidos.dominio.dtos.ProdutoPedidoDto;
-import br.com.tech.restauranteapi.pedidos.infraestrutura.repositories.PedidosRepository;
-import br.com.tech.restauranteapi.produtos.dominio.Produto;
-import br.com.tech.restauranteapi.produtos.infraestrutura.repositories.ProdutoRepository;
+import br.com.tech.restauranteapi.gateway.domain.Pedido;
+import br.com.tech.restauranteapi.controller.dtos.CriarPedidoDto;
+import br.com.tech.restauranteapi.controller.dtos.ProdutoPedidoDto;
+import br.com.tech.restauranteapi.gateway.impl.PedidosGatewayImpl;
+import br.com.tech.restauranteapi.gateway.domain.Produto;
+import br.com.tech.restauranteapi.gateway.impl.ProdutoGatewayImpl;
+import br.com.tech.restauranteapi.usecase.impl.PedidosUsecaseImpl;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,16 +28,16 @@ import static org.mockito.Mockito.*;
 class PedidosServiceImplTest {
 
     @InjectMocks
-    private PedidosServiceImpl pedidosService;
+    private PedidosUsecaseImpl pedidosService;
 
     @Mock
-    private PedidosRepository pedidosRepository;
+    private PedidosGatewayImpl pedidosRepository;
 
     @Mock
-    private AssociacaoPedidoProdutoServicePort associacaoService;
+    private AssociacaoPedidoProdutoUsecase associacaoService;
 
     @Mock
-    private ProdutoRepository produtoRepository;
+    private ProdutoGatewayImpl produtoRepository;
 
     @Mock
     private ClienteRepositoryPort clienteRepository;
@@ -81,7 +82,7 @@ class PedidosServiceImplTest {
 
         Pedido pedidoSalvo = new Pedido();
         pedidoSalvo.setId(100);
-        pedidoSalvo.setCliente(dto.getClienteId() != null ? new br.com.tech.restauranteapi.clientes.dominio.Cliente(dto.getClienteId(), null, null, null, null, null) : null);
+        pedidoSalvo.setCliente(dto.getClienteId() != null ? new Cliente(dto.getClienteId(), null, null, null, null, null) : null);
         pedidoSalvo.setStatus(StatusEnum.EM_PREPARACAO);
 
         when(pedidosRepository.salvar(any())).thenReturn(pedidoSalvo);
@@ -144,7 +145,7 @@ class PedidosServiceImplTest {
 
         Pedido pedidoSalvo = new Pedido();
         pedidoSalvo.setId(100);
-        pedidoSalvo.setCliente(dto.getClienteId() != null ? new br.com.tech.restauranteapi.clientes.dominio.Cliente(dto.getClienteId(), null, null, null, null, null) : null);
+        pedidoSalvo.setCliente(dto.getClienteId() != null ? new Cliente(dto.getClienteId(), null, null, null, null, null) : null);
         pedidoSalvo.setStatus(StatusEnum.EM_PREPARACAO);
 
         when(pedidosRepository.salvar(any())).thenReturn(pedidoSalvo);
@@ -201,7 +202,7 @@ class PedidosServiceImplTest {
 
         Pedido pedidoSalvo = new Pedido();
         pedidoSalvo.setId(100);
-        pedidoSalvo.setCliente(dto.getClienteId() != null ? new br.com.tech.restauranteapi.clientes.dominio.Cliente(dto.getClienteId(), null, null, null, null, null) : null);
+        pedidoSalvo.setCliente(dto.getClienteId() != null ? new Cliente(dto.getClienteId(), null, null, null, null, null) : null);
         pedidoSalvo.setStatus(StatusEnum.EM_PREPARACAO);
 
         when(pedidosRepository.salvar(any())).thenReturn(pedidoSalvo);

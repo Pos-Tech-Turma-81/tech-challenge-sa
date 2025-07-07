@@ -1,15 +1,16 @@
 package br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.repositories;
 
-import br.com.tech.restauranteapi.associacaoPedidoProduto.dominio.AssociacaoPedidoProduto;
-import br.com.tech.restauranteapi.associacaoPedidoProduto.infraestrutura.entidades.AssociacaoPedidoProdutoEntity;
-import br.com.tech.restauranteapi.pedidos.dominio.Pedido;
-import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.AssociacaoPedidoProdutoId;
-import br.com.tech.restauranteapi.pedidos.infraestrutura.entidades.PedidoEntity;
-import br.com.tech.restauranteapi.produtos.dominio.Produto;
-import br.com.tech.restauranteapi.produtos.infraestrutura.entidades.ProdutoEntity;
+import br.com.tech.restauranteapi.gateway.domain.AssociacaoPedidoProduto;
+import br.com.tech.restauranteapi.gateway.entity.AssociacaoPedidoProdutoEntity;
+import br.com.tech.restauranteapi.gateway.domain.Pedido;
+import br.com.tech.restauranteapi.gateway.entity.id.AssociacaoPedidoProdutoId;
+import br.com.tech.restauranteapi.gateway.entity.PedidoEntity;
+import br.com.tech.restauranteapi.gateway.domain.Produto;
+import br.com.tech.restauranteapi.gateway.entity.ProdutoEntity;
+import br.com.tech.restauranteapi.gateway.impl.AssociacaoPedidoGatewayImpl;
+import br.com.tech.restauranteapi.repository.SpringPedidoRepository;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,10 +27,10 @@ import static org.mockito.Mockito.*;
 class AssociacaoPedidoProdutoRepositoryTest {
 
     @Mock
-    private AssociacaoPedidoProdutoJpaRepository jpaRepository;
+    private SpringPedidoRepository.AssociacaoPedidoProdutoJpaRepository jpaRepository;
 
     @InjectMocks
-    private AssociacaoPedidoProdutoRepository repository;
+    private AssociacaoPedidoGatewayImpl repository;
 
     @Test
     void deveSalvarAssociacaoComSucesso() {
