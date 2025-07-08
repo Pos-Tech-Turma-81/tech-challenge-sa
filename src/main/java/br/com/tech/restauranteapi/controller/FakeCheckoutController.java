@@ -1,9 +1,9 @@
-package br.com.tech.restauranteapi.pagamentos.aplicacao.adaptadores.controllers;
+package br.com.tech.restauranteapi.controller;
 
-import br.com.tech.restauranteapi.pagamentos.dominio.dtos.CheckoutRequestDTO;
-import br.com.tech.restauranteapi.pagamentos.dominio.dtos.MercadoPagoCheckoutRequest;
-import br.com.tech.restauranteapi.pagamentos.dominio.dtos.CheckoutResponseDTO;
-import br.com.tech.restauranteapi.pagamentos.dominio.dtos.MercadoPagoItem;
+import br.com.tech.restauranteapi.controller.dtos.CheckoutRequestDTO;
+import br.com.tech.restauranteapi.controller.dtos.MercadoPagoCheckoutRequest;
+import br.com.tech.restauranteapi.controller.dtos.CheckoutResponseDTO;
+import br.com.tech.restauranteapi.controller.dtos.MercadoPagoItem;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

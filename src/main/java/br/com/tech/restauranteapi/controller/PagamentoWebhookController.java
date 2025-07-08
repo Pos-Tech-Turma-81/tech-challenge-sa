@@ -1,6 +1,6 @@
-package br.com.tech.restauranteapi.pagamentos.aplicacao.adaptadores.controllers;
+package br.com.tech.restauranteapi.controller;
 
-import br.com.tech.restauranteapi.pagamentos.dominio.dtos.PagamentoDTO;
+import br.com.tech.restauranteapi.controller.dtos.PagamentoDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

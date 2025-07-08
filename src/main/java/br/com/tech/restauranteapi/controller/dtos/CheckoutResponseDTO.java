@@ -1,8 +1,7 @@
-package br.com.tech.restauranteapi.pagamentos.dominio.dtos;
+package br.com.tech.restauranteapi.controller.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.boot.context.properties.bind.Name;
 
 @Data
 @AllArgsConstructor
