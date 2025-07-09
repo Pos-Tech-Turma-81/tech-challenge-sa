@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: restaurante-app
+  labels:
+    app: restaurante-app
+spec:
+  containers:
+    - name: restaurante-app
+      image:  marcelobenjamim/restaurante-app:v1
+      ports:
+        - containerPort: 8080  # Ajuste conforme sua aplicação
+      envFrom:
+      - configMapRef:
+          name: restaurante-config
