@@ -13,3 +13,14 @@ spec:
       envFrom:
       - configMapRef:
           name: restaurante-config
+      env:
+      - name: DB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: restaurante-secret
+            key: DB_PASSWORD
+      - name: DB_USER
+        valueFrom:
+          secretKeyRef:
+            name: restaurante-secret
+            key: DB_USER
