@@ -1,6 +1,6 @@
 package br.com.tech.restauranteapi.repository;
 
-import br.com.tech.restauranteapi.gateway.entity.ClienteEntity;
+import br.com.tech.restauranteapi.entity.ClienteEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

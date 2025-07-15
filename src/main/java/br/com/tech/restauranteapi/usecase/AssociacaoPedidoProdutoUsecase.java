@@ -1,6 +1,6 @@
 package br.com.tech.restauranteapi.usecase;
 
-import br.com.tech.restauranteapi.gateway.domain.AssociacaoPedidoProduto;
+import br.com.tech.restauranteapi.domain.AssociacaoPedidoProduto;
 
 import java.util.List;
 

@@ -1,10 +1,9 @@
 package br.com.tech.restauranteapi.gateway.impl;
 
 import br.com.tech.restauranteapi.exceptions.NotFoundException;
-import br.com.tech.restauranteapi.gateway.domain.Cliente;
-import br.com.tech.restauranteapi.controller.dtos.ClienteDTO;
+import br.com.tech.restauranteapi.domain.Cliente;
 import br.com.tech.restauranteapi.gateway.ClienteGateway;
-import br.com.tech.restauranteapi.gateway.entity.ClienteEntity;
+import br.com.tech.restauranteapi.entity.ClienteEntity;
 import br.com.tech.restauranteapi.repository.SpringClienteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

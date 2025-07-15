@@ -1,7 +1,7 @@
-package br.com.tech.restauranteapi.gateway.domain;
+package br.com.tech.restauranteapi.domain;
 
 import br.com.tech.restauranteapi.controller.dtos.AssociacaoPedidoProdutoDto;
-import br.com.tech.restauranteapi.gateway.entity.AssociacaoPedidoProdutoEntity;
+import br.com.tech.restauranteapi.entity.AssociacaoPedidoProdutoEntity;
 import lombok.Builder;
 import lombok.Data;
 

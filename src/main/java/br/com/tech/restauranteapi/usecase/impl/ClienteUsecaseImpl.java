@@ -3,17 +3,16 @@ package br.com.tech.restauranteapi.usecase.impl;
 import br.com.tech.restauranteapi.exceptions.AlreadyExistsException;
 import br.com.tech.restauranteapi.exceptions.NotFoundException;
 import br.com.tech.restauranteapi.gateway.ClienteGateway;
-import br.com.tech.restauranteapi.gateway.domain.Cliente;
-import br.com.tech.restauranteapi.gateway.entity.ClienteEntity;
+import br.com.tech.restauranteapi.domain.Cliente;
 import br.com.tech.restauranteapi.usecase.ClienteUsecase;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 import static java.lang.String.format;
 
-@Component
+@Service
 @AllArgsConstructor
 public class ClienteUsecaseImpl implements ClienteUsecase {
 

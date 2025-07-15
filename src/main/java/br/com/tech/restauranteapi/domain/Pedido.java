@@ -1,8 +1,8 @@
-package br.com.tech.restauranteapi.gateway.domain;
+package br.com.tech.restauranteapi.domain;
 
-import br.com.tech.restauranteapi.gateway.entity.ClienteEntity;
+import br.com.tech.restauranteapi.entity.ClienteEntity;
 import br.com.tech.restauranteapi.controller.dtos.PedidoDto;
-import br.com.tech.restauranteapi.gateway.entity.PedidoEntity;
+import br.com.tech.restauranteapi.entity.PedidoEntity;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -88,5 +88,9 @@ public class Pedido {
                 .status(this.status)
                 .dataHoraInclusaoPedido(this.dataHoraInclusaoPedido)
                 .build();
+    }
+
+    public void atualizarStatus(StatusEnum novoStatus) {
+        this.status = novoStatus;
     }
 }

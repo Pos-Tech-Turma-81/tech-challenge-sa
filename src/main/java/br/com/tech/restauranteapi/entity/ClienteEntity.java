@@ -1,6 +1,6 @@
-package br.com.tech.restauranteapi.gateway.entity;
+package br.com.tech.restauranteapi.entity;
 
-import br.com.tech.restauranteapi.gateway.domain.Cliente;
+import br.com.tech.restauranteapi.domain.Cliente;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

@@ -1,8 +1,6 @@
 package br.com.tech.restauranteapi.repository;
 
-import br.com.tech.restauranteapi.gateway.entity.AssociacaoPedidoProdutoEntity;
-import br.com.tech.restauranteapi.gateway.entity.PedidoEntity;
-import br.com.tech.restauranteapi.gateway.entity.id.AssociacaoPedidoProdutoId;
+import br.com.tech.restauranteapi.entity.PedidoEntity;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

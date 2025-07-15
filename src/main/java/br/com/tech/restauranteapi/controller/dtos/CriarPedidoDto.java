@@ -1,6 +1,5 @@
 package br.com.tech.restauranteapi.controller.dtos;
-import br.com.tech.restauranteapi.gateway.domain.CriarPedido;
-import br.com.tech.restauranteapi.gateway.domain.ProdutoPedido;
+import br.com.tech.restauranteapi.domain.CriarPedido;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

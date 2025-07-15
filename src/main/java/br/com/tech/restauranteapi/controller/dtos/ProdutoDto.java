@@ -1,6 +1,6 @@
 package br.com.tech.restauranteapi.controller.dtos;
 
-import br.com.tech.restauranteapi.gateway.domain.Produto;
+import br.com.tech.restauranteapi.domain.Produto;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

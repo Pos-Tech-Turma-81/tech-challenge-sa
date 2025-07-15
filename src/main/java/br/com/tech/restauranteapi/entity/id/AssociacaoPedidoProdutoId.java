@@ -1,7 +1,7 @@
-package br.com.tech.restauranteapi.gateway.entity.id;
+package br.com.tech.restauranteapi.entity.id;
 
-import br.com.tech.restauranteapi.gateway.entity.ProdutoEntity;
-import br.com.tech.restauranteapi.gateway.entity.PedidoEntity;
+import br.com.tech.restauranteapi.entity.ProdutoEntity;
+import br.com.tech.restauranteapi.entity.PedidoEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,14 +1,15 @@
 package br.com.tech.restauranteapi.usecase.impl;
 
-import br.com.tech.restauranteapi.gateway.domain.AssociacaoPedidoProduto;
-import br.com.tech.restauranteapi.gateway.domain.AssociacaoProduto;
+import br.com.tech.restauranteapi.domain.AssociacaoPedidoProduto;
+import br.com.tech.restauranteapi.domain.AssociacaoProduto;
+import br.com.tech.restauranteapi.gateway.PedidosGateway;
 import br.com.tech.restauranteapi.usecase.AssociacaoPedidoProdutoUsecase;
 import br.com.tech.restauranteapi.gateway.ClienteGateway;
 import br.com.tech.restauranteapi.gateway.ProdutoGateway;
-import br.com.tech.restauranteapi.gateway.domain.CriarPedido;
-import br.com.tech.restauranteapi.gateway.domain.Pedido;
-import br.com.tech.restauranteapi.gateway.domain.Produto;
-import br.com.tech.restauranteapi.gateway.domain.ProdutoPedido;
+import br.com.tech.restauranteapi.domain.CriarPedido;
+import br.com.tech.restauranteapi.domain.Pedido;
+import br.com.tech.restauranteapi.domain.Produto;
+import br.com.tech.restauranteapi.domain.ProdutoPedido;
 import br.com.tech.restauranteapi.gateway.impl.PedidosGatewayImpl;
 import br.com.tech.restauranteapi.usecase.PedidosUsecase;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PedidosUsecaseImpl implements PedidosUsecase {
 
-    private final PedidosGatewayImpl pedidosRepository;
+    private final PedidosGateway pedidosGateway;
     private final ClienteGateway clienteGateway;
     private final ProdutoGateway produtoGateway;
     private final AssociacaoPedidoProdutoUsecase associacaoPedidoProdutoUsecase;
@@ -42,7 +43,7 @@ public class PedidosUsecaseImpl implements PedidosUsecase {
         pedido.setStatus(StatusEnum.EM_PREPARACAO);
 
         // Salva o pedido primeiro para ter o ID
-        Pedido pedidoSalvo = pedidosRepository.salvar(pedido);
+        Pedido pedidoSalvo = pedidosGateway.salvar(pedido);
 
         List<AssociacaoPedidoProduto> associacoes = agruparProdutos(criarPedido, pedidoSalvo);
 
@@ -56,7 +57,17 @@ public class PedidosUsecaseImpl implements PedidosUsecase {
 
     @Override
     public Page<Pedido> listarFilaPedidos(Pageable pageable) {
-        return pedidosRepository.listarFilaPedidos(pageable);
+        return pedidosGateway.listarFilaPedidos(pageable);
+    }
+
+    @Override
+    public Pedido atualizarStatus(Integer pedidoId, StatusEnum novoStatus) {
+        Pedido pedido = pedidosGateway.buscarPorId(pedidoId);
+        if (pedido == null) {
+            throw new IllegalArgumentException("Pedido não encontrado.");
+        }
+        pedido.atualizarStatus(novoStatus);
+        return pedidosGateway.atualizar(pedido);
     }
 
     private List<AssociacaoPedidoProduto> agruparProdutos(CriarPedido dto, Pedido pedidoSalvo){

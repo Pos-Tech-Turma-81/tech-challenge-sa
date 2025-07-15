@@ -2,7 +2,7 @@ package br.com.tech.restauranteapi.controller;
 
 
 import br.com.tech.restauranteapi.controller.dtos.ClienteDTO;
-import br.com.tech.restauranteapi.gateway.domain.Cliente;
+import br.com.tech.restauranteapi.domain.Cliente;
 import br.com.tech.restauranteapi.usecase.ClienteUsecase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

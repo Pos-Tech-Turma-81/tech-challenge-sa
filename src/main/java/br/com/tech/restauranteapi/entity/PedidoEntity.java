@@ -1,6 +1,6 @@
-package br.com.tech.restauranteapi.gateway.entity;
+package br.com.tech.restauranteapi.entity;
 
-import br.com.tech.restauranteapi.gateway.domain.Pedido;
+import br.com.tech.restauranteapi.domain.Pedido;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

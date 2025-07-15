@@ -1,4 +1,4 @@
-package br.com.tech.restauranteapi.gateway.domain;
+package br.com.tech.restauranteapi.domain;
 
 
 import br.com.tech.restauranteapi.controller.dtos.ClienteDTO;

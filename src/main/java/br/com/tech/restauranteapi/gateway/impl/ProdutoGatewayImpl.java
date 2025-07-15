@@ -1,9 +1,9 @@
 package br.com.tech.restauranteapi.gateway.impl;
 
 import br.com.tech.restauranteapi.exceptions.NotFoundException;
-import br.com.tech.restauranteapi.gateway.domain.Produto;
+import br.com.tech.restauranteapi.domain.Produto;
 import br.com.tech.restauranteapi.gateway.ProdutoGateway;
-import br.com.tech.restauranteapi.gateway.entity.ProdutoEntity;
+import br.com.tech.restauranteapi.entity.ProdutoEntity;
 import br.com.tech.restauranteapi.repository.SpringProdutoRepository;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import lombok.AllArgsConstructor;
