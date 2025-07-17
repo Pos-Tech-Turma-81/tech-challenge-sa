@@ -211,6 +211,7 @@ Organização dos pedidos em espera no sistema, com tempo de entrada e status de
 
 ### Desenho da Arquitetura
 
+<img width="709" height="901" alt="docs drawio" src="https://github.com/user-attachments/assets/5a27616f-9da8-4569-ba2b-20f478af3564" />
 
 
 ---
