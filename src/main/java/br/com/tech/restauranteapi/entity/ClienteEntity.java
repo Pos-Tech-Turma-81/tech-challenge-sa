@@ -35,8 +35,4 @@ public class ClienteEntity {
         this.nome = cliente.getNome();
         this.telefone = cliente.getTelefone();
     }
-
-    public Cliente toCliente() {
-        return new Cliente(this.id, this.nome, this.email, this.telefone, this.cpf, this.endereco);
-    }
 }

@@ -4,6 +4,7 @@ import br.com.tech.restauranteapi.domain.Cliente;
 import br.com.tech.restauranteapi.entity.ClienteEntity;
 import br.com.tech.restauranteapi.exceptions.NotFoundException;
 import br.com.tech.restauranteapi.gateway.impl.ClienteGatewayImpl;
+import br.com.tech.restauranteapi.presenter.ClientePresenter;
 import br.com.tech.restauranteapi.repository.SpringClienteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.MockedStatic;
 
 import java.util.Optional;
 
@@ -42,13 +44,16 @@ class ClienteGatewayImplTest {
             ClienteEntity clienteEntity = mock(ClienteEntity.class);
             Cliente expectedCliente = mock(Cliente.class);
 
-            when(repository.save(any(ClienteEntity.class))).thenReturn(clienteEntity);
-            when(clienteEntity.toCliente()).thenReturn(expectedCliente);
+            try (MockedStatic<ClientePresenter> presenterMock = mockStatic(ClientePresenter.class)) {
+                presenterMock.when(() -> ClientePresenter.toEntity(cliente)).thenReturn(clienteEntity);
+                when(repository.save(clienteEntity)).thenReturn(clienteEntity);
+                presenterMock.when(() -> ClientePresenter.toDomain(clienteEntity)).thenReturn(expectedCliente);
 
-            Cliente result = gateway.cadastrar(cliente);
+                Cliente result = gateway.cadastrar(cliente);
 
-            assertEquals(expectedCliente, result);
-            verify(repository).save(any(ClienteEntity.class));
+                assertEquals(expectedCliente, result);
+                verify(repository).save(clienteEntity);
+            }
         }
     }
 
@@ -63,13 +68,15 @@ class ClienteGatewayImplTest {
             ClienteEntity clienteEntity = mock(ClienteEntity.class);
             Cliente expectedCliente = mock(Cliente.class);
 
-            when(repository.getCliente(cpf)).thenReturn(Optional.of(clienteEntity));
-            when(clienteEntity.toCliente()).thenReturn(expectedCliente);
+            try (MockedStatic<ClientePresenter> presenterMock = mockStatic(ClientePresenter.class)) {
+                when(repository.getCliente(cpf)).thenReturn(Optional.of(clienteEntity));
+                presenterMock.when(() -> ClientePresenter.toDomain(clienteEntity)).thenReturn(expectedCliente);
 
-            Optional<Cliente> result = gateway.getCliente(cpf);
+                Optional<Cliente> result = gateway.getCliente(cpf);
 
-            assertTrue(result.isPresent());
-            assertEquals(expectedCliente, result.get());
+                assertTrue(result.isPresent());
+                assertEquals(expectedCliente, result.get());
+            }
         }
 
         @Test
@@ -96,12 +103,14 @@ class ClienteGatewayImplTest {
             ClienteEntity clienteEntity = mock(ClienteEntity.class);
             Cliente expectedCliente = mock(Cliente.class);
 
-            when(repository.findById(id)).thenReturn(Optional.of(clienteEntity));
-            when(clienteEntity.toCliente()).thenReturn(expectedCliente);
+            try (MockedStatic<ClientePresenter> presenterMock = mockStatic(ClientePresenter.class)) {
+                when(repository.findById(id)).thenReturn(Optional.of(clienteEntity));
+                presenterMock.when(() -> ClientePresenter.toDomain(clienteEntity)).thenReturn(expectedCliente);
 
-            Cliente result = gateway.buscarPorId(id);
+                Cliente result = gateway.buscarPorId(id);
 
-            assertEquals(expectedCliente, result);
+                assertEquals(expectedCliente, result);
+            }
         }
 
         @Test

@@ -39,7 +39,4 @@ public class ProdutoEntity {
     @Column(name = "imagem")
     private byte[] imagem;
 
-    public Produto toProdutoDomain(){
-        return Produto.builderProduto(this);
-    }
 }

@@ -40,9 +40,6 @@ public class PedidoEntity {
 
     @OneToMany(mappedBy = "id.pedido", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<AssociacaoPedidoProdutoEntity> associacoes;
-
-    public Pedido toPedidosDomain(){
-        return Pedido.builderPedidos(this);
-    }
+    
 }
 

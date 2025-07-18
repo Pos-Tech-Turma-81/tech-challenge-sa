@@ -26,17 +26,4 @@ public class PedidoDto {
     private LocalDateTime dataHoraInclusaoPedido;
     private List<AssociacaoProduto> associacoes;
 
-
-    public static PedidoDto builderPedidos(Pedido pedidos){
-
-        return PedidoDto
-                .builder()
-                .id(pedidos.getId())
-                .cliente(pedidos.getCliente() != null ? pedidos.getCliente().toClienteDTO() : null)
-                .status(pedidos.getStatus())
-                .dataHoraInclusaoPedido(pedidos.getDataHoraInclusaoPedido())
-                .associacoes( pedidos.getAssociacoes() )
-                .build();
-
-    }
 }

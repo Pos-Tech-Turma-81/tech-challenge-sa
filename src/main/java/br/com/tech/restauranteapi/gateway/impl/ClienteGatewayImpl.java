@@ -1,9 +1,10 @@
 package br.com.tech.restauranteapi.gateway.impl;
 
+import br.com.tech.restauranteapi.entity.ClienteEntity;
 import br.com.tech.restauranteapi.exceptions.NotFoundException;
 import br.com.tech.restauranteapi.domain.Cliente;
 import br.com.tech.restauranteapi.gateway.ClienteGateway;
-import br.com.tech.restauranteapi.entity.ClienteEntity;
+import br.com.tech.restauranteapi.presenter.ClientePresenter;
 import br.com.tech.restauranteapi.repository.SpringClienteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,24 +21,22 @@ public class ClienteGatewayImpl implements ClienteGateway {
 
     @Override
     public Cliente cadastrar(Cliente cliente) {
-
-        ClienteEntity clienteResponse = repository.save(new ClienteEntity(cliente));
-
-        return clienteResponse.toCliente();
+        ClienteEntity clienteEntity = ClientePresenter.toEntity(cliente);
+        ClienteEntity clienteResponse = repository.save(clienteEntity);
+        return ClientePresenter.toDomain(clienteResponse);
     }
 
     @Override
     public Optional<Cliente> getCliente(String cpf) {
-        Optional<ClienteEntity> cliente =  repository.getCliente(cpf);
+        Optional<ClienteEntity> cliente = repository.getCliente(cpf);
 
-
-        return cliente.isPresent() ? Optional.of(cliente.get().toCliente()) : Optional.empty();
+        return cliente.map(ClientePresenter::toDomain);
     }
 
     @Override
     public Cliente buscarPorId(Integer id) {
-        Optional<ClienteEntity> cliente = this.repository.findById(id);
-
-        return cliente.orElseThrow(() -> new NotFoundException(format("Nao existe cliente com o id %s.", id))).toCliente();
+        ClienteEntity cliente = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException(format("Nao existe cliente com o id %s.", id)));
+        return ClientePresenter.toDomain(cliente);
     }
 }

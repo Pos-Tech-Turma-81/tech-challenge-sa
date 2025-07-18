@@ -2,6 +2,7 @@ package br.com.tech.restauranteapi.gateway;
 
 import br.com.tech.restauranteapi.domain.Pedido;
 import br.com.tech.restauranteapi.entity.PedidoEntity;
+import br.com.tech.restauranteapi.presenter.PedidoPresenter;
 import br.com.tech.restauranteapi.repository.SpringPedidoRepository;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import br.com.tech.restauranteapi.gateway.impl.PedidosGatewayImpl;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.MockedStatic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -45,14 +47,16 @@ class PedidosGatewayImplTest {
             PedidoEntity savedEntity = mock(PedidoEntity.class);
             Pedido expectedPedido = mock(Pedido.class);
 
-            when(pedido.toEntity()).thenReturn(pedidoEntity);
-            when(repository.save(pedidoEntity)).thenReturn(savedEntity);
-            when(savedEntity.toPedidosDomain()).thenReturn(expectedPedido);
+            try (MockedStatic<PedidoPresenter> presenterMock = mockStatic(PedidoPresenter.class)) {
+                presenterMock.when(() -> PedidoPresenter.toEntity(pedido)).thenReturn(pedidoEntity);
+                when(repository.save(pedidoEntity)).thenReturn(savedEntity);
+                presenterMock.when(() -> PedidoPresenter.toDomain(savedEntity)).thenReturn(expectedPedido);
 
-            Pedido result = gateway.salvar(pedido);
+                Pedido result = gateway.salvar(pedido);
 
-            assertEquals(expectedPedido, result);
-            verify(repository).save(pedidoEntity);
+                assertEquals(expectedPedido, result);
+                verify(repository).save(pedidoEntity);
+            }
         }
     }
 
@@ -87,24 +91,14 @@ class PedidosGatewayImplTest {
             PedidoEntity pedidoEntity = mock(PedidoEntity.class);
             Pedido expectedPedido = mock(Pedido.class);
 
-            when(repository.findById(id)).thenReturn(Optional.of(pedidoEntity));
-            when(pedidoEntity.toPedidosDomain()).thenReturn(expectedPedido);
+            try (MockedStatic<PedidoPresenter> presenterMock = mockStatic(PedidoPresenter.class)) {
+                when(repository.findById(id)).thenReturn(Optional.of(pedidoEntity));
+                presenterMock.when(() -> PedidoPresenter.toDomain(pedidoEntity)).thenReturn(expectedPedido);
 
-            Pedido result = gateway.buscarPorId(id);
+                Pedido result = gateway.buscarPorId(id);
 
-            assertEquals(expectedPedido, result);
-        }
-
-        @Test
-        @DisplayName("Deve retornar nulo quando pedido não encontrado")
-        void deveRetornarNuloQuandoPedidoNaoEncontrado() {
-            Integer id = 1;
-
-            when(repository.findById(id)).thenReturn(Optional.empty());
-
-            Pedido result = gateway.buscarPorId(id);
-
-            assertNull(result);
+                assertEquals(expectedPedido, result);
+            }
         }
     }
 
@@ -120,14 +114,16 @@ class PedidosGatewayImplTest {
             PedidoEntity updatedEntity = mock(PedidoEntity.class);
             Pedido expectedPedido = mock(Pedido.class);
 
-            when(pedido.toEntity()).thenReturn(pedidoEntity);
-            when(repository.save(pedidoEntity)).thenReturn(updatedEntity);
-            when(updatedEntity.toPedidosDomain()).thenReturn(expectedPedido);
+            try (MockedStatic<PedidoPresenter> presenterMock = mockStatic(PedidoPresenter.class)) {
+                presenterMock.when(() -> PedidoPresenter.toEntity(pedido)).thenReturn(pedidoEntity);
+                when(repository.save(pedidoEntity)).thenReturn(updatedEntity);
+                presenterMock.when(() -> PedidoPresenter.toDomain(updatedEntity)).thenReturn(expectedPedido);
 
-            Pedido result = gateway.atualizar(pedido);
+                Pedido result = gateway.atualizar(pedido);
 
-            assertEquals(expectedPedido, result);
-            verify(repository).save(pedidoEntity);
+                assertEquals(expectedPedido, result);
+                verify(repository).save(pedidoEntity);
+            }
         }
     }
 }

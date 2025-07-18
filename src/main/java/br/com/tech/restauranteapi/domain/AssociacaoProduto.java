@@ -1,7 +1,5 @@
 package br.com.tech.restauranteapi.domain;
 
-import br.com.tech.restauranteapi.controller.dtos.AssociacaoPedidoProdutoDto;
-import br.com.tech.restauranteapi.entity.AssociacaoPedidoProdutoEntity;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,30 +11,12 @@ public class AssociacaoProduto {
     private Integer quantidade;
     private BigDecimal preco;
     private Produto produto;
+    private Pedido pedido;
 
-    public static AssociacaoProduto builderAssociacao(AssociacaoPedidoProdutoEntity entity) {
-        return AssociacaoProduto.builder()
-                .produto(entity.getId().getProduto().toProdutoDomain())
-                .quantidade(entity.getQuantidade())
-                .preco(entity.getPreco())
-                .produto(Produto.builderProduto(entity.getId().getProduto()))
-                .build();
+    public AssociacaoProduto(Integer quantidade, BigDecimal preco, Produto produto,  Pedido pedido) {
+        this.quantidade = quantidade;
+        this.preco = preco;
+        this.produto = produto;
+        this.pedido = pedido;
     }
-
-    public static AssociacaoProduto builderAssociacao(AssociacaoPedidoProduto domain) {
-        return AssociacaoProduto.builder()
-                .produto(domain.getProduto())
-                .quantidade(domain.getQuantidade())
-                .preco(domain.getPreco())
-                .build();
-    }
-
-    public AssociacaoPedidoProdutoDto toDto() {
-        return AssociacaoPedidoProdutoDto.builder()
-                .produtoId(this.produto.getId())
-                .quantidade(this.quantidade)
-                .preco(this.preco)
-                .build();
-    }
-
 }

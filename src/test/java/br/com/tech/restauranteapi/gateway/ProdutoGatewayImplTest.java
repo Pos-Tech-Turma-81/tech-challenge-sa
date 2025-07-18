@@ -2,6 +2,7 @@ package br.com.tech.restauranteapi.gateway;
 
 import br.com.tech.restauranteapi.domain.Produto;
 import br.com.tech.restauranteapi.entity.ProdutoEntity;
+import br.com.tech.restauranteapi.presenter.ProdutoPresenter;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import br.com.tech.restauranteapi.exceptions.NotFoundException;
 import br.com.tech.restauranteapi.gateway.impl.ProdutoGatewayImpl;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.MockedStatic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -46,16 +48,10 @@ class ProdutoGatewayImplTest {
             ProdutoEntity savedEntity = mock(ProdutoEntity.class);
             Produto expectedProduto = mock(Produto.class);
 
-            when(produto.toEntity()).thenReturn(produtoEntity);
-            when(produto.getPreco()).thenReturn(java.math.BigDecimal.valueOf(10.0));
-            when(produto.getNome()).thenReturn("Produto Teste");
-            when(produto.getDescricao()).thenReturn("Descrição Teste");
-            when(produto.getCategoria()).thenReturn(br.com.tech.restauranteapi.utils.enums.CategoriaEnum.BEBIDA);
-
-            when(springProdutoRepository.save(produtoEntity)).thenReturn(savedEntity);
-
-            try (org.mockito.MockedStatic<Produto> mockedStatic = mockStatic(Produto.class)) {
-                mockedStatic.when(() -> Produto.builderProduto(savedEntity)).thenReturn(expectedProduto);
+            try (MockedStatic<ProdutoPresenter> presenterMock = mockStatic(ProdutoPresenter.class)) {
+                presenterMock.when(() -> ProdutoPresenter.toEntity(produto)).thenReturn(produtoEntity);
+                when(springProdutoRepository.save(produtoEntity)).thenReturn(savedEntity);
+                presenterMock.when(() -> ProdutoPresenter.toDomain(savedEntity)).thenReturn(expectedProduto);
 
                 Produto result = produtoGateway.salvar(produto);
 
@@ -96,12 +92,14 @@ class ProdutoGatewayImplTest {
             ProdutoEntity produtoEntity = mock(ProdutoEntity.class);
             Produto expectedProduto = mock(Produto.class);
 
-            when(springProdutoRepository.findById(id)).thenReturn(Optional.of(produtoEntity));
-            when(produtoEntity.toProdutoDomain()).thenReturn(expectedProduto);
+            try (MockedStatic<ProdutoPresenter> presenterMock = mockStatic(ProdutoPresenter.class)) {
+                when(springProdutoRepository.findById(id)).thenReturn(Optional.of(produtoEntity));
+                presenterMock.when(() -> ProdutoPresenter.toDomain(produtoEntity)).thenReturn(expectedProduto);
 
-            Produto result = produtoGateway.buscarPorId(id);
+                Produto result = produtoGateway.buscarPorId(id);
 
-            assertEquals(expectedProduto, result);
+                assertEquals(expectedProduto, result);
+            }
         }
 
         @Test

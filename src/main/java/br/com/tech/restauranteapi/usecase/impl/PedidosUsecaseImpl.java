@@ -1,8 +1,8 @@
 package br.com.tech.restauranteapi.usecase.impl;
 
 import br.com.tech.restauranteapi.domain.AssociacaoPedidoProduto;
-import br.com.tech.restauranteapi.domain.AssociacaoProduto;
 import br.com.tech.restauranteapi.gateway.PedidosGateway;
+import br.com.tech.restauranteapi.presenter.AssociacaoProdutoPresenter;
 import br.com.tech.restauranteapi.usecase.AssociacaoPedidoProdutoUsecase;
 import br.com.tech.restauranteapi.gateway.ClienteGateway;
 import br.com.tech.restauranteapi.gateway.ProdutoGateway;
@@ -10,7 +10,6 @@ import br.com.tech.restauranteapi.domain.CriarPedido;
 import br.com.tech.restauranteapi.domain.Pedido;
 import br.com.tech.restauranteapi.domain.Produto;
 import br.com.tech.restauranteapi.domain.ProdutoPedido;
-import br.com.tech.restauranteapi.gateway.impl.PedidosGatewayImpl;
 import br.com.tech.restauranteapi.usecase.PedidosUsecase;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import lombok.RequiredArgsConstructor;
@@ -48,10 +47,11 @@ public class PedidosUsecaseImpl implements PedidosUsecase {
         List<AssociacaoPedidoProduto> associacoes = agruparProdutos(criarPedido, pedidoSalvo);
 
         List<AssociacaoPedidoProduto> associcaoProdutos = associacaoPedidoProdutoUsecase.salvarTodas(associacoes);
-        pedidoSalvo.setAssociacoes(associcaoProdutos.stream().map(AssociacaoProduto::builderAssociacao).collect(Collectors.toList()));
-
-
-
+        pedidoSalvo.setAssociacoes(
+                associcaoProdutos.stream()
+                        .map(AssociacaoProdutoPresenter::fromToDomain)
+                        .collect(Collectors.toList())
+        );
         return pedidoSalvo;
     }
 

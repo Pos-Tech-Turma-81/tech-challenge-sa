@@ -2,6 +2,7 @@ package br.com.tech.restauranteapi.controller;
 
 import br.com.tech.restauranteapi.controller.dtos.ProdutoDto;
 import br.com.tech.restauranteapi.domain.Produto;
+import br.com.tech.restauranteapi.presenter.ProdutoPresenter;
 import br.com.tech.restauranteapi.usecase.ProdutoUsecase;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,9 +32,9 @@ public class ProdutoController {
     })
     @PostMapping
     public ResponseEntity<ProdutoDto> salvar(@RequestBody @Valid ProdutoDto produtoDto) {
-        Produto produto = Produto.builderProduto(produtoDto);
+        Produto produto = ProdutoPresenter.fromToDomain(produtoDto);
         Produto produtoResponse = usecase.salvar(produto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(produtoResponse.toProdutoDto());
+        return ResponseEntity.status(HttpStatus.CREATED).body(ProdutoPresenter.toDto(produtoResponse));
     }
 
     @PutMapping("/{id}")
@@ -41,9 +42,9 @@ public class ProdutoController {
             @PathVariable("id") Integer id,
             @RequestBody ProdutoDto produtoDto) {
         produtoDto.setId(id);
-        Produto produto = Produto.builderProduto(produtoDto);
+        Produto produto = ProdutoPresenter.fromToDomain(produtoDto);
         Produto produtoResponse = usecase.alterar(produto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(produtoResponse.toProdutoDto());
+        return ResponseEntity.status(HttpStatus.CREATED).body(ProdutoPresenter.toDto(produtoResponse));
     }
 
 
@@ -53,7 +54,7 @@ public class ProdutoController {
             @PageableDefault(size = 10) Pageable pageable) {
         Page<Produto> produtosResponse =
                 usecase.buscarPorCategoria(CategoriaEnum.obterPorNome(nomeCategoria), pageable);
-        return ResponseEntity.ok(produtosResponse.map(Produto::toProdutoDto));
+        return ResponseEntity.ok(produtosResponse.map(ProdutoPresenter::toDto));
     }
 
     @DeleteMapping("/{id}")

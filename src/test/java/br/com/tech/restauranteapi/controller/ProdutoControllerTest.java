@@ -3,11 +3,13 @@ package br.com.tech.restauranteapi.controller;
 import br.com.tech.restauranteapi.domain.Produto;
 import br.com.tech.restauranteapi.controller.dtos.ProdutoDto;
 import br.com.tech.restauranteapi.exceptions.NotFoundException;
+import br.com.tech.restauranteapi.presenter.ProdutoPresenter;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import br.com.tech.restauranteapi.usecase.ProdutoUsecase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockito.MockedStatic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -19,8 +21,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class ProdutoControllerTest {
@@ -43,17 +43,21 @@ class ProdutoControllerTest {
                 .preco(BigDecimal.valueOf(10.99))
                 .build();
 
-        Produto produtoMock = Produto.builderProduto(produtoDto);
-        Produto produtoResponseMock = Produto.builderProduto(produtoDto);
-        produtoResponseMock.setId(1);
+        Produto produtoMock = mock(Produto.class);
+        Produto produtoResponseMock = mock(Produto.class);
+        ProdutoDto produtoDtoResponse = mock(ProdutoDto.class);
 
-        when(usecase.salvar(produtoMock)).thenReturn(produtoResponseMock);
+        try (MockedStatic<ProdutoPresenter> presenterMock = mockStatic(ProdutoPresenter.class)) {
+            presenterMock.when(() -> ProdutoPresenter.fromToDomain(produtoDto)).thenReturn(produtoMock);
+            when(usecase.salvar(produtoMock)).thenReturn(produtoResponseMock);
+            presenterMock.when(() -> ProdutoPresenter.toDto(produtoResponseMock)).thenReturn(produtoDtoResponse);
 
-        ResponseEntity<ProdutoDto> response = produtoController.salvar(produtoDto);
+            ResponseEntity<ProdutoDto> response = produtoController.salvar(produtoDto);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(produtoResponseMock.toProdutoDto(), response.getBody());
-        verify(usecase).salvar(produtoMock);
+            assertEquals(HttpStatus.CREATED, response.getStatusCode());
+            assertEquals(produtoDtoResponse, response.getBody());
+            verify(usecase).salvar(produtoMock);
+        }
     }
 
     @Test
@@ -68,16 +72,21 @@ class ProdutoControllerTest {
                 .preco(BigDecimal.valueOf(15.99))
                 .build();
 
-        Produto produtoMock = Produto.builderProduto(produtoDto);
-        Produto produtoResponseMock = Produto.builderProduto(produtoDto);
+        Produto produtoMock = mock(Produto.class);
+        Produto produtoResponseMock = mock(Produto.class);
+        ProdutoDto produtoDtoResponse = mock(ProdutoDto.class);
 
-        when(usecase.alterar(produtoMock)).thenReturn(produtoResponseMock);
+        try (MockedStatic<ProdutoPresenter> presenterMock = mockStatic(ProdutoPresenter.class)) {
+            presenterMock.when(() -> ProdutoPresenter.fromToDomain(produtoDto)).thenReturn(produtoMock);
+            when(usecase.alterar(produtoMock)).thenReturn(produtoResponseMock);
+            presenterMock.when(() -> ProdutoPresenter.toDto(produtoResponseMock)).thenReturn(produtoDtoResponse);
 
-        ResponseEntity<ProdutoDto> response = produtoController.salvar(produtoId, produtoDto);
+            ResponseEntity<ProdutoDto> response = produtoController.salvar(produtoId, produtoDto);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(produtoResponseMock.toProdutoDto(), response.getBody());
-        verify(usecase).alterar(produtoMock);
+            assertEquals(HttpStatus.CREATED, response.getStatusCode());
+            assertEquals(produtoDtoResponse, response.getBody());
+            verify(usecase).alterar(produtoMock);
+        }
     }
 
     @Test
@@ -85,24 +94,23 @@ class ProdutoControllerTest {
     void deveBuscarProdutosPorCategoriaComSucesso() {
         String nomeCategoria = "BEBIDA";
         Pageable pageable = PageRequest.of(0, 10);
-        Produto produtoMock = Produto.builder()
-                .id(1)
-                .nome("Produto Teste")
-                .descricao("Descrição Teste")
-                .categoria(CategoriaEnum.BEBIDA)
-                .preco(BigDecimal.valueOf(10.99))
-                .build();
+        Produto produtoMock = mock(Produto.class);
+        ProdutoDto produtoDtoMock = mock(ProdutoDto.class);
 
         Page<Produto> produtosMock = new PageImpl<>(List.of(produtoMock));
+        Page<ProdutoDto> produtosDtoMock = new PageImpl<>(List.of(produtoDtoMock));
 
-        when(usecase.buscarPorCategoria(CategoriaEnum.BEBIDA, pageable)).thenReturn(produtosMock);
+        try (MockedStatic<ProdutoPresenter> presenterMock = mockStatic(ProdutoPresenter.class)) {
+            when(usecase.buscarPorCategoria(CategoriaEnum.BEBIDA, pageable)).thenReturn(produtosMock);
+            presenterMock.when(() -> ProdutoPresenter.toDto(produtoMock)).thenReturn(produtoDtoMock);
 
-        ResponseEntity<Page<ProdutoDto>> response = produtoController.buscar(nomeCategoria, pageable);
+            ResponseEntity<Page<ProdutoDto>> response = produtoController.buscar(nomeCategoria, pageable);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().getTotalElements());
-        assertEquals(produtoMock.toProdutoDto(), response.getBody().getContent().get(0));
-        verify(usecase).buscarPorCategoria(CategoriaEnum.BEBIDA, pageable);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(1, response.getBody().getTotalElements());
+            assertEquals(produtoDtoMock, response.getBody().getContent().get(0));
+            verify(usecase).buscarPorCategoria(CategoriaEnum.BEBIDA, pageable);
+        }
     }
 
     @Test

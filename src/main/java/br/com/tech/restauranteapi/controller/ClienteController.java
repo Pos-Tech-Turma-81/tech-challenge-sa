@@ -1,8 +1,7 @@
 package br.com.tech.restauranteapi.controller;
 
-
 import br.com.tech.restauranteapi.controller.dtos.ClienteDTO;
-import br.com.tech.restauranteapi.domain.Cliente;
+import br.com.tech.restauranteapi.presenter.ClientePresenter;
 import br.com.tech.restauranteapi.usecase.ClienteUsecase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,22 +26,10 @@ public class ClienteController {
     })
     @PostMapping()
     public ResponseEntity<ClienteDTO> cadastrar(@RequestBody @Valid ClienteDTO clienteDto) {
-        Cliente clienteResponse = usecase.cadastrar(new Cliente(clienteDto.getId(),
-                clienteDto.getNome(),
-                clienteDto.getEmail(),
-                clienteDto.getTelefone(),
-                clienteDto.getCpf(),
-                clienteDto.getEndereco()));
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(ClienteDTO
-                .builder()
-                .id(clienteResponse.getId())
-                .cpf(clienteResponse.getCpf())
-                .nome(clienteResponse.getNome())
-                .email(clienteResponse.getEmail())
-                .endereco(clienteResponse.getEndereco())
-                .telefone(clienteResponse.getTelefone())
-                .build());
+        var cliente = ClientePresenter.toDomain(clienteDto);
+        var clienteResponse = usecase.cadastrar(cliente);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ClientePresenter.toDto(clienteResponse));
     }
 
     @Operation(summary = "Buscar cliente por CPF")
@@ -52,15 +39,7 @@ public class ClienteController {
     })
     @GetMapping("/{cpf}")
     public ResponseEntity<ClienteDTO> getCliente(@PathVariable String cpf) {
-        Cliente clienteResponse = usecase.getCliente(cpf);
-        return ResponseEntity.ok(ClienteDTO
-                .builder()
-                .id(clienteResponse.getId())
-                .cpf(clienteResponse.getCpf())
-                .nome(clienteResponse.getNome())
-                .email(clienteResponse.getEmail())
-                .endereco(clienteResponse.getEndereco())
-                .telefone(clienteResponse.getTelefone())
-                .build());
+        var clienteResponse = usecase.getCliente(cpf);
+        return ResponseEntity.ok(ClientePresenter.toDto(clienteResponse));
     }
 }
