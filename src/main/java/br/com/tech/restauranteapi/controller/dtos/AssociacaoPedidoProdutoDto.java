@@ -1,6 +1,6 @@
 package br.com.tech.restauranteapi.controller.dtos;
 
-import br.com.tech.restauranteapi.gateway.domain.AssociacaoPedidoProduto;
+import br.com.tech.restauranteapi.domain.AssociacaoPedidoProduto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class AssociacaoPedidoProdutoDto {
 
@@ -19,12 +18,11 @@ public class AssociacaoPedidoProdutoDto {
     private Integer quantidade;
     private BigDecimal preco;
 
-    public static AssociacaoPedidoProdutoDto builderAssociacao(AssociacaoPedidoProduto associacao) {
-        return AssociacaoPedidoProdutoDto.builder()
-                .pedidoId(associacao.getPedido().getId())
-                .produtoId(associacao.getProduto().getId())
-                .quantidade(associacao.getQuantidade())
-                .preco(associacao.getPreco())
-                .build();
+    public AssociacaoPedidoProdutoDto(Integer pedidoId, Integer produtoId, Integer quantidade, BigDecimal preco) {
+        this.pedidoId = pedidoId;
+        this.produtoId = produtoId;
+        this.quantidade = quantidade;
+        this.preco = preco;
     }
+
 }

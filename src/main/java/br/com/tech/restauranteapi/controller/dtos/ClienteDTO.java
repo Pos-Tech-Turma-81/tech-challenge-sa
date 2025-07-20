@@ -14,7 +14,6 @@ public class ClienteDTO {
     private String cpf;
     private String endereco;
 
-    public ClienteDTO() {}
 
     public ClienteDTO(Integer id, String nome, String email, String telefone, String cpf, String endereco) {
         this.id = id;
