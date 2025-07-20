@@ -1,6 +1,6 @@
 package br.com.tech.restauranteapi.usecase.impl;
 
-import br.com.tech.restauranteapi.gateway.domain.AssociacaoPedidoProduto;
+import br.com.tech.restauranteapi.domain.AssociacaoPedidoProduto;
 import br.com.tech.restauranteapi.gateway.impl.AssociacaoPedidoGatewayImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

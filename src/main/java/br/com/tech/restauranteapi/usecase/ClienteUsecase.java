@@ -1,6 +1,6 @@
 package br.com.tech.restauranteapi.usecase;
 
-import br.com.tech.restauranteapi.gateway.domain.Cliente;
+import br.com.tech.restauranteapi.domain.Cliente;
 
 public interface ClienteUsecase {
     Cliente cadastrar(Cliente clienteDto);

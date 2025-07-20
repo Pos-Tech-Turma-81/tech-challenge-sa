@@ -1,9 +1,10 @@
 package br.com.tech.restauranteapi.gateway.impl;
 
 import br.com.tech.restauranteapi.exceptions.NotFoundException;
-import br.com.tech.restauranteapi.gateway.domain.Produto;
+import br.com.tech.restauranteapi.domain.Produto;
 import br.com.tech.restauranteapi.gateway.ProdutoGateway;
-import br.com.tech.restauranteapi.gateway.entity.ProdutoEntity;
+import br.com.tech.restauranteapi.entity.ProdutoEntity;
+import br.com.tech.restauranteapi.presenter.ProdutoPresenter;
 import br.com.tech.restauranteapi.repository.SpringProdutoRepository;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import lombok.AllArgsConstructor;
@@ -26,17 +27,17 @@ public class ProdutoGatewayImpl implements ProdutoGateway {
     public Produto salvar(Produto produto) {
         ProdutoEntity produtoResponse =
                 this.springProdutoRepository
-                        .save(produto.toEntity());
+                        .save(ProdutoPresenter.toEntity(produto));
 
-        return Produto.builderProduto(produtoResponse);
+        return ProdutoPresenter.toDomain(produtoResponse);
     }
 
     private Produto persistir(Produto produto) {
         ProdutoEntity produtoResponse =
                 this.springProdutoRepository
-                        .save(produto.toEntity());
+                        .save(ProdutoPresenter.toEntity(produto));
 
-        return Produto.builderProduto(produtoResponse);
+        return ProdutoPresenter.toDomain(produtoResponse);
     }
 
     @Override
@@ -44,15 +45,17 @@ public class ProdutoGatewayImpl implements ProdutoGateway {
         Page<ProdutoEntity> produtosResponse =
                 this.springProdutoRepository.buscarPorCategoria(categoria, page);
 
-        return produtosResponse.map(ProdutoEntity::toProdutoDomain);
+        return produtosResponse.map(ProdutoPresenter::toDomain);
     }
 
     @Override
     public Produto buscarPorId(Integer id) {
         Optional<ProdutoEntity> produtoResponse = this.springProdutoRepository.findById(id);
 
-        return produtoResponse.orElseThrow(() -> new NotFoundException(format(
-                "Não existe produto com o id %s.", id))).toProdutoDomain();
+        return ProdutoPresenter.toDomain(
+                produtoResponse.orElseThrow(() -> new NotFoundException(format(
+                        "Não existe produto com o id %s.", id)))
+        );
     }
 
     @Override

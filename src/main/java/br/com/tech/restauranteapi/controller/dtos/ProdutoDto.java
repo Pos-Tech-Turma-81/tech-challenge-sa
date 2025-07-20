@@ -1,6 +1,6 @@
 package br.com.tech.restauranteapi.controller.dtos;
 
-import br.com.tech.restauranteapi.gateway.domain.Produto;
+import br.com.tech.restauranteapi.domain.Produto;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,17 +32,14 @@ public class ProdutoDto {
     private String descricao;
     private String imagem;
 
-    public static ProdutoDto builderProduto(Produto produto){
-
-        return ProdutoDto
-                .builder()
-                .categoria(produto.getCategoria())
-                .id(produto.getId())
-                .descricao(produto.getDescricao())
-                .imagem(Objects.nonNull(produto.getImagem()) ? Base64.getEncoder().encodeToString(produto.getImagem()) : null)
-                .nome(produto.getNome())
-                .preco(produto.getPreco())
-                .build();
-
+    public ProdutoDto(Produto produto) {
+        this.id = produto.getId();
+        this.nome = produto.getNome();
+        this.categoria = produto.getCategoria();
+        this.preco = produto.getPreco();
+        this.descricao = produto.getDescricao();
+        if (Objects.nonNull(produto.getImagem())) {
+            this.imagem = Base64.getEncoder().encodeToString(produto.getImagem());
+        }
     }
 }

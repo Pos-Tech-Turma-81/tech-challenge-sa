@@ -1,7 +1,5 @@
-package br.com.tech.restauranteapi.gateway.domain;
+package br.com.tech.restauranteapi.domain;
 
-
-import br.com.tech.restauranteapi.controller.dtos.ClienteDTO;
 import lombok.Builder;
 import lombok.Data;
 
@@ -22,9 +20,5 @@ public class Cliente {
         this.telefone = telefone;
         this.cpf = cpf;
         this.endereco = endereco;
-    }
-
-    public ClienteDTO toClienteDTO() {
-        return new ClienteDTO(id, nome, email, telefone, cpf, endereco);
     }
 }

@@ -1,11 +1,11 @@
 package br.com.tech.restauranteapi.controller;
 
-import br.com.tech.restauranteapi.controller.dtos.CriarPedidoDto;
-import br.com.tech.restauranteapi.controller.dtos.PedidoResponseDto;
-import br.com.tech.restauranteapi.controller.dtos.PedidoDto;
-import br.com.tech.restauranteapi.controller.dtos.ProdutoPedidoResponseDto;
-import br.com.tech.restauranteapi.gateway.domain.Pedido;
+import br.com.tech.restauranteapi.controller.dtos.*;
+import br.com.tech.restauranteapi.domain.Pedido;
+import br.com.tech.restauranteapi.presenter.CriarPedidoPresenter;
+import br.com.tech.restauranteapi.presenter.PedidoPresenter;
 import br.com.tech.restauranteapi.usecase.PedidosUsecase;
+import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -36,34 +36,29 @@ public class PedidosController {
     })
     @PostMapping("/checkout")
     public ResponseEntity<PedidoResponseDto> realizarCheckout(@RequestBody @Valid CriarPedidoDto criarPedidoDto) {
-        Pedido response = pedidosService.realizarCheckout(criarPedidoDto.toDomain());
+        Pedido response = pedidosService.realizarCheckout(
+                CriarPedidoPresenter.toDomain(criarPedidoDto)
+        );
 
-        // Mapear resposta
-        List<ProdutoPedidoResponseDto> produtos = response.getAssociacoes().stream()
-                .map(assoc -> ProdutoPedidoResponseDto.builder()
-                        .produtoId(assoc.getProduto().getId())
-                        .nomeProduto(assoc.getProduto() != null ? assoc.getProduto().getNome() : "Produto não encontrado")
-                        .quantidade(assoc.getQuantidade())
-                        .preco(assoc.getPreco())
-                        .build())
-                .toList();
-
-        PedidoResponseDto responseDto = PedidoResponseDto.builder()
-                .pedidoId(response.getId())
-                .clienteId(response.getCliente() != null ? response.getCliente().getId() : null)
-                .status(response.getStatus())
-                .dataHora(response.getDataHoraInclusaoPedido())
-                .produtos(produtos)
-                .build();
+        PedidoResponseDto responseDto = PedidoPresenter.toResponseDto(response);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
-    @Operation(summary = "Listar pedidos na fila (status AGUARDANDO)")
+    @Operation(summary = "Listar pedidos na fila (status EM PREPARACAO)")
     @GetMapping("/fila")
     public ResponseEntity<Page<PedidoDto>> listarFilaPedidos(@PageableDefault(size = 10) Pageable pageable) {
         Page<Pedido> pedidos = pedidosService.listarFilaPedidos(pageable);
-        return ResponseEntity.ok(pedidos
-                .map(Pedido::toPedidosDto));
+        return ResponseEntity.ok(pedidos.map(PedidoPresenter::toDto));
+    }
+
+    @Operation(summary = "Atualizar status do pedido.")
+    @PatchMapping("/{pedidoId}/status")
+    public ResponseEntity<PedidoResponseDto> atualizarStatus(
+            @PathVariable Integer pedidoId,
+            @RequestBody @Valid AtualizarStatusPedidoDto dto) {
+        Pedido pedidoAtualizado = pedidosService.atualizarStatus(pedidoId, dto.getStatus());
+        PedidoResponseDto responseDto = PedidoPresenter.toResponseDto(pedidoAtualizado);
+        return ResponseEntity.ok(responseDto);
     }
 }

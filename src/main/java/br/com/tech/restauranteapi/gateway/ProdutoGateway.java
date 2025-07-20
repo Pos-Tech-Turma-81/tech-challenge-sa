@@ -1,6 +1,6 @@
 package br.com.tech.restauranteapi.gateway;
 
-import br.com.tech.restauranteapi.gateway.domain.Produto;
+import br.com.tech.restauranteapi.domain.Produto;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,7 +1,7 @@
 package br.com.tech.restauranteapi.controller.dtos;
 
-import br.com.tech.restauranteapi.gateway.domain.AssociacaoProduto;
-import br.com.tech.restauranteapi.gateway.domain.Pedido;
+import br.com.tech.restauranteapi.domain.AssociacaoProduto;
+import br.com.tech.restauranteapi.domain.Pedido;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -26,17 +26,4 @@ public class PedidoDto {
     private LocalDateTime dataHoraInclusaoPedido;
     private List<AssociacaoProduto> associacoes;
 
-
-    public static PedidoDto builderPedidos(Pedido pedidos){
-
-        return PedidoDto
-                .builder()
-                .id(pedidos.getId())
-                .cliente(pedidos.getCliente() != null ? pedidos.getCliente().toClienteDTO() : null)
-                .status(pedidos.getStatus())
-                .dataHoraInclusaoPedido(pedidos.getDataHoraInclusaoPedido())
-                .associacoes( pedidos.getAssociacoes() )
-                .build();
-
-    }
 }
