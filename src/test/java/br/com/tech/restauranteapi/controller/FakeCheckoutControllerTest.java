@@ -2,6 +2,8 @@ package br.com.tech.restauranteapi.controller;
 
 import br.com.tech.restauranteapi.controller.dtos.CheckoutRequestDTO;
 import br.com.tech.restauranteapi.controller.dtos.CheckoutResponseDTO;
+import br.com.tech.restauranteapi.usecase.ClienteUsecase;
+import br.com.tech.restauranteapi.usecase.FakeCheckoutUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -23,6 +25,9 @@ class FakeCheckoutControllerTest {
     @Mock
     private RestTemplate restTemplate;
 
+    @Mock
+    private FakeCheckoutUsecase usecase;
+
     @InjectMocks
     private FakeCheckoutController controller;
 
@@ -39,11 +44,11 @@ class FakeCheckoutControllerTest {
     void testIniciarCheckout_Success() {
         CheckoutRequestDTO requestDTO = new CheckoutRequestDTO();
         requestDTO.setPedidoId("pedido123");
+        requestDTO.setValor(10.0);
 
-        CheckoutResponseDTO mockResponseBody = new CheckoutResponseDTO("fake-qr-data");
-        ResponseEntity<CheckoutResponseDTO> mockResponse = new ResponseEntity<>(mockResponseBody, HttpStatus.OK);
+        CheckoutResponseDTO mockResponse = new CheckoutResponseDTO("fake-qr-data");
 
-        when(controller.iniciarCheckout(requestDTO))
+        when(usecase.iniciarCheckout(requestDTO))
                 .thenReturn(mockResponse);
 
         ResponseEntity<CheckoutResponseDTO> response = controller.iniciarCheckout(requestDTO);

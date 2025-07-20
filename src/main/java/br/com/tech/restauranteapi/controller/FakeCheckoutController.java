@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/checkout")
 @AllArgsConstructor
 public class FakeCheckoutController {
+
     private final FakeCheckoutUsecase usecase;
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<CheckoutResponseDTO> iniciarCheckout(@RequestBody CheckoutRequestDTO request) {
 
         CheckoutResponseDTO response = usecase.iniciarCheckout(request);
