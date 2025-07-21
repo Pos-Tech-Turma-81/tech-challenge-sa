@@ -2,7 +2,7 @@ package br.com.tech.restauranteapi.usecase;
 
 import br.com.tech.restauranteapi.gateway.ClienteGateway;
 import br.com.tech.restauranteapi.gateway.ProdutoGateway;
-import br.com.tech.restauranteapi.gateway.domain.*;
+import br.com.tech.restauranteapi.domain.*;
 import br.com.tech.restauranteapi.gateway.impl.PedidosGatewayImpl;
 import br.com.tech.restauranteapi.usecase.impl.PedidosUsecaseImpl;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;

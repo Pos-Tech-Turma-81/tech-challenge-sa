@@ -3,7 +3,7 @@ package br.com.tech.restauranteapi.usecase;
 import br.com.tech.restauranteapi.exceptions.AlreadyExistsException;
 import br.com.tech.restauranteapi.exceptions.NotFoundException;
 import br.com.tech.restauranteapi.gateway.ClienteGateway;
-import br.com.tech.restauranteapi.gateway.domain.Cliente;
+import br.com.tech.restauranteapi.domain.Cliente;
 import br.com.tech.restauranteapi.usecase.impl.ClienteUsecaseImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

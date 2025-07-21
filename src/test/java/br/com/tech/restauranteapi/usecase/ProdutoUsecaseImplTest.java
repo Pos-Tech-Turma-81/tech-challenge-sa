@@ -1,7 +1,7 @@
 package br.com.tech.restauranteapi.usecase;
 
 import br.com.tech.restauranteapi.gateway.ProdutoGateway;
-import br.com.tech.restauranteapi.gateway.domain.Produto;
+import br.com.tech.restauranteapi.domain.Produto;
 import br.com.tech.restauranteapi.usecase.impl.ProdutoUsecaseImpl;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +52,6 @@ class ProdutoUsecaseImplTest {
 
         assertNotNull(result);
         assertEquals(produtoSalvo, result);
-        // The id should be set to null before saving
         ArgumentCaptor<Produto> captor = ArgumentCaptor.forClass(Produto.class);
         verify(gateway).salvar(captor.capture());
         assertNull(captor.getValue().getId());

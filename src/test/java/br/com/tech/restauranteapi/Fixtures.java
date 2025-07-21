@@ -1,11 +1,12 @@
 package br.com.tech.restauranteapi;
 
-import br.com.tech.restauranteapi.gateway.domain.Cliente;
-import br.com.tech.restauranteapi.gateway.entity.AssociacaoPedidoProdutoEntity;
-import br.com.tech.restauranteapi.gateway.entity.ClienteEntity;
-import br.com.tech.restauranteapi.gateway.entity.PedidoEntity;
-import br.com.tech.restauranteapi.gateway.entity.ProdutoEntity;
-import br.com.tech.restauranteapi.gateway.entity.id.AssociacaoPedidoProdutoId;
+import br.com.tech.restauranteapi.domain.AssociacaoPedidoProduto;
+import br.com.tech.restauranteapi.entity.id.AssociacaoPedidoProdutoId;
+import br.com.tech.restauranteapi.domain.Cliente;
+import br.com.tech.restauranteapi.entity.ClienteEntity;
+import br.com.tech.restauranteapi.entity.PedidoEntity;
+import br.com.tech.restauranteapi.entity.ProdutoEntity;
+import br.com.tech.restauranteapi.presenter.PedidoPresenter;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 
@@ -45,8 +46,8 @@ public class Fixtures {
             .pedido(mockPedidoEntity)
             .build();
 
-    public static final AssociacaoPedidoProdutoEntity mockAssociacaoPedidoProdutoEntity = AssociacaoPedidoProdutoEntity.builder()
-            .id(mockId)
+    public static final AssociacaoPedidoProduto mockAssociacaoPedidoProduto = AssociacaoPedidoProduto.builder()
+            .pedido(PedidoPresenter.toDomain(mockPedidoEntity))
             .quantidade(2)
             .preco(new BigDecimal("10"))
             .build();

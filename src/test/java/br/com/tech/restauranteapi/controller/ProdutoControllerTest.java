@@ -1,7 +1,7 @@
 package br.com.tech.restauranteapi.controller;
 
 import br.com.tech.restauranteapi.controller.dtos.ProdutoDto;
-import br.com.tech.restauranteapi.gateway.domain.Produto;
+import br.com.tech.restauranteapi.domain.Produto;
 import br.com.tech.restauranteapi.usecase.ProdutoUsecase;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import org.junit.jupiter.api.BeforeEach;

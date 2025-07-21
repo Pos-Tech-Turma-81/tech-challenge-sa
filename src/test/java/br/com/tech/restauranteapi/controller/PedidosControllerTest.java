@@ -1,32 +1,23 @@
 package br.com.tech.restauranteapi.controller;
 
-import br.com.tech.restauranteapi.controller.dtos.CriarPedidoDto;
-import br.com.tech.restauranteapi.controller.dtos.PedidoDto;
-import br.com.tech.restauranteapi.controller.dtos.PedidoResponseDto;
-import br.com.tech.restauranteapi.controller.dtos.ProdutoPedidoResponseDto;
-import br.com.tech.restauranteapi.gateway.domain.*;
+import br.com.tech.restauranteapi.controller.dtos.*;
+import br.com.tech.restauranteapi.domain.*;
+import br.com.tech.restauranteapi.presenter.CriarPedidoPresenter;
+import br.com.tech.restauranteapi.presenter.PedidoPresenter;
 import br.com.tech.restauranteapi.usecase.PedidosUsecase;
 import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
+import org.mockito.*;
+import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class PedidosControllerTest {
 
@@ -43,58 +34,76 @@ class PedidosControllerTest {
 
     @Test
     void testRealizarCheckout_Success() {
-
-        Produto produto = new Produto();
-        produto.setId(10);
-        produto.setNome("Pizza");
-
-        AssociacaoProduto assoc = AssociacaoProduto.builderAssociacao(new AssociacaoPedidoProduto());
-        assoc.setProduto(produto);
-        assoc.setQuantidade(2);
-        assoc.setPreco(BigDecimal.valueOf(35));
-
-        Cliente cliente = new Cliente(5,"José","teste@email.com","11999996666","12345678900","ABC");
-
-        Pedido pedido = new Pedido();
-        pedido.setId(100);
-        pedido.setCliente(cliente);
-        pedido.setStatus(StatusEnum.RECEBIDO);
-        pedido.setDataHoraInclusaoPedido(LocalDateTime.now());
-        pedido.setAssociacoes(List.of(assoc));
-
-        when(pedidosService.realizarCheckout(any())).thenReturn(pedido);
-
         CriarPedidoDto criarPedidoDto = new CriarPedidoDto();
+        CriarPedido criarPedidoDomain = mock(CriarPedido.class);
+        Pedido pedidoDomain = mock(Pedido.class);
+        PedidoResponseDto pedidoResponseDto = mock(PedidoResponseDto.class);
 
-        ResponseEntity<PedidoResponseDto> response = controller.realizarCheckout(criarPedidoDto);
+        try (
+                MockedStatic<CriarPedidoPresenter> mockCriar = mockStatic(CriarPedidoPresenter.class);
+                MockedStatic<PedidoPresenter> mockPresenter = mockStatic(PedidoPresenter.class)
+        ) {
+            mockCriar.when(() -> CriarPedidoPresenter.toDomain(criarPedidoDto)).thenReturn(criarPedidoDomain);
+            when(pedidosService.realizarCheckout(CriarPedidoPresenter.toDomain(criarPedidoDto))).thenReturn(pedidoDomain);
+            mockPresenter.when(() -> PedidoPresenter.toResponseDto(pedidoDomain)).thenReturn(pedidoResponseDto);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(100, response.getBody().getPedidoId());
-        assertEquals(5, response.getBody().getClienteId());
-        assertEquals(StatusEnum.RECEBIDO, response.getBody().getStatus());
-        assertNotNull(response.getBody().getProdutos());
-        assertEquals(1, response.getBody().getProdutos().size());
-        ProdutoPedidoResponseDto produtoDto = response.getBody().getProdutos().getFirst();
-        assertEquals(10, produtoDto.getProdutoId());
-        assertEquals("Pizza", produtoDto.getNomeProduto());
-        assertEquals(2, produtoDto.getQuantidade());
-        assertEquals(BigDecimal.valueOf(35), produtoDto.getPreco());
+            var response = controller.realizarCheckout(criarPedidoDto);
+
+            assertEquals(201, response.getStatusCodeValue());
+            assertEquals(pedidoResponseDto, response.getBody());
+
+            mockCriar.verify(() -> CriarPedidoPresenter.toDomain(criarPedidoDto), Mockito.times(2));
+            mockPresenter.verify(() -> PedidoPresenter.toResponseDto(pedidoDomain));
+        }
     }
 
     @Test
     void testListarFilaPedidos_Success() {
-        Pedido pedido = new Pedido();
-        pedido.setId(200);
-        pedido.setStatus(StatusEnum.EM_PREPARACAO);
+        Pedido pedido = mock(Pedido.class);
+        PedidoDto dto = mock(PedidoDto.class);
 
-        Page<Pedido> page = new PageImpl<>(List.of(pedido), PageRequest.of(0, 10), 1);
+        Page<Pedido> page = new PageImpl<>(List.of(pedido));
         when(pedidosService.listarFilaPedidos(any())).thenReturn(page);
 
-        ResponseEntity<Page<PedidoDto>> response = controller.listarFilaPedidos(PageRequest.of(0, 10));
+        try (MockedStatic<PedidoPresenter> mock = mockStatic(PedidoPresenter.class)) {
+            mock.when(() -> PedidoPresenter.toDto(pedido)).thenReturn(dto);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().getTotalElements());
+            PageRequest pageable = PageRequest.of(0, 10);
+            var response = controller.listarFilaPedidos(pageable);
+
+            assertEquals(200, response.getStatusCodeValue());
+            assertNotNull(response.getBody());
+            assertEquals(dto, response.getBody().getContent().getFirst());
+
+            verify(pedidosService).listarFilaPedidos(pageable);
+            mock.verify(() -> PedidoPresenter.toDto(pedido));
+        }
+    }
+
+    @Test
+    void testAtualizarStatus_Success() {
+        int pedidoId = 123;
+        StatusEnum newStatus = StatusEnum.RECEBIDO;
+
+        AtualizarStatusPedidoDto statusDto = new AtualizarStatusPedidoDto();
+        statusDto.setStatus(newStatus);
+
+        Pedido pedidoAtualizado = mock(Pedido.class);
+        PedidoResponseDto responseDto = mock(PedidoResponseDto.class);
+
+        when(pedidosService.atualizarStatus(pedidoId, newStatus)).thenReturn(pedidoAtualizado);
+
+        try (MockedStatic<PedidoPresenter> mock = mockStatic(PedidoPresenter.class)) {
+            mock.when(() -> PedidoPresenter.toResponseDto(pedidoAtualizado)).thenReturn(responseDto);
+
+            ResponseEntity<PedidoResponseDto> response =
+                    controller.atualizarStatus(pedidoId, statusDto);
+
+            assertEquals(200, response.getStatusCodeValue());
+            assertEquals(responseDto, response.getBody());
+
+            verify(pedidosService).atualizarStatus(pedidoId, newStatus);
+            mock.verify(() -> PedidoPresenter.toResponseDto(pedidoAtualizado));
+        }
     }
 }

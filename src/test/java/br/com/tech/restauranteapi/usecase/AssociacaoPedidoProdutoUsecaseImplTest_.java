@@ -1,8 +1,8 @@
 package br.com.tech.restauranteapi.usecase;
 
-import br.com.tech.restauranteapi.gateway.domain.AssociacaoPedidoProduto;
-import br.com.tech.restauranteapi.gateway.entity.AssociacaoPedidoProdutoEntity;
+import br.com.tech.restauranteapi.domain.AssociacaoPedidoProduto;
 import br.com.tech.restauranteapi.gateway.impl.AssociacaoPedidoGatewayImpl;
+import br.com.tech.restauranteapi.presenter.PedidoPresenter;
 import br.com.tech.restauranteapi.usecase.impl.AssociacaoPedidoProdutoUsecaseImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 
 import br.com.tech.restauranteapi.Fixtures;
 
-class AssociacaoPedidoProdutoUsecaseImplTest {
+class AssociacaoPedidoProdutoUsecaseImplTest_ {
 
     @Mock
     private AssociacaoPedidoGatewayImpl gateway;
@@ -33,15 +33,12 @@ class AssociacaoPedidoProdutoUsecaseImplTest {
 
     @Test
     void testSalvarTodas_Success() {
-        AssociacaoPedidoProdutoEntity mockAssociacaoPedidoProdutoEntity2 = AssociacaoPedidoProdutoEntity.builder()
-                .id(Fixtures.mockId)
+        AssociacaoPedidoProduto assoc1 = Fixtures.mockAssociacaoPedidoProduto;
+        AssociacaoPedidoProduto assoc2 = AssociacaoPedidoProduto.builder()
+                .pedido(PedidoPresenter.toDomain(Fixtures.mockPedidoEntity))
                 .quantidade(3)
                 .preco(new BigDecimal("33"))
                 .build();
-
-
-        AssociacaoPedidoProduto assoc1 = AssociacaoPedidoProduto.builderAssociacao(Fixtures.mockAssociacaoPedidoProdutoEntity);
-        AssociacaoPedidoProduto assoc2 = AssociacaoPedidoProduto.builderAssociacao(mockAssociacaoPedidoProdutoEntity2);
 
         AssociacaoPedidoProduto savedAssoc1 = new AssociacaoPedidoProduto();
         AssociacaoPedidoProduto savedAssoc2 = new AssociacaoPedidoProduto();

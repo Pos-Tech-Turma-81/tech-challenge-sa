@@ -19,5 +19,4 @@ public class AssociacaoPedidoProduto {
     private Pedido pedido;
     private BigDecimal preco;
     private Produto produto;
-
 }
