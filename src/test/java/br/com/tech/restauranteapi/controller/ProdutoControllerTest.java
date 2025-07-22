@@ -1,23 +1,18 @@
 package br.com.tech.restauranteapi.controller;
 
-import br.com.tech.restauranteapi.domain.Produto;
 import br.com.tech.restauranteapi.controller.dtos.ProdutoDto;
-import br.com.tech.restauranteapi.exceptions.NotFoundException;
+import br.com.tech.restauranteapi.domain.Produto;
 import br.com.tech.restauranteapi.presenter.ProdutoPresenter;
-import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import br.com.tech.restauranteapi.usecase.ProdutoUsecase;
+import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.mockito.MockedStatic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,37 +20,25 @@ import static org.mockito.Mockito.*;
 
 class ProdutoControllerTest {
 
-    private final ProdutoController produtoController;
-    private final ProdutoUsecase usecase;
-
-    public ProdutoControllerTest() {
-        this.usecase = Mockito.mock(ProdutoUsecase.class);
-        this.produtoController = new ProdutoController(usecase);
-    }
+    private final ProdutoUsecase usecase = mock(ProdutoUsecase.class);
+    private final ProdutoController controller = new ProdutoController(usecase);
 
     @Test
-    @DisplayName("Deve cadastrar novo produto com sucesso")
-    void deveCadastrarNovoProdutoComSucesso() {
-        ProdutoDto produtoDto = ProdutoDto.builder()
-                .nome("Produto Teste")
-                .descricao("Descrição Teste")
-                .categoria(CategoriaEnum.BEBIDA)
-                .preco(BigDecimal.valueOf(10.99))
-                .build();
-
+    @DisplayName("Deve salvar produto com sucesso")
+    void deveSalvarProdutoComSucesso() {
+        ProdutoDto produtoDto = mock(ProdutoDto.class);
         Produto produtoMock = mock(Produto.class);
-        Produto produtoResponseMock = mock(Produto.class);
+        Produto produtoSalvoMock = mock(Produto.class);
         ProdutoDto produtoDtoResponse = mock(ProdutoDto.class);
 
         try (MockedStatic<ProdutoPresenter> presenterMock = mockStatic(ProdutoPresenter.class)) {
             presenterMock.when(() -> ProdutoPresenter.fromToDomain(produtoDto)).thenReturn(produtoMock);
-            when(usecase.salvar(produtoMock)).thenReturn(produtoResponseMock);
-            presenterMock.when(() -> ProdutoPresenter.toDto(produtoResponseMock)).thenReturn(produtoDtoResponse);
+            when(usecase.salvar(produtoMock)).thenReturn(produtoSalvoMock);
+            presenterMock.when(() -> ProdutoPresenter.toDto(produtoSalvoMock)).thenReturn(produtoDtoResponse);
 
-            ResponseEntity<ProdutoDto> response = produtoController.salvar(produtoDto);
+            ProdutoDto response = controller.salvar(produtoDto);
 
-            assertEquals(HttpStatus.CREATED, response.getStatusCode());
-            assertEquals(produtoDtoResponse, response.getBody());
+            assertEquals(produtoDtoResponse, response);
             verify(usecase).salvar(produtoMock);
         }
     }
@@ -63,75 +46,57 @@ class ProdutoControllerTest {
     @Test
     @DisplayName("Deve alterar produto com sucesso")
     void deveAlterarProdutoComSucesso() {
-        Integer produtoId = 1;
-        ProdutoDto produtoDto = ProdutoDto.builder()
-                .id(produtoId)
-                .nome("Produto Alterado")
-                .descricao("Descrição Alterada")
-                .categoria(CategoriaEnum.BEBIDA)
-                .preco(BigDecimal.valueOf(15.99))
-                .build();
-
+        Integer id = 1;
+        ProdutoDto produtoDto = mock(ProdutoDto.class);
         Produto produtoMock = mock(Produto.class);
-        Produto produtoResponseMock = mock(Produto.class);
+        Produto produtoAlteradoMock = mock(Produto.class);
         ProdutoDto produtoDtoResponse = mock(ProdutoDto.class);
 
         try (MockedStatic<ProdutoPresenter> presenterMock = mockStatic(ProdutoPresenter.class)) {
+            doNothing().when(produtoDto).setId(id);
             presenterMock.when(() -> ProdutoPresenter.fromToDomain(produtoDto)).thenReturn(produtoMock);
-            when(usecase.alterar(produtoMock)).thenReturn(produtoResponseMock);
-            presenterMock.when(() -> ProdutoPresenter.toDto(produtoResponseMock)).thenReturn(produtoDtoResponse);
+            when(usecase.alterar(produtoMock)).thenReturn(produtoAlteradoMock);
+            presenterMock.when(() -> ProdutoPresenter.toDto(produtoAlteradoMock)).thenReturn(produtoDtoResponse);
 
-            ResponseEntity<ProdutoDto> response = produtoController.salvar(produtoId, produtoDto);
+            ProdutoDto response = controller.salvar(id, produtoDto);
 
-            assertEquals(HttpStatus.CREATED, response.getStatusCode());
-            assertEquals(produtoDtoResponse, response.getBody());
+            assertEquals(produtoDtoResponse, response);
             verify(usecase).alterar(produtoMock);
         }
     }
 
     @Test
-    @DisplayName("Deve buscar produtos por categoria com sucesso")
-    void deveBuscarProdutosPorCategoriaComSucesso() {
-        String nomeCategoria = "BEBIDA";
+    @DisplayName("Deve buscar produtos por categoria")
+    void deveBuscarProdutosPorCategoria() {
+        String nomeCategoria = "LANCHE";
         Pageable pageable = PageRequest.of(0, 10);
         Produto produtoMock = mock(Produto.class);
         ProdutoDto produtoDtoMock = mock(ProdutoDto.class);
+        Page<Produto> produtosPage = new PageImpl<>(List.of(produtoMock));
 
-        Page<Produto> produtosMock = new PageImpl<>(List.of(produtoMock));
-        Page<ProdutoDto> produtosDtoMock = new PageImpl<>(List.of(produtoDtoMock));
-
-        try (MockedStatic<ProdutoPresenter> presenterMock = mockStatic(ProdutoPresenter.class)) {
-            when(usecase.buscarPorCategoria(CategoriaEnum.BEBIDA, pageable)).thenReturn(produtosMock);
+        try (MockedStatic<CategoriaEnum> categoriaEnumMock = mockStatic(CategoriaEnum.class);
+             MockedStatic<ProdutoPresenter> presenterMock = mockStatic(ProdutoPresenter.class)) {
+            CategoriaEnum categoriaEnum = CategoriaEnum.LANCHE;
+            categoriaEnumMock.when(() -> CategoriaEnum.obterPorNome(nomeCategoria)).thenReturn(categoriaEnum);
+            when(usecase.buscarPorCategoria(categoriaEnum, pageable)).thenReturn(produtosPage);
             presenterMock.when(() -> ProdutoPresenter.toDto(produtoMock)).thenReturn(produtoDtoMock);
 
-            ResponseEntity<Page<ProdutoDto>> response = produtoController.buscar(nomeCategoria, pageable);
+            Page<ProdutoDto> response = controller.buscar(nomeCategoria, pageable);
 
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(1, response.getBody().getTotalElements());
-            assertEquals(produtoDtoMock, response.getBody().getContent().get(0));
-            verify(usecase).buscarPorCategoria(CategoriaEnum.BEBIDA, pageable);
+            assertEquals(1, response.getTotalElements());
+            assertEquals(produtoDtoMock, response.getContent().get(0));
+            verify(usecase).buscarPorCategoria(categoriaEnum, pageable);
         }
     }
 
     @Test
-    @DisplayName("Deve retornar erro ao buscar produtos com categoria inválida")
-    void deveRetornarErroAoBuscarProdutosComCategoriaInvalida() {
-        String nomeCategoria = "INVALIDA";
-        Pageable pageable = PageRequest.of(0, 10);
+    @DisplayName("Deve remover produto")
+    void deveRemoverProduto() {
+        Integer id = 1;
+        doNothing().when(usecase).remover(id);
 
-        assertThrows(NotFoundException.class, () -> produtoController.buscar(nomeCategoria, pageable));
-    }
+        controller.remover(id);
 
-    @Test
-    @DisplayName("Deve remover produto com sucesso")
-    void deveRemoverProdutoComSucesso() {
-        Integer produtoId = 1;
-
-        doNothing().when(usecase).remover(produtoId);
-
-        ResponseEntity<Void> response = produtoController.remover(produtoId);
-
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        verify(usecase).remover(produtoId);
+        verify(usecase).remover(id);
     }
 }

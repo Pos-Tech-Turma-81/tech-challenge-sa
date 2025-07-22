@@ -1,10 +1,6 @@
 package br.com.tech.restauranteapi.controller;
 
-import br.com.tech.restauranteapi.controller.dtos.AtualizarStatusPedidoDto;
-import br.com.tech.restauranteapi.controller.dtos.CriarPedidoDto;
-import br.com.tech.restauranteapi.controller.dtos.PedidoDto;
-import br.com.tech.restauranteapi.controller.dtos.PedidoResponseDto;
-import br.com.tech.restauranteapi.controller.dtos.ProdutoPedidoDto;
+import br.com.tech.restauranteapi.controller.dtos.*;
 import br.com.tech.restauranteapi.domain.Pedido;
 import br.com.tech.restauranteapi.domain.AssociacaoProduto;
 import br.com.tech.restauranteapi.domain.Produto;
@@ -21,14 +17,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class PedidosControllerTest {
@@ -59,7 +54,7 @@ class PedidosControllerTest {
             AssociacaoProduto associacaoProduto = AssociacaoProduto.builder()
                     .quantidade(2)
                     .preco(BigDecimal.valueOf(10.0))
-                    .produto(Produto.builder().id(1).build()) // ajuste conforme o builder de Produto
+                    .produto(Produto.builder().id(1).build())
                     .build();
             Pedido pedidoMock = new Pedido();
             pedidoMock.setId(1);
@@ -68,11 +63,10 @@ class PedidosControllerTest {
 
             when(pedidosService.realizarCheckout(any(br.com.tech.restauranteapi.domain.CriarPedido.class))).thenReturn(pedidoMock);
 
-            ResponseEntity<PedidoResponseDto> response = pedidosController.realizarCheckout(criarPedidoDto);
+            PedidoResponseDto response = pedidosController.realizarCheckout(criarPedidoDto);
 
-            assertEquals(HttpStatus.CREATED, response.getStatusCode());
-            assertEquals(1, response.getBody().getPedidoId());
-            assertEquals(StatusEnum.EM_PREPARACAO, response.getBody().getStatus());
+            assertEquals(1, response.getPedidoId());
+            assertEquals(StatusEnum.EM_PREPARACAO, response.getStatus());
             verify(pedidosService).realizarCheckout(any(br.com.tech.restauranteapi.domain.CriarPedido.class));
         }
     }
@@ -94,10 +88,9 @@ class PedidosControllerTest {
 
             when(pedidosService.listarFilaPedidos(pageable)).thenReturn(pedidosMock);
 
-            ResponseEntity<Page<PedidoDto>> response = pedidosController.listarFilaPedidos(pageable);
+            Page<PedidoDto> response = pedidosController.listarFilaPedidos(pageable);
 
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(1, response.getBody().getContent().size());
+            assertEquals(1, response.getContent().size());
             verify(pedidosService).listarFilaPedidos(pageable);
         }
     }
@@ -115,14 +108,13 @@ class PedidosControllerTest {
             Pedido pedidoMock = new Pedido();
             pedidoMock.setId(pedidoId);
             pedidoMock.setStatus(StatusEnum.FINALIZADO);
-            pedidoMock.setAssociacoes(new ArrayList<>()); // Corrige NullPointerException
+            pedidoMock.setAssociacoes(new ArrayList<>());
 
             when(pedidosService.atualizarStatus(pedidoId, StatusEnum.FINALIZADO)).thenReturn(pedidoMock);
 
-            ResponseEntity<PedidoResponseDto> response = pedidosController.atualizarStatus(pedidoId, dto);
+            PedidoResponseDto response = pedidosController.atualizarStatus(pedidoId, dto);
 
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(StatusEnum.FINALIZADO, response.getBody().getStatus());
+            assertEquals(StatusEnum.FINALIZADO, response.getStatus());
             verify(pedidosService).atualizarStatus(pedidoId, StatusEnum.FINALIZADO);
         }
     }

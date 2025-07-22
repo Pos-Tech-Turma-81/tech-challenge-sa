@@ -10,10 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class ClienteControllerTest {
@@ -49,10 +48,9 @@ class ClienteControllerTest {
 
             when(clienteUsecase.cadastrar(any(Cliente.class))).thenReturn(clienteResponse);
 
-            ResponseEntity<ClienteDTO> response = clienteController.cadastrar(clienteDto);
+            ClienteDTO response = clienteController.cadastrar(clienteDto);
 
-            assertEquals(HttpStatus.CREATED, response.getStatusCode());
-            assertEquals(clienteDto.getCpf(), response.getBody().getCpf());
+            assertEquals(clienteDto.getCpf(), response.getCpf());
             verify(clienteUsecase).cadastrar(any(Cliente.class));
         }
     }
@@ -69,10 +67,9 @@ class ClienteControllerTest {
 
             when(clienteUsecase.getCliente(cpf)).thenReturn(clienteResponse);
 
-            ResponseEntity<ClienteDTO> response = clienteController.getCliente(cpf);
+            ClienteDTO response = clienteController.getCliente(cpf);
 
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(cpf, response.getBody().getCpf());
+            assertEquals(cpf, response.getCpf());
             verify(clienteUsecase).getCliente(cpf);
         }
     }
