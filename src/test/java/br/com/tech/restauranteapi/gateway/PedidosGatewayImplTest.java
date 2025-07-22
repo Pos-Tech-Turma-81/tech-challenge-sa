@@ -92,7 +92,7 @@ class PedidosGatewayImplTest {
             Pedido expectedPedido = mock(Pedido.class);
 
             try (MockedStatic<PedidoPresenter> presenterMock = mockStatic(PedidoPresenter.class)) {
-                when(repository.findById(id)).thenReturn(Optional.of(pedidoEntity));
+                when(repository.findByIdWithAssociacoesAndCliente(id)).thenReturn(Optional.of(pedidoEntity));
                 presenterMock.when(() -> PedidoPresenter.toDomain(pedidoEntity)).thenReturn(expectedPedido);
 
                 Pedido result = gateway.buscarPorId(id);

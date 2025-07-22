@@ -36,6 +36,7 @@ class ClienteControllerTest {
         @Test
         @DisplayName("Deve cadastrar cliente com sucesso")
         void deveCadastrarClienteComSucesso() {
+            System.out.println("teste");
             ClienteDTO clienteDto = ClienteDTO.builder()
                     .id(1)
                     .nome("João")
