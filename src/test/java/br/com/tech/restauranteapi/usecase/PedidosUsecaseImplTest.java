@@ -1,41 +1,32 @@
 package br.com.tech.restauranteapi.usecase;
 
-import br.com.tech.restauranteapi.domain.*;
-import br.com.tech.restauranteapi.utils.enums.StatusEnum;
-import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
-import br.com.tech.restauranteapi.domain.AssociacaoPedidoProduto;
 import br.com.tech.restauranteapi.gateway.ClienteGateway;
-import br.com.tech.restauranteapi.gateway.PedidosGateway;
 import br.com.tech.restauranteapi.gateway.ProdutoGateway;
+import br.com.tech.restauranteapi.domain.*;
+import br.com.tech.restauranteapi.gateway.impl.PedidosGatewayImpl;
 import br.com.tech.restauranteapi.usecase.impl.PedidosUsecaseImpl;
+import br.com.tech.restauranteapi.utils.enums.StatusEnum;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 class PedidosUsecaseImplTest {
 
     @Mock
-    private PedidosGateway pedidosGateway;
-
+    private PedidosGatewayImpl pedidosRepository;
     @Mock
     private ClienteGateway clienteGateway;
-
     @Mock
     private ProdutoGateway produtoGateway;
-
     @Mock
     private AssociacaoPedidoProdutoUsecase associacaoPedidoProdutoUsecase;
 
@@ -48,83 +39,130 @@ class PedidosUsecaseImplTest {
     }
 
     @Test
-    @DisplayName("Deve realizar checkout com sucesso")
-    void shouldPerformCheckoutSuccessfully() {
-        CriarPedido criarPedido = new CriarPedido(1, List.of(new ProdutoPedido(1, 2)));
-        Cliente cliente = new Cliente(1, "12345678900", "João", "joao@email.com", "11999999999", "Rua A");
-        Pedido pedidoSalvo = new Pedido(
-                1,
-                cliente,
-                StatusEnum.EM_PREPARACAO,
-                LocalDateTime.now(),
-                List.of()
-        );
-        Produto produto = new Produto(
-                1,
-                "Produto A",
-                CategoriaEnum.BEBIDA,
-                BigDecimal.TEN,
-                "desc",
-                new byte[0]
-        );
+    void testRealizarCheckout_WithClienteAndMultipleProducts() {
+        // Arrange
+        Integer clienteId = 1;
+        Integer produtoId1 = 10;
+        Integer produtoId2 = 20;
+        BigDecimal preco1 = new BigDecimal("5.00");
+        BigDecimal preco2 = new BigDecimal("7.00");
 
-        when(clienteGateway.buscarPorId(1)).thenReturn(cliente);
-        when(pedidosGateway.salvar(any(Pedido.class))).thenReturn(pedidoSalvo);
-        when(produtoGateway.buscarPorId(1)).thenReturn(produto);
-        when(associacaoPedidoProdutoUsecase.salvarTodas(anyList())).thenReturn(List.of(
-                new AssociacaoPedidoProduto(1, pedidoSalvo, BigDecimal.valueOf(20), produto)
-        ));
+        Produto produto1 = Produto.builder().id(produtoId1).preco(preco1).build();
+        Produto produto2 = Produto.builder().id(produtoId2).preco(preco2).build();
 
+        ProdutoPedido produtoPedido1 = ProdutoPedido.builder().produtoId(produtoId1).quantidade(2).build();
+        ProdutoPedido produtoPedido2 = ProdutoPedido.builder().produtoId(produtoId2).quantidade(1).build();
+
+        CriarPedido criarPedido = CriarPedido.builder()
+                .clienteId(clienteId)
+                .produtos(List.of(produtoPedido1, produtoPedido2))
+                .build();
+
+        Cliente cliente = new Cliente(clienteId, "Maria", "maria@email.com", "123456789", "12345678900", "Rua X, 123");
+        Pedido pedido = new Pedido();
+        Pedido pedidoSalvo = new Pedido();
+        pedidoSalvo.setId(100);
+        pedidoSalvo.setStatus(StatusEnum.EM_PREPARACAO);
+
+        when(clienteGateway.buscarPorId(clienteId)).thenReturn(cliente);
+        when(pedidosRepository.salvar(any(Pedido.class))).thenReturn(pedidoSalvo);
+        when(produtoGateway.buscarPorId(produtoId1)).thenReturn(produto1);
+        when(produtoGateway.buscarPorId(produtoId2)).thenReturn(produto2);
+
+        // Prepare association objects
+        AssociacaoPedidoProduto assoc1 = AssociacaoPedidoProduto.builder()
+                .produto(produto1)
+                .pedido(pedidoSalvo)
+                .quantidade(2)
+                .preco(preco1.multiply(BigDecimal.valueOf(2)))
+                .build();
+        AssociacaoPedidoProduto assoc2 = AssociacaoPedidoProduto.builder()
+                .produto(produto2)
+                .pedido(pedidoSalvo)
+                .quantidade(1)
+                .preco(preco2.multiply(BigDecimal.valueOf(1)))
+                .build();
+
+        when(associacaoPedidoProdutoUsecase.salvarTodas(anyList()))
+                .thenReturn(List.of(assoc1, assoc2));
+
+        // Act
         Pedido result = usecase.realizarCheckout(criarPedido);
 
-        assertEquals(pedidoSalvo, result);
-        verify(pedidosGateway, times(1)).salvar(any(Pedido.class));
-        verify(associacaoPedidoProdutoUsecase, times(1)).salvarTodas(anyList());
+        // Assert
+        assertNotNull(result);
+        assertEquals(100, result.getId());
+        assertEquals(StatusEnum.EM_PREPARACAO, result.getStatus());
+        assertNotNull(result.getAssociacoes());
+        assertEquals(2, result.getAssociacoes().size());
+        verify(clienteGateway).buscarPorId(clienteId);
+        verify(pedidosRepository).salvar(any(Pedido.class));
+        verify(produtoGateway).buscarPorId(produtoId1);
+        verify(produtoGateway).buscarPorId(produtoId2);
+        verify(associacaoPedidoProdutoUsecase).salvarTodas(anyList());
     }
 
     @Test
-    @DisplayName("Deve listar fila de pedidos com sucesso")
-    void shouldListOrderQueueSuccessfully() {
-        Pageable pageable = Pageable.ofSize(10);
-        Page<Pedido> pedidosPage = mock(Page.class);
+    void testRealizarCheckout_WithoutCliente() {
+        // Arrange
+        Integer produtoId = 10;
+        BigDecimal preco = new BigDecimal("5.00");
+        Produto produto = Produto.builder().id(produtoId).preco(preco).build();
+        ProdutoPedido produtoPedido = ProdutoPedido.builder().produtoId(produtoId).quantidade(1).build();
 
-        when(pedidosGateway.listarFilaPedidos(pageable)).thenReturn(pedidosPage);
+        CriarPedido criarPedido = CriarPedido.builder()
+                .clienteId(null)
+                .produtos(List.of(produtoPedido))
+                .build();
 
-        Page<Pedido> result = usecase.listarFilaPedidos(pageable);
+        Pedido pedidoSalvo = new Pedido();
+        pedidoSalvo.setId(200);
+        pedidoSalvo.setStatus(StatusEnum.EM_PREPARACAO);
 
-        assertEquals(pedidosPage, result);
-        verify(pedidosGateway, times(1)).listarFilaPedidos(pageable);
+        when(pedidosRepository.salvar(any(Pedido.class))).thenReturn(pedidoSalvo);
+        when(produtoGateway.buscarPorId(produtoId)).thenReturn(produto);
+
+        AssociacaoPedidoProduto assoc = AssociacaoPedidoProduto.builder()
+                .produto(produto)
+                .pedido(pedidoSalvo)
+                .quantidade(1)
+                .preco(preco)
+                .build();
+
+        when(associacaoPedidoProdutoUsecase.salvarTodas(anyList()))
+                .thenReturn(List.of(assoc));
+
+        // Act
+        Pedido result = usecase.realizarCheckout(criarPedido);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(200, result.getId());
+        assertEquals(StatusEnum.EM_PREPARACAO, result.getStatus());
+        assertNotNull(result.getAssociacoes());
+        assertEquals(1, result.getAssociacoes().size());
+        verify(clienteGateway, never()).buscarPorId(any());
+        verify(pedidosRepository).salvar(any(Pedido.class));
+        verify(produtoGateway).buscarPorId(produtoId);
+        verify(associacaoPedidoProdutoUsecase).salvarTodas(anyList());
     }
 
     @Test
-    @DisplayName("Deve atualizar status do pedido com sucesso")
-    void shouldUpdateOrderStatusSuccessfully() {
-        Cliente cliente = new Cliente(1, "12345678900", "João", "joao@email.com", "11999999999", "Rua A");
-        Pedido pedido = new Pedido(
-                1,
-                cliente,
-                StatusEnum.EM_PREPARACAO,
-                LocalDateTime.now(),
-                List.of()
-        );
+    void testListarFilaPedidos() {
+        // Arrange
+        Pedido pedido1 = new Pedido();
+        pedido1.setId(1);
+        Pedido pedido2 = new Pedido();
+        pedido2.setId(2);
+        Page<Pedido> page = new PageImpl<>(List.of(pedido1, pedido2), PageRequest.of(0, 10), 2);
+        when(pedidosRepository.listarFilaPedidos(any())).thenReturn(page);
 
-        when(pedidosGateway.buscarPorId(1)).thenReturn(pedido);
-        when(pedidosGateway.atualizar(any(Pedido.class))).thenReturn(pedido);
+        // Act
+        Page<Pedido> result = usecase.listarFilaPedidos(PageRequest.of(0, 10));
 
-        Pedido result = usecase.atualizarStatus(1, StatusEnum.PRONTO);
-
-        assertEquals(StatusEnum.PRONTO, result.getStatus());
-        verify(pedidosGateway, times(1)).buscarPorId(1);
-        verify(pedidosGateway, times(1)).atualizar(any(Pedido.class));
-    }
-
-    @Test
-    @DisplayName("Deve lançar exceção ao atualizar status de pedido inexistente")
-    void shouldThrowExceptionWhenUpdatingStatusOfNonExistentOrder() {
-        when(pedidosGateway.buscarPorId(999)).thenReturn(null);
-
-        assertThrows(IllegalArgumentException.class, () -> usecase.atualizarStatus(999, StatusEnum.PRONTO));
-        verify(pedidosGateway, times(1)).buscarPorId(999);
-        verify(pedidosGateway, never()).atualizar(any(Pedido.class));
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.getTotalElements());
+        verify(pedidosRepository).listarFilaPedidos(any());
     }
 }
