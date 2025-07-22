@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restaurante-app
+  labels:
+    app: restaurante-app
+spec:
+  template:
+    metadata:
+      name: restaurante-app
+      labels:
+        app: restaurante-app
+    spec:
+      containers:
+        - name: restaurante-app-container
+          image: marcelobenjamim/restaurante-app:v2
+          ports:
+            - containerPort: 8080 
+          resources:
+            requests:
+              cpu: 250m
+            limits:
+              cpu: 500m
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 3
+            initialDelaySeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            periodSeconds: 1000
+            failureThreshold: 5
+            initialDelaySeconds: 3
+  replicas: 1
+  selector:
+    matchLabels:
+      app: restaurante-app
