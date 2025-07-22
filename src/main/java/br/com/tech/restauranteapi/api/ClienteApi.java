@@ -2,8 +2,6 @@ package br.com.tech.restauranteapi.api;
 
 import br.com.tech.restauranteapi.controller.ClienteController;
 import br.com.tech.restauranteapi.controller.dtos.ClienteDTO;
-import br.com.tech.restauranteapi.presenter.ClientePresenter;
-import br.com.tech.restauranteapi.usecase.ClienteUsecase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
