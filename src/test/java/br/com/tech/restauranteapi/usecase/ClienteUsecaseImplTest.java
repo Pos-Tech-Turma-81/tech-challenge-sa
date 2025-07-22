@@ -1,12 +1,11 @@
 package br.com.tech.restauranteapi.usecase;
 
-import br.com.tech.restauranteapi.domain.Cliente;
-import br.com.tech.restauranteapi.gateway.ClienteGateway;
-import br.com.tech.restauranteapi.usecase.impl.ClienteUsecaseImpl;
 import br.com.tech.restauranteapi.exceptions.AlreadyExistsException;
 import br.com.tech.restauranteapi.exceptions.NotFoundException;
+import br.com.tech.restauranteapi.gateway.ClienteGateway;
+import br.com.tech.restauranteapi.domain.Cliente;
+import br.com.tech.restauranteapi.usecase.impl.ClienteUsecaseImpl;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -25,59 +24,61 @@ class ClienteUsecaseImplTest {
     @InjectMocks
     private ClienteUsecaseImpl usecase;
 
+    private Cliente cliente;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        cliente = new Cliente(1, "Maria", "maria@email.com", "123456789", "12345678900", "Rua X, 123");
     }
 
     @Test
-    @DisplayName("Deve cadastrar cliente com sucesso")
-    void shouldRegisterClientSuccessfully() {
-        Cliente cliente = new Cliente(1, "12345678900", "João Silva", "joao@email.com", "11999999999", "Rua A");
-
+    void testCadastrar_Success() {
         when(gateway.getCliente(cliente.getCpf())).thenReturn(Optional.empty());
         when(gateway.cadastrar(cliente)).thenReturn(cliente);
 
         Cliente result = usecase.cadastrar(cliente);
 
+        assertNotNull(result);
         assertEquals(cliente, result);
-        verify(gateway, times(1)).getCliente(cliente.getCpf());
-        verify(gateway, times(1)).cadastrar(cliente);
+        verify(gateway).getCliente(cliente.getCpf());
+        verify(gateway).cadastrar(cliente);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao tentar cadastrar cliente já existente")
-    void shouldThrowExceptionWhenRegisteringDuplicateClient() {
-        Cliente cliente = new Cliente(1, "12345678900", "João Silva", "joao@email.com", "11999999999", "Rua A");
-
+    void testCadastrar_AlreadyExists() {
         when(gateway.getCliente(cliente.getCpf())).thenReturn(Optional.of(cliente));
 
-        assertThrows(AlreadyExistsException.class, () -> usecase.cadastrar(cliente));
-        verify(gateway, times(1)).getCliente(cliente.getCpf());
-        verify(gateway, never()).cadastrar(cliente);
+        AlreadyExistsException exception = assertThrows(
+                AlreadyExistsException.class,
+                () -> usecase.cadastrar(cliente)
+        );
+        assertTrue(exception.getMessage().contains(cliente.getCpf()));
+        verify(gateway).getCliente(cliente.getCpf());
+        verify(gateway, never()).cadastrar(any());
     }
 
     @Test
-    @DisplayName("Deve retornar cliente com sucesso")
-    void shouldReturnClientSuccessfully() {
-        Cliente cliente = new Cliente(1, "12345678900", "João Silva", "joao@email.com", "11999999999", "Rua A");
+    void testGetCliente_Success() {
+        when(gateway.getCliente("12345678900")).thenReturn(Optional.of(cliente));
 
-        when(gateway.getCliente(cliente.getCpf())).thenReturn(Optional.of(cliente));
+        Cliente result = usecase.getCliente("12345678900");
 
-        Cliente result = usecase.getCliente(cliente.getCpf());
-
+        assertNotNull(result);
         assertEquals(cliente, result);
-        verify(gateway, times(1)).getCliente(cliente.getCpf());
+        verify(gateway).getCliente("12345678900");
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao buscar cliente inexistente")
-    void shouldThrowExceptionWhenClientNotFound() {
-        String cpf = "12345678900";
-
+    void testGetCliente_NotFound() {
+        String cpf = "00000000000";
         when(gateway.getCliente(cpf)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> usecase.getCliente(cpf));
-        verify(gateway, times(1)).getCliente(cpf);
+        NotFoundException exception = assertThrows(
+                NotFoundException.class,
+                () -> usecase.getCliente(cpf)
+        );
+        assertTrue(exception.getMessage().contains(cpf));
+        verify(gateway).getCliente(cpf);
     }
 }

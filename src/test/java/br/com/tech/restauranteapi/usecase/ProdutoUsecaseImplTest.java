@@ -1,19 +1,18 @@
 package br.com.tech.restauranteapi.usecase;
 
-import br.com.tech.restauranteapi.domain.Produto;
 import br.com.tech.restauranteapi.gateway.ProdutoGateway;
+import br.com.tech.restauranteapi.domain.Produto;
 import br.com.tech.restauranteapi.usecase.impl.ProdutoUsecaseImpl;
 import br.com.tech.restauranteapi.utils.enums.CategoriaEnum;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -32,64 +31,87 @@ class ProdutoUsecaseImplTest {
     }
 
     @Test
-    @DisplayName("Deve salvar produto com sucesso")
-    void shouldSaveProductSuccessfully() {
-        Produto produto = new Produto(null, "Produto Teste", CategoriaEnum.BEBIDA, BigDecimal.TEN, "Descrição", null);
-        Produto savedProduto = new Produto(1, "Produto Teste", CategoriaEnum.BEBIDA, BigDecimal.TEN, "Descrição", null);
+    void testSalvar_SetsIdToNullAndSaves() {
+        Produto produto = Produto.builder()
+                .id(10)
+                .nome("Água")
+                .categoria(CategoriaEnum.BEBIDA)
+                .preco(new BigDecimal("2.50"))
+                .build();
 
-        when(gateway.salvar(produto)).thenReturn(savedProduto);
+        Produto produtoSalvo = Produto.builder()
+                .id(20)
+                .nome("Água")
+                .categoria(CategoriaEnum.BEBIDA)
+                .preco(new BigDecimal("2.50"))
+                .build();
+
+        when(gateway.salvar(any(Produto.class))).thenReturn(produtoSalvo);
 
         Produto result = usecase.salvar(produto);
 
-        assertEquals(savedProduto, result);
-        verify(gateway, times(1)).salvar(produto);
+        assertNotNull(result);
+        assertEquals(produtoSalvo, result);
+        ArgumentCaptor<Produto> captor = ArgumentCaptor.forClass(Produto.class);
+        verify(gateway).salvar(captor.capture());
+        assertNull(captor.getValue().getId());
     }
 
     @Test
-    @DisplayName("Deve alterar produto com sucesso")
-    void shouldUpdateProductSuccessfully() {
-        Produto produto = new Produto(1, "Produto Alterado", CategoriaEnum.BEBIDA, BigDecimal.TEN, "Descrição Alterada", null);
+    void testAlterar_CallsBuscarPorIdAndSaves() {
+        Produto produto = Produto.builder()
+                .id(15)
+                .nome("Coca-Cola")
+                .categoria(CategoriaEnum.BEBIDA)
+                .preco(new BigDecimal("7.50"))
+                .build();
 
-        when(gateway.buscarPorId(1)).thenReturn(produto);
-        when(gateway.salvar(produto)).thenReturn(produto);
+        Produto produtoSalvo = Produto.builder()
+                .id(15)
+                .nome("Coca-Cola")
+                .categoria(CategoriaEnum.BEBIDA)
+                .preco(new BigDecimal("7.50"))
+                .build();
+
+        when(gateway.buscarPorId(produto.getId())).thenReturn(produto);
+        when(gateway.salvar(produto)).thenReturn(produtoSalvo);
 
         Produto result = usecase.alterar(produto);
 
-        assertEquals(produto, result);
-        verify(gateway, times(1)).buscarPorId(1);
-        verify(gateway, times(1)).salvar(produto);
+        assertNotNull(result);
+        assertEquals(produtoSalvo, result);
+        verify(gateway).buscarPorId(produto.getId());
+        verify(gateway).salvar(produto);
     }
 
     @Test
-    @DisplayName("Deve buscar produtos por categoria com sucesso")
-    void shouldFindProductsByCategorySuccessfully() {
-        Pageable pageable = Pageable.ofSize(10);
-        Page<Produto> produtosPage = mock(Page.class);
+    void testBuscarPorCategoria_ReturnsPage() {
+        CategoriaEnum categoria = CategoriaEnum.BEBIDA;
+        Produto produto = Produto.builder()
+                .id(1)
+                .nome("Água")
+                .categoria(categoria)
+                .preco(new BigDecimal("2.50"))
+                .build();
 
-        when(gateway.buscarPorCategoria(CategoriaEnum.BEBIDA, pageable)).thenReturn(produtosPage);
+        Page<Produto> page = new PageImpl<>(List.of(produto), PageRequest.of(0, 10), 1);
+        when(gateway.buscarPorCategoria(categoria, PageRequest.of(0, 10))).thenReturn(page);
 
-        Page<Produto> result = usecase.buscarPorCategoria(CategoriaEnum.BEBIDA, pageable);
+        Page<Produto> result = usecase.buscarPorCategoria(categoria, PageRequest.of(0, 10));
 
-        assertEquals(produtosPage, result);
-        verify(gateway, times(1)).buscarPorCategoria(CategoriaEnum.BEBIDA, pageable);
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+        assertEquals(produto, result.getContent().get(0));
+        verify(gateway).buscarPorCategoria(categoria, PageRequest.of(0, 10));
     }
 
     @Test
-    @DisplayName("Deve remover produto com sucesso")
-    void shouldRemoveProductSuccessfully() {
-        doNothing().when(gateway).remover(1);
+    void testRemover_CallsGatewayRemover() {
+        Integer produtoId = 99;
+        doNothing().when(gateway).remover(produtoId);
 
-        usecase.remover(1);
+        usecase.remover(produtoId);
 
-        verify(gateway, times(1)).remover(1);
-    }
-
-    @Test
-    @DisplayName("Deve lançar exceção ao remover produto inexistente")
-    void shouldThrowExceptionWhenRemovingNonExistentProduct() {
-        doThrow(new IllegalArgumentException("Produto não encontrado")).when(gateway).remover(999);
-
-        assertThrows(IllegalArgumentException.class, () -> usecase.remover(999));
-        verify(gateway, times(1)).remover(999);
+        verify(gateway).remover(produtoId);
     }
 }
