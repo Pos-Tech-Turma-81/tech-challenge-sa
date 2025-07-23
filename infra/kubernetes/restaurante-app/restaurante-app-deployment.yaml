@@ -14,8 +14,23 @@ spec:
       containers:
         - name: restaurante-app-container
           image: marcelobenjamim/restaurante-app:v2
+          imagePullPolicy: Always
           ports:
-            - containerPort: 8080         
+            - containerPort: 8080
+          envFrom:
+          - configMapRef:
+              name: restaurante-config
+          env:
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: restaurante-secret
+                key: DB_PASSWORD
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: restaurante-secret
+                key: DB_USER      
           resources:
             requests:
               cpu: 250m
@@ -25,14 +40,14 @@ spec:
             httpGet:
               path: /actuator/health
               port: 8080
-            periodSeconds: 10
+            periodSeconds: 1000
             failureThreshold: 3
             initialDelaySeconds: 20
           readinessProbe:
             httpGet:
               path: /actuator/health
               port: 8080
-            periodSeconds: 1000
+            periodSeconds: 10
             failureThreshold: 5
             initialDelaySeconds: 3
   replicas: 1
