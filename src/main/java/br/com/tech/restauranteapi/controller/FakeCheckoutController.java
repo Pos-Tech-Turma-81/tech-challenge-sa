@@ -3,7 +3,9 @@ package br.com.tech.restauranteapi.controller;
 import br.com.tech.restauranteapi.controller.dtos.*;
 import br.com.tech.restauranteapi.usecase.FakeCheckoutUsecase;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @AllArgsConstructor
 public class FakeCheckoutController {
 
