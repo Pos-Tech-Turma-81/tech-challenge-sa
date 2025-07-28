@@ -162,7 +162,7 @@ Permite o estabelecimento:
 ### 📦 Checkout
 Ato de **finalizar e confirmar o pedido**, enviando-o para a fila da cozinha.
 
-- Na **ETAPA 1**, o checkout será uma **simulação (fake checkout)** apenas para fins de fluxo.
+- Pagamento realizado via **QRCode** através do **Mercado Pago**.
 
 ---
 
@@ -176,8 +176,59 @@ Organização dos pedidos em espera no sistema, com tempo de entrada e status de
 - A aplicação será entregue como um **monolito**
 
 ---
+## 📚 Requisitos do Sistema
 
-### 🛠️ APIs do Sistema
+### Requisitos de Negócio
+- Cadastro e login de clientes (opcional).
+- Criação de pedidos personalizados: lanche, acompanhamento, bebida e sobremesa.
+- Pagamento por QRCode (Mercado Pago).
+- Acompanhamento dos pedidos.
+- Painel administrativo com:
+  - Gerenciamento de produtos por categoria.
+  - Acompanhamento de pedidos.
+- APIs RESTful seguindo padrões Clean Code + Clean Architecture.
+
+### Requisitos de Infraestrutura
+- Orquestração com Kubernetes (K8s) utilizando Minikube.
+- Suporte à escalabilidade com Horizontal Pod Autoscaler (HPA).
+- Deploys via Deployments + Services.
+- Armazenamento de configurações com ConfigMaps.
+- Armazenamento de dados sensíveis com Secrets.
+
+### ☁️ Kubernetes – Componentes Utilizados
+
+| Componente   | Descrição                                               |
+|--------------|---------------------------------------------------------|
+| `Deployment` | Garante replicação e atualização do pod                 |
+| `Service`    | Exposição interna dos pods                              |
+| `HPA`        | Escalabilidade automática com base em CPU               |
+| `ConfigMaps` | Parametrizações e variáveis não sensíveis               |
+| `Secrets`    | Armazenamento de tokens/segredos (ex: API Mercado Pago) |
+| `Volume`     | Persistência de dados                              |
+
+
+---
+
+### Desenho da Arquitetura
+
+<img width="709" height="901" alt="docs drawio" src="https://github.com/user-attachments/assets/5a27616f-9da8-4569-ba2b-20f478af3564" />
+
+
+---
+
+## 🛠️ Tecnologias e Ferramentas
+
+- **Spring Boot**: Backend REST
+- **JPA / Hibernate**: Persistência
+- **PostgreSQL**: Banco de dados
+- **Docker**: Contêiner da aplicação
+- **Minikube (Kubernetes)**: Orquestração
+- **Swagger**: Documentação das APIs
+- **Mercado Pago**: Gateway de pagamento (via QR Code)
+
+---
+
+## 🛠️ APIs do Sistema
 
 - Cadastro do Cliente  
 - Identificação via CPF  
@@ -202,6 +253,8 @@ Documentação interativa das APIs REST disponibilizadas no backend.
 
 ### Pré-requisitos
 
+- Kubernetes 
+- Minikube
 - Docker
 - Maven
 
@@ -218,19 +271,24 @@ cd tech-challenge-sa
 mvn clean install
 ```
 
-3. Gera a imagem docker:
+3. Abre o Docker
 ```bash
-docker build -t restaurante-app .
+open -a Docker
 ```
 
-4. Navega para `/infra`:
+4. Start o Docker
 ```bash
-cd infra
+docker start
 ```
 
-5. Gera os Containers:
+5. Start o Minikube
+5.1. Caso seja a primeira vez que está rodando o Minikube, execute:
 ```bash
-docker-compose up
+minikube start --driver=docker
+```
+5.2. Caso já tenha o Minikube rodando, execute:
+```bash
+minikube start
 ```
 
 6. Acesse a API (Swagger):
