@@ -21,14 +21,14 @@ public class PedidosApi {
 
     private final PedidosController controller;
 
-    @Operation(summary = "Realizar checkout / criar pedido")
+    @Operation(summary = "Criar pedido")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pedido criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos")
     })
-    @PostMapping("/checkout")
-    public ResponseEntity<PedidoResponseDto> realizarCheckout(@RequestBody @Valid CriarPedidoDto criarPedidoDto) {
-        PedidoResponseDto responseDto = controller.realizarCheckout(criarPedidoDto);
+    @PostMapping("/criar")
+    public ResponseEntity<PedidoResponseDto> criarPedido(@RequestBody @Valid CriarPedidoDto criarPedidoDto) {
+        PedidoResponseDto responseDto = controller.criarPedido(criarPedidoDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 

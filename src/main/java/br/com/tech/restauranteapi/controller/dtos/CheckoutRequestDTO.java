@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class CheckoutRequestDTO {
-    private String pedidoId;
+    private Integer pedidoId;
     private Double valor;
 }

@@ -61,13 +61,13 @@ class PedidosControllerTest {
             pedidoMock.setStatus(StatusEnum.EM_PREPARACAO);
             pedidoMock.setAssociacoes(List.of(associacaoProduto));
 
-            when(pedidosService.realizarCheckout(any(br.com.tech.restauranteapi.domain.CriarPedido.class))).thenReturn(pedidoMock);
+            when(pedidosService.criarPedido(any(br.com.tech.restauranteapi.domain.CriarPedido.class))).thenReturn(pedidoMock);
 
-            PedidoResponseDto response = pedidosController.realizarCheckout(criarPedidoDto);
+            PedidoResponseDto response = pedidosController.criarPedido(criarPedidoDto);
 
             assertEquals(1, response.getPedidoId());
             assertEquals(StatusEnum.EM_PREPARACAO, response.getStatus());
-            verify(pedidosService).realizarCheckout(any(br.com.tech.restauranteapi.domain.CriarPedido.class));
+            verify(pedidosService).criarPedido(any(br.com.tech.restauranteapi.domain.CriarPedido.class));
         }
     }
 
