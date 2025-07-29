@@ -18,8 +18,8 @@ public class PedidosController {
 
     private final PedidosUsecase pedidosService;
 
-    public PedidoResponseDto realizarCheckout(CriarPedidoDto criarPedidoDto) {
-        Pedido response = pedidosService.realizarCheckout(
+    public PedidoResponseDto criarPedido(CriarPedidoDto criarPedidoDto) {
+        Pedido response = pedidosService.criarPedido(
                 CriarPedidoPresenter.toDomain(criarPedidoDto)
         );
         return PedidoPresenter.toResponseDto(response);

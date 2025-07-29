@@ -87,7 +87,7 @@ class PedidosUsecaseImplTest {
                 .thenReturn(List.of(assoc1, assoc2));
 
         // Act
-        Pedido result = usecase.realizarCheckout(criarPedido);
+        Pedido result = usecase.criarPedido(criarPedido);
 
         // Assert
         assertNotNull(result);
@@ -133,7 +133,7 @@ class PedidosUsecaseImplTest {
                 .thenReturn(List.of(assoc));
 
         // Act
-        Pedido result = usecase.realizarCheckout(criarPedido);
+        Pedido result = usecase.criarPedido(criarPedido);
 
         // Assert
         assertNotNull(result);

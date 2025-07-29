@@ -7,13 +7,13 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/checkout")
+@RequestMapping("/pedidos")
 @AllArgsConstructor
 public class FakeCheckoutApi {
 
     private final FakeCheckoutController controller;
 
-    @PostMapping()
+    @PostMapping("/checkout")
     public ResponseEntity<CheckoutResponseDTO> iniciarCheckout(@RequestBody CheckoutRequestDTO request) {
 
         var response = controller.iniciarCheckout(request);

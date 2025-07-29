@@ -38,7 +38,7 @@ class PedidosApiTest {
 
     @Nested
     @DisplayName("Realizar checkout via API")
-    class RealizarCheckoutApi {
+    class criarPedidoApi {
 
         @Test
         @DisplayName("Deve retornar CREATED ao criar pedido")
@@ -53,13 +53,13 @@ class PedidosApiTest {
                     .status(StatusEnum.EM_PREPARACAO)
                     .build();
 
-            when(pedidosController.realizarCheckout(any(CriarPedidoDto.class))).thenReturn(responseDto);
+            when(pedidosController.criarPedido(any(CriarPedidoDto.class))).thenReturn(responseDto);
 
-            ResponseEntity<PedidoResponseDto> response = pedidosApi.realizarCheckout(criarPedidoDto);
+            ResponseEntity<PedidoResponseDto> response = pedidosApi.criarPedido(criarPedidoDto);
 
             assertEquals(HttpStatus.CREATED, response.getStatusCode());
             assertEquals(1, response.getBody().getPedidoId());
-            verify(pedidosController).realizarCheckout(any(CriarPedidoDto.class));
+            verify(pedidosController).criarPedido(any(CriarPedidoDto.class));
         }
     }
 
