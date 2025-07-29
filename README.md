@@ -260,39 +260,86 @@ Documentação interativa das APIs REST disponibilizadas no backend.
 
 ### Passos
 
-1. Clone o repositório:
+#### 1. Clone o Repositório
 ```bash
 git clone https://github.com/eusoumabel/tech-challenge-sa.git
 cd tech-challenge-sa
 ```
 
-2. Compile e gere o JAR:
-```bash
-mvn clean install
-```
+#### 2. Inicie o Docker
 
-3. Abre o Docker
+Abra o aplicativo do Docker:
+
 ```bash
 open -a Docker
 ```
 
-4. Start o Docker
+#### 3. Acesse o Diretório de Configuração do Kubernetes
 ```bash
-docker start
+cd infra/kubernetes
 ```
 
-5. Start o Minikube
-5.1. Caso seja a primeira vez que está rodando o Minikube, execute:
+#### 4. Inicie o Minikube
+
+Se for a primeira vez utilizando:
 ```bash
 minikube start --driver=docker
 ```
-5.2. Caso já tenha o Minikube rodando, execute:
+
+Se o Minikube já estiver configurado anteriormente:
 ```bash
 minikube start
 ```
 
-6. Acesse a API (Swagger):
+#### 5. Suba os Recursos do Projeto
+
+5.1. Suba o banco de dados PostgreSQL:
+```bash
+kubectl apply -f postgress
 ```
+
+5.2. Crie os segredos da aplicação:
+
+Abra o arquivo **infra/kubernetes/criar_secrets.txt**, copie todo o conteúdo e cole no terminal para executar os comandos de criação dos secrets.
+
+5.3. Suba a aplicação principal:
+```bash
+kubectl apply -f restaurante-app
+```
+
+#### 6. Verifique o Status dos Pods
+```bash
+kubectl get pods
+```
+Aguarde até que ambos os Pods estejam com o status Ready (ex: 1/1).
+
+#### 7. Obtenha o IP do Minikube
+```bash
+minikube ip
+```
+
+#### 8. Acesse a API via Swagger (Linux)
+
+Acesse no navegador:
+
+```bash
+http://192.168.49.2:31000/swagger-ui/index.html#/
+```
+
+> ⚠️ Todos os passos foram realizados com sucesso utilizando o Linux. Para Windows e Mac, é necessários os passos abaixo:
+
+#### 9. Acesse a API via Swagger (Windows e Mac)
+
+9.1. Redirecionar a porta do Minikube para o localhost:
+
+```bash
+kubectl port-forward svc/svc-restaurante-app 8080:8080
+```
+
+9.2. Acesse no navegador:
+
+```bash
 http://localhost:8080/swagger-ui/index.html#/
 ```
+
 ---
