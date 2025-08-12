@@ -1,0 +1,14 @@
+ environment : [
+        {
+          name : "DB_HOST",
+          value : "calendar"
+        },
+        {
+          name : "DB_USER",
+          value : "dev"
+        },
+        {
+          name : "DB_PASSWORD",
+          value : "0.0.1"
+        }
+      ],
