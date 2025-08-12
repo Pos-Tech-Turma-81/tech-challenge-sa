@@ -3,16 +3,13 @@ package br.com.tech.restauranteapi.controller;
 import br.com.tech.restauranteapi.controller.dtos.ClienteDTO;
 import br.com.tech.restauranteapi.presenter.ClientePresenter;
 import br.com.tech.restauranteapi.usecase.ClienteUsecase;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+@Component
 @AllArgsConstructor
 @Service
 public class ClienteController {

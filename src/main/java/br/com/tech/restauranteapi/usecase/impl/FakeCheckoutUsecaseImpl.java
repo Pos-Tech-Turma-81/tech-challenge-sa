@@ -23,7 +23,7 @@ public class FakeCheckoutUsecaseImpl implements FakeCheckoutUsecase {
         MercadoPagoCheckoutRequest mp = new MercadoPagoCheckoutRequest();
         mp.setTitle("Pedido " + checkoutRequestDTO.getPedidoId());
         mp.setNotification_url("https://www.yourserver.com/notifications");
-        mp.setExternal_reference(checkoutRequestDTO.getPedidoId());
+        mp.setExternal_reference(checkoutRequestDTO.getPedidoId().toString());
         mp.setDescription("Descrição");
         mp.setTotal_amount(25.01);
 

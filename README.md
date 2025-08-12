@@ -162,7 +162,7 @@ Permite o estabelecimento:
 ### 📦 Checkout
 Ato de **finalizar e confirmar o pedido**, enviando-o para a fila da cozinha.
 
-- Na **ETAPA 1**, o checkout será uma **simulação (fake checkout)** apenas para fins de fluxo.
+- Pagamento realizado via **QRCode** através do **Mercado Pago**.
 
 ---
 
@@ -176,8 +176,59 @@ Organização dos pedidos em espera no sistema, com tempo de entrada e status de
 - A aplicação será entregue como um **monolito**
 
 ---
+## 📚 Requisitos do Sistema
 
-### 🛠️ APIs do Sistema
+### Requisitos de Negócio
+- Cadastro e login de clientes (opcional).
+- Criação de pedidos personalizados: lanche, acompanhamento, bebida e sobremesa.
+- Pagamento por QRCode (Mercado Pago).
+- Acompanhamento dos pedidos.
+- Painel administrativo com:
+  - Gerenciamento de produtos por categoria.
+  - Acompanhamento de pedidos.
+- APIs RESTful seguindo padrões Clean Code + Clean Architecture.
+
+### Requisitos de Infraestrutura
+- Orquestração com Kubernetes (K8s) utilizando Minikube.
+- Suporte à escalabilidade com Horizontal Pod Autoscaler (HPA).
+- Deploys via Deployments + Services.
+- Armazenamento de configurações com ConfigMaps.
+- Armazenamento de dados sensíveis com Secrets.
+
+### ☁️ Kubernetes – Componentes Utilizados
+
+| Componente   | Descrição                                               |
+|--------------|---------------------------------------------------------|
+| `Deployment` | Garante replicação e atualização do pod                 |
+| `Service`    | Exposição interna dos pods                              |
+| `HPA`        | Escalabilidade automática com base em CPU               |
+| `ConfigMaps` | Parametrizações e variáveis não sensíveis               |
+| `Secrets`    | Armazenamento de tokens/segredos (ex: API Mercado Pago) |
+| `Volume`     | Persistência de dados                              |
+
+
+---
+
+### Desenho da Arquitetura
+
+<img width="709" height="901" alt="docs drawio" src="https://github.com/user-attachments/assets/5a27616f-9da8-4569-ba2b-20f478af3564" />
+
+
+---
+
+## 🛠️ Tecnologias e Ferramentas
+
+- **Spring Boot**: Backend REST
+- **JPA / Hibernate**: Persistência
+- **PostgreSQL**: Banco de dados
+- **Docker**: Contêiner da aplicação
+- **Minikube (Kubernetes)**: Orquestração
+- **Swagger**: Documentação das APIs
+- **Mercado Pago**: Gateway de pagamento (via QR Code)
+
+---
+
+## 🛠️ APIs do Sistema
 
 - Cadastro do Cliente  
 - Identificação via CPF  
@@ -202,39 +253,93 @@ Documentação interativa das APIs REST disponibilizadas no backend.
 
 ### Pré-requisitos
 
+- Kubernetes 
+- Minikube
 - Docker
 - Maven
 
 ### Passos
 
-1. Clone o repositório:
+#### 1. Clone o Repositório
 ```bash
 git clone https://github.com/eusoumabel/tech-challenge-sa.git
 cd tech-challenge-sa
 ```
 
-2. Compile e gere o JAR:
+#### 2. Inicie o Docker
+
+Abra o aplicativo do Docker:
+
 ```bash
-mvn clean install
+open -a Docker
 ```
 
-3. Gera a imagem docker:
+#### 3. Acesse o Diretório de Configuração do Kubernetes
 ```bash
-docker build -t restaurante-app .
+cd infra/kubernetes
 ```
 
-4. Navega para `/infra`:
+#### 4. Inicie o Minikube
+
+Se for a primeira vez utilizando:
 ```bash
-cd infra
+minikube start --driver=docker
 ```
 
-5. Gera os Containers:
+Se o Minikube já estiver configurado anteriormente:
 ```bash
-docker-compose up
+minikube start
 ```
 
-6. Acesse a API (Swagger):
+#### 5. Suba os Recursos do Projeto
+
+5.1. Suba o banco de dados PostgreSQL:
+```bash
+kubectl apply -f postgress
 ```
+
+5.2. Crie os segredos da aplicação:
+
+Abra o arquivo **infra/kubernetes/criar_secrets.txt**, copie todo o conteúdo e cole no terminal para executar os comandos de criação dos secrets.
+
+5.3. Suba a aplicação principal:
+```bash
+kubectl apply -f restaurante-app
+```
+
+#### 6. Verifique o Status dos Pods
+```bash
+kubectl get pods
+```
+Aguarde até que ambos os Pods estejam com o status Ready (ex: 1/1).
+
+#### 7. Obtenha o IP do Minikube
+```bash
+minikube ip
+```
+
+#### 8. Acesse a API via Swagger (Linux)
+
+Acesse no navegador:
+
+```bash
+http://192.168.49.2:31000/swagger-ui/index.html#/
+```
+
+> ⚠️ Todos os passos foram realizados com sucesso utilizando o Linux. Para Windows e Mac, é necessários os passos abaixo:
+
+#### 9. Acesse a API via Swagger (Windows e Mac)
+
+9.1. Redirecionar a porta do Minikube para o localhost:
+
+```bash
+kubectl port-forward svc/svc-restaurante-app 8080:8080
+```
+
+9.2. Acesse no navegador:
+
+```bash
 http://localhost:8080/swagger-ui/index.html#/
 ```
+
 ---

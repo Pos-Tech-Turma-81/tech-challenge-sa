@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: restaurante-config
 data:
-  DB_HOST: postgres
+  DB_HOST: "postgres"
   DB_PORT: "5432"
-  DB_NAME: restaurante
+  DB_NAME: "restaurante"

@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface PedidosUsecase {
-    Pedido realizarCheckout(CriarPedido dto);
+    Pedido criarPedido(CriarPedido dto);
     Page<Pedido> listarFilaPedidos(Pageable pageable);
     Pedido atualizarStatus(Integer pedidoId, StatusEnum novoStatus);
 }

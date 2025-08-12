@@ -1,0 +1,385 @@
+{
+	"info": {
+		"_postman_id": "918dd9bd-b9ff-4471-8104-ab550802908f",
+		"name": "TechChallenge Etapa 2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1022926"
+	},
+	"item": [
+		{
+			"name": "/produtos",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nome\": \"Fritas\",\n  \"categoria\": \"ACOMPANHAMENTO\",\n  \"preco\": 10.90,\n  \"descricao\": \"Porção de fritas\",\n  \"imagem\": null\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{$host}}/produtos/:id",
+					"host": [
+						"{{$host}}"
+					],
+					"path": [
+						"produtos",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/produtos",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{$host}}/produtos/:id",
+					"host": [
+						"{{$host}}"
+					],
+					"path": [
+						"produtos",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/produtos",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{$host}}/produtos?nome_categoria=ACOMPANHAMENTO",
+					"host": [
+						"{{$host}}"
+					],
+					"path": [
+						"produtos"
+					],
+					"query": [
+						{
+							"key": "nome_categoria",
+							"value": "ACOMPANHAMENTO"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/produtos",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nome\": \"CHEESEBURGER\",\n  \"categoria\": \"LANCHE\",\n  \"preco\": 25.90,\n  \"descricao\": \"Pão, hambúrger, queijo, picles e cebola\",\n  \"imagem\": null\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{$host}}/produtos",
+					"host": [
+						"{{$host}}"
+					],
+					"path": [
+						"produtos"
+					],
+					"query": [
+						{
+							"key": "nome_categoria",
+							"value": "ACOMPANHAMENTO",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/pedidos/criar",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"clienteId\": 1,\n  \"produtos\": [\n    {\n      \"produtoId\": 1,\n      \"quantidade\": 1\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{$host}}/pedidos/criar",
+					"host": [
+						"{{$host}}"
+					],
+					"path": [
+						"pedidos",
+						"criar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/pedidos/fila",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{$host}}/pedidos/criar",
+					"host": [
+						"{{$host}}"
+					],
+					"path": [
+						"pedidos",
+						"criar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/pedidos/status",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"RECEBIDO\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{$host}}/pedidos/:pedidoId/status",
+					"host": [
+						"{{$host}}"
+					],
+					"path": [
+						"pedidos",
+						":pedidoId",
+						"status"
+					],
+					"variable": [
+						{
+							"key": "pedidoId",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/pedidos/checkout",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"pedidoId\": 1,\n    \"valor\": 25.01\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{$host}}/pedidos/checkout",
+					"host": [
+						"{{$host}}"
+					],
+					"path": [
+						"pedidos",
+						"checkout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/clientes",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nome\": \"Marcelo\",\n  \"email\": \"mar.celo@gmail.com\",\n  \"telefone\": \"11999987776\",\n  \"cpf\": \"12345678900\",\n  \"endereco\": \"Pç. da República, 666\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{$host}}/clientes",
+					"host": [
+						"{{$host}}"
+					],
+					"path": [
+						"clientes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/clientes",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{$host}}/clientes/12345678900",
+					"host": [
+						"{{$host}}"
+					],
+					"path": [
+						"clientes",
+						"12345678900"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/webhook",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"pedidoId\": 1,\n    \"status\": \"RECUSADO\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{$host}}/webhook/pagamento",
+					"host": [
+						"{{$host}}"
+					],
+					"path": [
+						"webhook",
+						"pagamento"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "$host",
+			"value": "http://localhost:8000",
+			"type": "default"
+		}
+	]
+}

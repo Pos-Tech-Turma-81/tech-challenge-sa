@@ -33,7 +33,7 @@ public class PedidosUsecaseImpl implements PedidosUsecase {
     private final AssociacaoPedidoProdutoUsecase associacaoPedidoProdutoUsecase;
 
     @Override
-    public Pedido realizarCheckout(CriarPedido criarPedido) {
+    public Pedido criarPedido(CriarPedido criarPedido) {
         Pedido pedido = new Pedido();
 
         if(Objects.nonNull(criarPedido.getClienteId())){
