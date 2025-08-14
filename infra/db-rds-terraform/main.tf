@@ -5,17 +5,17 @@ data "aws_vpc" "postech_vpc" {
   }
 }
 
-data "aws_subnet" "private_a" {
+data "aws_subnet" "public_a" {
   filter {
     name   = "tag:Name"
-    values = ["private-a"]
+    values = ["public-a"]
   }
 }
 
-data "aws_subnet" "private_b" {
+data "aws_subnet" "public_b" {
   filter {
     name   = "tag:Name"
-    values = ["private-b"]
+    values = ["public-b"]
   }
 }
 
@@ -43,7 +43,7 @@ resource "aws_security_group" "rds_sg" {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    security_groups = [aws_security_group.ecs_sg.id]
+    cidr_blocks =   ["0.0.0.0/0"]  # qualquer IP
   }
 
   egress {
@@ -54,15 +54,15 @@ resource "aws_security_group" "rds_sg" {
   }
 }
 
-
 resource "aws_db_subnet_group" "rds_subnet_group" {
   name       = "rds-subnet-group"
-  subnet_ids = [data.aws_subnet.private_a.id, data.aws_subnet.private_b.id]
+  subnet_ids = [data.aws_subnet.public_a.id, data.aws_subnet.public_b.id]
 }
 
 
-resource "aws_db_instance" "postgres" {
+resource "aws_db_instance" "postgres_restaurante" {
   identifier              = "postgres-restaurante"
+  db_name                 = "postgres_restaurante" 
   engine                  = "postgres"
   engine_version          = "15"
   instance_class          = "db.t3.micro"
@@ -71,5 +71,6 @@ resource "aws_db_instance" "postgres" {
   password                = "SenhaForte123!"
   db_subnet_group_name    = aws_db_subnet_group.rds_subnet_group.name
   vpc_security_group_ids  = [aws_security_group.rds_sg.id]
-  skip_final_snapshot     = true
+  skip_final_snapshot     = true  
+  publicly_accessible     = true
 }
