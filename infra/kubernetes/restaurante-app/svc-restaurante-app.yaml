@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: svc-restaurante-app
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
-    - port: 8080
-      nodePort: 31000
+    - protocol: TCP
+      port: 8080
       targetPort: 8080
   selector:
     app: restaurante-app
