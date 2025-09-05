@@ -1,21 +1,35 @@
 data "aws_vpc" "postech_vpc" {
   filter {
     name   = "tag:Name"
-    values = ["postech"]
+    values = ["postech-vpc"]
   }
 }
 
 data "aws_subnet" "private_a" {
   filter {
     name   = "tag:Name"
-    values = ["private-a"]
+    values = ["postech-vpc-private-us-east-1a"]
   }
 }
 
 data "aws_subnet" "private_b" {
   filter {
     name   = "tag:Name"
-    values = ["private-b"]
+    values = ["postech-vpc-private-us-east-1b"]
+  }
+}
+
+data "aws_subnet" "public_a" {
+  filter {
+    name   = "tag:Name"
+    values = ["postech-vpc-public-us-east-1a"]
+  }
+}
+
+data "aws_subnet" "public_b" {
+  filter {
+    name   = "tag:Name"
+    values = ["postech-vpc-public-us-east-1b"]
   }
 }
 
@@ -66,7 +80,7 @@ resource "aws_eks_cluster" "eks_cluster_restaurante" {
   role_arn = var.labRole
 
   vpc_config {
-    subnet_ids = [data.aws_subnet.private_a.id, data.aws_subnet.private_b.id]
+    subnet_ids = [data.aws_subnet.private_a.id, data.aws_subnet.private_b.id, data.aws_subnet.public_a.id, data.aws_subnet.public_b.id]
     security_group_ids = [aws_security_group.eks_cluster_sg.id]
   }
 
