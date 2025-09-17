@@ -39,10 +39,19 @@ jobs:
       - name: Package
         run: mvn package
 
+      - name: Save JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: target/*.jar
+
   publish:
     runs-on: ubuntu-latest
     environment: Actions
     needs: build
+    permissions:  # Define as permissões para este job.
+      contents: read  # Permite leitura do conteúdo do repositório.
+      packages: write  # Permite que o job escreva pacotes no registro de pacotes do GitHub.
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4  # Usa a ação para configurar o ambiente Java. A versão 3 da ação é utilizada.
@@ -50,6 +59,12 @@ jobs:
           java-version: 21  # Especifica que a versão do Java a ser instalada é a 11.
           distribution: 'temurin'  # Define a distribuição do Java a ser instalada, neste caso, 'adopt'.
           package: '*.jar'  # Especifica que o pacote a ser gerado é qualquer arquivo .jar.
+
+      - name: Download JAR
+        uses: actions/download-artifact@v4
+        with:
+          name: app-jar
+          path: target
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
