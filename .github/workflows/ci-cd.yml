@@ -41,6 +41,7 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
+    environment: Actions
     needs: build
     steps:
       - uses: actions/checkout@v4
