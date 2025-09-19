@@ -104,4 +104,5 @@ jobs:
 
       - name: Deploy to EKS
         run: |
+          export IMAGE_TAG=${{ env.IMAGE_TAG }}
           envsubst < infra/kubernetes/restaurante-app/restaurante-app-deployment.yaml | kubectl apply -f infra/kubernetes/restaurante-app/
