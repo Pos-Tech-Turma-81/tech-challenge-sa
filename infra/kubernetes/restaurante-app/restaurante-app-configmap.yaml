@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: restaurante-config
 data:
-  DB_HOST: "postgres-restaurante.ckzwimcqm9la.us-east-1.rds.amazonaws.com"
+  DB_HOST: "postgres-restaurante.cbmoismg6o1s.us-east-1.rds.amazonaws.com"
   DB_PORT: "5432"
   DB_NAME: "postgres_restaurante"

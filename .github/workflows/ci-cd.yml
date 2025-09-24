@@ -1,0 +1,113 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'temurin'
+
+      - name: Run unit tests
+        run: mvn test
+
+  build:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'temurin'
+
+      - name: Package
+        run: mvn package
+
+      - name: Save JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: target/*.jar
+
+  publish:
+    runs-on: ubuntu-latest
+    environment: Actions
+    needs: build
+    permissions:  # Define as permissões para este job.
+      contents: read  # Permite leitura do conteúdo do repositório.
+      packages: write  # Permite que o job escreva pacotes no registro de pacotes do GitHub.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4  # Usa a ação para configurar o ambiente Java. A versão 3 da ação é utilizada.
+        with:  # Configurações para a ação de setup do Java.
+          java-version: 21  # Especifica que a versão do Java a ser instalada é a 11.
+          distribution: 'temurin'  # Define a distribuição do Java a ser instalada, neste caso, 'adopt'.
+          package: '*.jar'  # Especifica que o pacote a ser gerado é qualquer arquivo .jar.
+
+      - name: Download JAR
+        uses: actions/download-artifact@v4
+        with:
+          name: app-jar
+          path: target
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Define version
+        run: echo "IMAGE_TAG=1.0.${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: Build Docker image
+        run: |
+          IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/restaurante-app
+          docker build -t $IMAGE_NAME:${{ env.IMAGE_TAG }} .
+
+      - name: Push Docker image
+        run: |
+          IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/restaurante-app
+          docker push $IMAGE_NAME:${{ env.IMAGE_TAG }}
+  deploy:
+    runs-on: ubuntu-latest
+    needs: publish
+    environment: Actions
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-1 # ajuste para a região do seu EKS
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --region us-east-1 --name eks-fargate-eks_cluster_restaurante
+
+      - name: Define version
+        run: echo "IMAGE_TAG=1.0.${{ github.run_number }}" >> $GITHUB_ENV
+        
+      - name: Deploy to EKS
+        run: |
+          export IMAGE_TAG=${{ env.IMAGE_TAG }}
+          envsubst < infra/kubernetes/restaurante-app/restaurante-app-deployment.yaml > rendered-deployment.yaml
+          cp rendered-deployment.yaml infra/kubernetes/restaurante-app/restaurante-app-deployment.yaml
+          kubectl apply -f infra/kubernetes/restaurante-app/
