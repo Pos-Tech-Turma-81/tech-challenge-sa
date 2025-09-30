@@ -332,95 +332,156 @@ Tabela de relacionamento **N:N** entre `Pedidos` e `Produtos`.
 
 ## ▶️ Como Rodar o Projeto
 
-### Pré-requisitos
+## Pré-requisitos
 
-- Kubernetes 
-- Minikube
-- Docker
-- Maven
+Antes de iniciar o processo, garanta que:
+- Você possui acesso ao **laboratório AWS** e as permissões adequadas (IAM, RDS, EKS e S3);
+- Todos os repositórios abaixo estão devidamente clonados:
+  - [infra-restaurante-postech](https://github.com/Pos-Tech-Turma-81/infra-restaurante-postech)
+  - [infra-rds-postgres](https://github.com/Pos-Tech-Turma-81/infra-rds-postgres)
+  - [tech-challenge-sa(https://github.com/Pos-Tech-Turma-81/tech-challenge-sa)
+- Você possui o **AWS CLI**, **kubectl**, **Terraform**, **Docker**, e **Minikube** configurados em sua máquina.
 
-### Passos
+---
 
-#### 1. Clone o Repositório
-```bash
-git clone https://github.com/eusoumabel/tech-challenge-sa.git
-cd tech-challenge-sa
+## Passo a Passo
+
+### 1. Iniciar o Laboratório AWS
+Ative o ambiente de laboratório da AWS para permitir a execução das ações e pipelines de infraestrutura.
+
+---
+
+### 2. Configuração do Repositório `infra-restaurante-postech`
+
+1. Atualize as variáveis de ambiente no ambiente `actions`.
+2. No arquivo `main.tf`, altere o nome do bucket na variável `bucket` (linha 3).
+3. Crie um Pull Request (PR) para a branch `main`.
+4. Aguarde a execução da **Pipeline** de CI/CD até a conclusão.
+
+---
+
+### 3. Configuração do Repositório `infra-rds-postgres`
+
+1. Atualize as variáveis de ambiente no ambiente `actions`.
+2. No arquivo `main.tf`, altere o nome do bucket na variável `bucket` (linha 3).
+3. Crie um Pull Request (PR) para a branch `main`.
+4. Aguarde a execução da **Pipeline** de CI/CD até a conclusão.
+
+---
+
+### 4. Configuração Local do Banco de Dados
+
+1. Realize a conexão com o banco PostgreSQL utilizando os dados abaixo:
+
+   ```
+   username: adminuser
+   password: SenhaForte123!
+   database: postgres_restaurante
+   port: 5432
+   ```
+
+2. Cole o schema SQL abaixo no console de queries e execute:
+
+```sql
+CREATE SCHEMA restaurante_schema;
+
+CREATE TABLE restaurante_schema.Clientes (
+      id SERIAL,
+      nome VARCHAR(255),
+      email VARCHAR(255),
+      telefone VARCHAR(20),
+      cpf VARCHAR(14),
+      endereco TEXT,
+      data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (id)
+    );
+
+    CREATE TABLE restaurante_schema.Produtos (
+        id SERIAL,
+        nome VARCHAR(255) NOT NULL,
+        categoria VARCHAR(255),
+        preco DECIMAL(10, 2) NOT NULL,
+        descricao TEXT,
+        imagem TEXT,
+        data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id)
+    );
+
+    CREATE TABLE restaurante_schema.Pedidos (
+        id SERIAL,
+        cliente_id INT,
+        status VARCHAR(50),
+        data_hora_inclusao_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        FOREIGN KEY (cliente_id) REFERENCES restaurante_schema.Clientes(id)
+    );
+
+    CREATE TABLE restaurante_schema.Pagamentos (
+        id SERIAL,
+        pedido_id INT NOT NULL,
+        valor DECIMAL(10, 2) NOT NULL,
+        id_mercado_pago VARCHAR(255),
+        status VARCHAR(50),
+        data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        FOREIGN KEY (pedido_id) REFERENCES restaurante_schema.Pedidos(id)
+    );
+
+    CREATE TABLE restaurante_schema.Associacao_Pedido_Produto (
+        pedido_id INT NOT NULL,
+        produtos_id INT NOT NULL,
+        quantidade INT NOT NULL,
+        preco DECIMAL(10, 2) NOT NULL,
+        PRIMARY KEY (pedido_id, produtos_id),
+        FOREIGN KEY (pedido_id) REFERENCES restaurante_schema.Pedidos(id),
+        FOREIGN KEY (produtos_id) REFERENCES restaurante_schema.Produtos(id)
+    );
 ```
 
-#### 2. Inicie o Docker
 
-Abra o aplicativo do Docker:
+---
 
-```bash
-open -a Docker
-```
+### 5. Configuração do Repositório `tech-challenge-sa`
 
-#### 3. Acesse o Diretório de Configuração do Kubernetes
-```bash
-cd infra/kubernetes
-```
+1. Atualize as variáveis de ambiente no ambiente `actions`.
+2. Acesse o arquivo `./infra/kubernetes/criar_secret.txt` e copie o conteúdo.
+3. Em um novo terminal local, cole e execute o script copiado.
 
-#### 4. Inicie o Minikube
+---
 
-Se for a primeira vez utilizando:
-```bash
-minikube start --driver=docker
-```
+### 6. Configuração da Conexão RDS + EKS
 
-Se o Minikube já estiver configurado anteriormente:
-```bash
-minikube start
-```
+1. No painel da AWS, acesse o serviço **Amazon RDS** → **Databases** → `postgres-restaurante`.
+2. Copie o **endpoint** listado na aba **Connectivity & Security**.
+3. No terminal, execute o comando abaixo para configurar o acesso ao cluster EKS:
 
-#### 5. Suba os Recursos do Projeto
+   ```bash
+   aws eks update-kubeconfig --region us-east-1 --name eks-fargate-eks_cluster_restaurante
+   ```
 
-5.1. Suba o banco de dados PostgreSQL:
-```bash
-kubectl apply -f postgress
-```
+4. Crie uma nova branch no repositório `tech-challenge-sa`.
+5. No arquivo `./infra/kubernetes/restaurante-app/restaurante-app-configmap.yaml`, atualize o valor da variável `DB_HOST` com o endpoint copiado.
+6. Execute o pipeline de CI/CD para realizar o deploy da aplicação.
 
-5.2. Crie os segredos da aplicação:
+---
 
-Abra o arquivo **infra/kubernetes/criar_secrets.txt**, copie todo o conteúdo e cole no terminal para executar os comandos de criação dos secrets.
+### 7. Acesso à Aplicação no Amazon EKS
 
-5.3. Suba a aplicação principal:
-```bash
-kubectl apply -f restaurante-app
-```
+1. No painel da AWS, acesse o serviço **Amazon EKS**.
+2. Vá em **Clusters** → selecione o cluster `eks-fargate-eks_cluster_restaurante`.
+3. Localize o serviço `svc-restaurante-app`.
+4. Copie o valor da **URL do Load Balancer**.
+5. Adicione `:8080` ao final da URL.  
+   ✅ Essa será a URL base da API, utilizada posteriormente no **API Gateway**.
 
-#### 6. Verifique o Status dos Pods
-```bash
-kubectl get pods
-```
-Aguarde até que ambos os Pods estejam com o status Ready (ex: 1/1).
+---
 
-#### 7. Obtenha o IP do Minikube
-```bash
-minikube ip
-```
+### 8. Finalização e Desativação do Ambiente
 
-#### 8. Acesse a API via Swagger (Linux)
+Após a execução e validação da aplicação:
 
-Acesse no navegador:
-
-```bash
-http://192.168.49.2:31000/swagger-ui/index.html#/
-```
-
-> ⚠️ Todos os passos foram realizados com sucesso utilizando o Linux. Para Windows e Mac, é necessários os passos abaixo:
-
-#### 9. Acesse a API via Swagger (Windows e Mac)
-
-9.1. Redirecionar a porta do Minikube para o localhost:
-
-```bash
-kubectl port-forward svc/svc-restaurante-app 8080:8080
-```
-
-9.2. Acesse no navegador:
-
-```bash
-http://localhost:8080/swagger-ui/index.html#/
-```
+1. Acesse os repositórios `infra-restaurante-postech` e `infra-rds-postgres`.
+2. Abra uma **issue** em cada um deles.
+3. Isso acionará uma **GitHub Action** que desativará automaticamente o ambiente.
 
 ---
