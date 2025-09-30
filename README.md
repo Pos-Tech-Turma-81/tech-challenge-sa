@@ -339,7 +339,7 @@ Antes de iniciar o processo, garanta que:
 - Todos os repositórios abaixo estão devidamente clonados:
   - [infra-restaurante-postech](https://github.com/Pos-Tech-Turma-81/infra-restaurante-postech)
   - [infra-rds-postgres](https://github.com/Pos-Tech-Turma-81/infra-rds-postgres)
-  - [tech-challenge-sa(https://github.com/Pos-Tech-Turma-81/tech-challenge-sa)
+  - [tech-challenge-sa](https://github.com/Pos-Tech-Turma-81/tech-challenge-sa)
 - Você possui o **AWS CLI**, **kubectl**, **Terraform**, **Docker**, e **Minikube** configurados em sua máquina.
 
 ---
@@ -438,18 +438,9 @@ CREATE TABLE restaurante_schema.Clientes (
     );
 ```
 
-
 ---
 
-### 5. Configuração do Repositório `tech-challenge-sa`
-
-1. Atualize as variáveis de ambiente no ambiente `actions`.
-2. Acesse o arquivo `./infra/kubernetes/criar_secret.txt` e copie o conteúdo.
-3. Em um novo terminal local, cole e execute o script copiado.
-
----
-
-### 6. Configuração da Conexão RDS + EKS
+### 5. Configuração da Conexão RDS + EKS
 
 1. No painel da AWS, acesse o serviço **Amazon RDS** → **Databases** → `postgres-restaurante`.
 2. Copie o **endpoint** listado na aba **Connectivity & Security**.
@@ -461,11 +452,11 @@ CREATE TABLE restaurante_schema.Clientes (
 
 4. Crie uma nova branch no repositório `tech-challenge-sa`.
 5. No arquivo `./infra/kubernetes/restaurante-app/restaurante-app-configmap.yaml`, atualize o valor da variável `DB_HOST` com o endpoint copiado.
-6. Execute o pipeline de CI/CD para realizar o deploy da aplicação.
+6. Abra um PR da branch criada para a branch `main` e mergeie, dessa forma o pipeline de CI/CD irá realizar o deploy da aplicação.
 
 ---
 
-### 7. Acesso à Aplicação no Amazon EKS
+### 6. Acesso à Aplicação no Amazon EKS
 
 1. No painel da AWS, acesse o serviço **Amazon EKS**.
 2. Vá em **Clusters** → selecione o cluster `eks-fargate-eks_cluster_restaurante`.
@@ -476,12 +467,12 @@ CREATE TABLE restaurante_schema.Clientes (
 
 ---
 
-### 8. Finalização e Desativação do Ambiente
+### 7. Finalização e Desativação do Ambiente
 
 Após a execução e validação da aplicação:
 
 1. Acesse os repositórios `infra-restaurante-postech` e `infra-rds-postgres`.
-2. Abra uma **issue** em cada um deles.
+2. Abra uma **issue** do tipo **destroy** em cada um deles.
 3. Isso acionará uma **GitHub Action** que desativará automaticamente o ambiente.
 
 ---
