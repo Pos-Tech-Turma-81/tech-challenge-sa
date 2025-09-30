@@ -248,6 +248,87 @@ Documentação interativa das APIs REST disponibilizadas no backend.
 > 📌 **Importância**: Essa linguagem ubíqua será utilizada nos eventos de Event Storming, modelagem tática e implementação do sistema, evitando ambiguidades e ruídos de comunicação.
 
 ---
+## 🗃️ Banco de Dados
+
+O banco de dados escolhido para o projeto foi o PostgreSQL, devido à sua robustez, conformidade com o padrão ACID e suporte avançado a relacionamentos complexos entre entidades. Como o sistema exige integridade referencial, consistência transacional e regras de negócio bem definidas, a adoção de um modelo relacional torna-se essencial para garantir a confiabilidade e previsibilidade das operações. Além disso, o PostgreSQL oferece alta escalabilidade, suporte a consultas SQL complexas, funções customizadas e integrações nativas com containers e orquestradores como Kubernetes, o que o torna ideal para aplicações comlexas e escaláveis. Sua flexibilidade e desempenho permitem lidar eficientemente com o volume crescente de dados e a evolução das necessidades do sistema, assegurando qualidade, segurança e manutenção simplificada ao longo do ciclo de vida da aplicação.
+
+## 🔗 Relacionamentos (DER)
+
+```mermaid
+erDiagram
+    Clientes ||--o{ Pedidos : realiza
+    Pedidos ||--o{ Pagamentos : possui
+    Pedidos ||--o{ Associacao_Pedido_Produto : contem
+    Produtos ||--o{ Associacao_Pedido_Produto : pertence
+```
+
+---
+
+### 🗂️ Modelagem de Dados
+
+#### **1. Clientes**
+Armazena informações dos clientes do restaurante.
+
+| Campo          | Tipo        | Restrições | Descrição |
+|----------------|-------------|-------------|------------|
+| id             | SERIAL      | PK          | Identificador único do cliente |
+| nome           | VARCHAR(255) | NOT NULL  | Nome completo do cliente |
+| email          | VARCHAR(255) |            | E-mail de contato |
+| telefone       | VARCHAR(20)  |            | Telefone de contato |
+| cpf            | VARCHAR(14)  | UNIQUE     | CPF do cliente |
+| endereco       | TEXT         |            | Endereço completo |
+| data_criacao   | TIMESTAMP    | DEFAULT now() | Data de registro |
+
+
+#### **2. Produtos**
+Representa os itens do cardápio.
+
+| Campo        | Tipo          | Restrições | Descrição |
+|--------------|---------------|-------------|------------|
+| id           | SERIAL        | PK          | Identificador único do produto |
+| nome         | VARCHAR(255)  | NOT NULL    | Nome do produto |
+| categoria    | VARCHAR(255)  |             | Categoria do produto (Ex: Bebida, Sobremesa) |
+| preco        | DECIMAL(10,2) | NOT NULL    | Preço unitário |
+| descricao    | TEXT          |             | Descrição do produto |
+| imagem       | TEXT          |             | URL/Path da imagem |
+| data_criacao | TIMESTAMP     | DEFAULT now() | Data de criação |
+
+
+#### **3. Pedidos**
+Registra os pedidos feitos pelos clientes.
+
+| Campo                   | Tipo        | Restrições | Descrição |
+|--------------------------|-------------|-------------|------------|
+| id                       | SERIAL      | PK          | Identificador único do pedido |
+| cliente_id               | INT         | FK → Clientes(id) | Cliente que realizou o pedido |
+| status                   | VARCHAR(50) |             | Status do pedido (Ex: Em preparo, Entregue) |
+| data_hora_inclusao_pedido| TIMESTAMP   | DEFAULT now() | Data e hora da inclusão |
+
+
+#### **4. Pagamentos**
+Armazena informações sobre o pagamento de cada pedido.
+
+| Campo        | Tipo          | Restrições | Descrição |
+|--------------|---------------|-------------|------------|
+| id           | SERIAL        | PK          | Identificador único do pagamento |
+| pedido_id    | INT           | FK → Pedidos(id), NOT NULL | Pedido associado |
+| valor        | DECIMAL(10,2) | NOT NULL    | Valor pago |
+| id_mercado_pago | VARCHAR(255) |         | Identificador da transação no Mercado Pago |
+| status       | VARCHAR(50)   |             | Status do pagamento |
+| data_criacao | TIMESTAMP     | DEFAULT now() | Data de criação do registro |
+
+
+#### **5. Associação Pedido-Produto**
+Tabela de relacionamento **N:N** entre `Pedidos` e `Produtos`.
+
+| Campo        | Tipo          | Restrições | Descrição |
+|--------------|---------------|-------------|------------|
+| pedido_id    | INT           | PK, FK → Pedidos(id) | Pedido associado |
+| produtos_id  | INT           | PK, FK → Produtos(id) | Produto associado |
+| quantidade   | INT           | NOT NULL    | Quantidade do produto no pedido |
+| preco        | DECIMAL(10,2) | NOT NULL    | Preço unitário no momento do pedido |
+
+---
 
 ## ▶️ Como Rodar o Projeto
 
