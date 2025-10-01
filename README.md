@@ -340,6 +340,8 @@ Antes de iniciar o processo, garanta que:
   - [infra-restaurante-postech](https://github.com/Pos-Tech-Turma-81/infra-restaurante-postech)
   - [infra-rds-postgres](https://github.com/Pos-Tech-Turma-81/infra-rds-postgres)
   - [tech-challenge-sa](https://github.com/Pos-Tech-Turma-81/tech-challenge-sa)
+  - [infra-api-gateway](https://github.com/Pos-Tech-Turma-81/infra-api-gateway)
+  - [lambda-postech-authorizer](https://github.com/Pos-Tech-Turma-81/lambda-postech-authorizer)
 - Você possui o **AWS CLI**, **kubectl**, **Terraform**, **Docker**, e **Minikube** configurados em sua máquina.
 
 ---
@@ -369,7 +371,16 @@ Ative o ambiente de laboratório da AWS para permitir a execução das ações e
 
 ---
 
-### 4. Configuração Local do Banco de Dados
+### 4. Configuração do Repositório `lambda-postech-authorizer`
+
+1. Atualize as variáveis de ambiente no ambiente `actions`.
+2. No arquivo `main.tf`, altere o nome do bucket na variável `bucket` (linha 3).
+3. Crie um Pull Request (PR) para a branch `main`.
+4. Aguarde a execução da **Pipeline** de CI/CD até a conclusão.
+
+---
+
+### 5. Configuração Local do Banco de Dados
 
 1. Realize a conexão com o banco PostgreSQL utilizando os dados abaixo:
 
@@ -440,7 +451,7 @@ CREATE TABLE restaurante_schema.Clientes (
 
 ---
 
-### 5. Configuração da Conexão RDS + EKS
+### 6. Configuração da Conexão RDS + EKS
 
 1. No painel da AWS, acesse o serviço **Amazon RDS** → **Databases** → `postgres-restaurante`.
 2. Copie o **endpoint** listado na aba **Connectivity & Security**.
@@ -456,23 +467,39 @@ CREATE TABLE restaurante_schema.Clientes (
 
 ---
 
-### 6. Acesso à Aplicação no Amazon EKS
+### 7. Acesso à Aplicação no Amazon EKS
 
 1. No painel da AWS, acesse o serviço **Amazon EKS**.
 2. Vá em **Clusters** → selecione o cluster `eks-fargate-eks_cluster_restaurante`.
 3. Localize o serviço `svc-restaurante-app`.
-4. Copie o valor da **URL do Load Balancer**.
-5. Adicione `:8080` ao final da URL.  
-   ✅ Essa será a URL base da API, utilizada posteriormente no **API Gateway**.
+4. Copie o valor da **URL do Load Balancer**. Essa será a URL base da API, utilizada posteriormente no **API Gateway**.
 
 ---
 
-### 7. Finalização e Desativação do Ambiente
+### 8. Configuração do Repositório `infra-api-gateway`
+
+1. Atualize as variáveis de ambiente no ambiente `actions`.
+2. Crie uma nova branch
+3. Na sua branch, no arquivo `main.tf`, altere o nome do bucket na variável `bucket` (linha 3).
+4. Acesse o workflow de [deploy](https://github.com/Pos-Tech-Turma-81/infra-api-gateway/actions/workflows/deploy.yaml)
+5. Clique em **Run Workflow**
+6. No painel, selecione a sua branch e no campo `URL base do backend` cole a **URL do Load Balancer** copiada no passo anterior
+7. Clique em **Run Workflow** novamente
+8. Aguarde a execução da **Pipeline** de CI/CD até a conclusão.
+
+---
+
+### 9. Finalização e Desativação do Ambiente
 
 Após a execução e validação da aplicação:
 
-1. Acesse os repositórios `infra-restaurante-postech` e `infra-rds-postgres`.
+1. Acesse os repositórios `infra-restaurante-postech`, `lambda-postech-authorizer` e `infra-rds-postgres`.
 2. Abra uma **issue** do tipo **destroy** em cada um deles.
-3. Isso acionará uma **GitHub Action** que desativará automaticamente o ambiente.
+3. Acesse o repositório `infra-api-gateway`
+4. Acesse o workflow de [destroy](https://github.com/Pos-Tech-Turma-81/infra-api-gateway/actions/workflows/destroy.yml)
+5. Clique em **Run Workflow**
+6. No painel, selecione a sua branch
+7. Clique em **Run Workflow** novamente
+8. Esses passos acionarão uma **GitHub Action** que desativará automaticamente o ambiente.
 
 ---
