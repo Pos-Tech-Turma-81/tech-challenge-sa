@@ -351,6 +351,8 @@ Antes de iniciar o processo, garanta que:
 ### 1. Iniciar o Laboratório AWS
 Ative o ambiente de laboratório da AWS para permitir a execução das ações e pipelines de infraestrutura.
 
+- Crie um bucket na S3 e guarde o nome do mesmo
+
 ---
 
 ### 2. Configuração do Repositório `infra-restaurante-postech`
