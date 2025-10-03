@@ -248,98 +248,268 @@ Documentação interativa das APIs REST disponibilizadas no backend.
 > 📌 **Importância**: Essa linguagem ubíqua será utilizada nos eventos de Event Storming, modelagem tática e implementação do sistema, evitando ambiguidades e ruídos de comunicação.
 
 ---
+## 🗃️ Banco de Dados
+
+O banco de dados escolhido para o projeto foi o PostgreSQL, devido à sua robustez, conformidade com o padrão ACID e suporte avançado a relacionamentos complexos entre entidades. Como o sistema exige integridade referencial, consistência transacional e regras de negócio bem definidas, a adoção de um modelo relacional torna-se essencial para garantir a confiabilidade e previsibilidade das operações. Além disso, o PostgreSQL oferece alta escalabilidade, suporte a consultas SQL complexas, funções customizadas e integrações nativas com containers e orquestradores como Kubernetes, o que o torna ideal para aplicações comlexas e escaláveis. Sua flexibilidade e desempenho permitem lidar eficientemente com o volume crescente de dados e a evolução das necessidades do sistema, assegurando qualidade, segurança e manutenção simplificada ao longo do ciclo de vida da aplicação.
+
+## 🔗 Relacionamentos (DER)
+
+```mermaid
+erDiagram
+    Clientes ||--o{ Pedidos : realiza
+    Pedidos ||--o{ Pagamentos : possui
+    Pedidos ||--o{ Associacao_Pedido_Produto : contem
+    Produtos ||--o{ Associacao_Pedido_Produto : pertence
+```
+
+---
+
+### 🗂️ Modelagem de Dados
+
+#### **1. Clientes**
+Armazena informações dos clientes do restaurante.
+
+| Campo          | Tipo        | Restrições | Descrição |
+|----------------|-------------|-------------|------------|
+| id             | SERIAL      | PK          | Identificador único do cliente |
+| nome           | VARCHAR(255) | NOT NULL  | Nome completo do cliente |
+| email          | VARCHAR(255) |            | E-mail de contato |
+| telefone       | VARCHAR(20)  |            | Telefone de contato |
+| cpf            | VARCHAR(14)  | UNIQUE     | CPF do cliente |
+| endereco       | TEXT         |            | Endereço completo |
+| data_criacao   | TIMESTAMP    | DEFAULT now() | Data de registro |
+
+
+#### **2. Produtos**
+Representa os itens do cardápio.
+
+| Campo        | Tipo          | Restrições | Descrição |
+|--------------|---------------|-------------|------------|
+| id           | SERIAL        | PK          | Identificador único do produto |
+| nome         | VARCHAR(255)  | NOT NULL    | Nome do produto |
+| categoria    | VARCHAR(255)  |             | Categoria do produto (Ex: Bebida, Sobremesa) |
+| preco        | DECIMAL(10,2) | NOT NULL    | Preço unitário |
+| descricao    | TEXT          |             | Descrição do produto |
+| imagem       | TEXT          |             | URL/Path da imagem |
+| data_criacao | TIMESTAMP     | DEFAULT now() | Data de criação |
+
+
+#### **3. Pedidos**
+Registra os pedidos feitos pelos clientes.
+
+| Campo                   | Tipo        | Restrições | Descrição |
+|--------------------------|-------------|-------------|------------|
+| id                       | SERIAL      | PK          | Identificador único do pedido |
+| cliente_id               | INT         | FK → Clientes(id) | Cliente que realizou o pedido |
+| status                   | VARCHAR(50) |             | Status do pedido (Ex: Em preparo, Entregue) |
+| data_hora_inclusao_pedido| TIMESTAMP   | DEFAULT now() | Data e hora da inclusão |
+
+
+#### **4. Pagamentos**
+Armazena informações sobre o pagamento de cada pedido.
+
+| Campo        | Tipo          | Restrições | Descrição |
+|--------------|---------------|-------------|------------|
+| id           | SERIAL        | PK          | Identificador único do pagamento |
+| pedido_id    | INT           | FK → Pedidos(id), NOT NULL | Pedido associado |
+| valor        | DECIMAL(10,2) | NOT NULL    | Valor pago |
+| id_mercado_pago | VARCHAR(255) |         | Identificador da transação no Mercado Pago |
+| status       | VARCHAR(50)   |             | Status do pagamento |
+| data_criacao | TIMESTAMP     | DEFAULT now() | Data de criação do registro |
+
+
+#### **5. Associação Pedido-Produto**
+Tabela de relacionamento **N:N** entre `Pedidos` e `Produtos`.
+
+| Campo        | Tipo          | Restrições | Descrição |
+|--------------|---------------|-------------|------------|
+| pedido_id    | INT           | PK, FK → Pedidos(id) | Pedido associado |
+| produtos_id  | INT           | PK, FK → Produtos(id) | Produto associado |
+| quantidade   | INT           | NOT NULL    | Quantidade do produto no pedido |
+| preco        | DECIMAL(10,2) | NOT NULL    | Preço unitário no momento do pedido |
+
+---
 
 ## ▶️ Como Rodar o Projeto
 
-### Pré-requisitos
+## Pré-requisitos
 
-- Kubernetes 
-- Minikube
-- Docker
-- Maven
+Antes de iniciar o processo, garanta que:
+- Você possui acesso ao **laboratório AWS** e as permissões adequadas (IAM, RDS, EKS e S3);
+- Todos os repositórios abaixo estão devidamente clonados:
+  - [infra-restaurante-postech](https://github.com/Pos-Tech-Turma-81/infra-restaurante-postech)
+  - [infra-rds-postgres](https://github.com/Pos-Tech-Turma-81/infra-rds-postgres)
+  - [tech-challenge-sa](https://github.com/Pos-Tech-Turma-81/tech-challenge-sa)
+  - [infra-api-gateway](https://github.com/Pos-Tech-Turma-81/infra-api-gateway)
+  - [lambda-postech-authorizer](https://github.com/Pos-Tech-Turma-81/lambda-postech-authorizer)
+- Você possui o **AWS CLI**, **kubectl**, **Terraform**, **Docker**, e **Minikube** configurados em sua máquina.
 
-### Passos
+---
 
-#### 1. Clone o Repositório
-```bash
-git clone https://github.com/eusoumabel/tech-challenge-sa.git
-cd tech-challenge-sa
+## Passo a Passo
+
+### 1. Iniciar o Laboratório AWS
+Ative o ambiente de laboratório da AWS para permitir a execução das ações e pipelines de infraestrutura.
+
+- Crie um bucket na S3 e guarde o nome do mesmo
+
+---
+
+### 2. Configuração do Repositório `infra-restaurante-postech`
+
+1. Atualize as variáveis de ambiente no ambiente `actions`.
+2. No arquivo `main.tf`, altere o nome do bucket na variável `bucket` (linha 3).
+3. Crie um Pull Request (PR) para a branch `main`.
+4. Aguarde a execução da **Pipeline** de CI/CD até a conclusão.
+
+---
+
+### 3. Configuração do Repositório `infra-rds-postgres`
+
+1. Atualize as variáveis de ambiente no ambiente `actions`.
+2. No arquivo `main.tf`, altere o nome do bucket na variável `bucket` (linha 3).
+3. Crie um Pull Request (PR) para a branch `main`.
+4. Aguarde a execução da **Pipeline** de CI/CD até a conclusão.
+
+---
+
+### 4. Configuração Local do Banco de Dados
+
+1. No painel da AWS, acesse o serviço **Amazon RDS** → **Databases** → `postgres-restaurante`.
+2. Copie o **endpoint** listado na aba **Connectivity & Security**.
+1. Realize a conexão com o banco PostgreSQL utilizando os dados abaixo:
+
+   ```
+   Conexão tipo host
+   host: Endpoint copiado
+   username: adminuser
+   password: SenhaForte123!
+   database: postgres_restaurante
+   port: 5432
+   ```
+
+2. Cole o schema SQL abaixo no console de queries e execute:
+
+```sql
+CREATE SCHEMA restaurante_schema;
+
+CREATE TABLE restaurante_schema.Clientes (
+      id SERIAL,
+      nome VARCHAR(255),
+      email VARCHAR(255),
+      telefone VARCHAR(20),
+      cpf VARCHAR(14),
+      endereco TEXT,
+      data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (id)
+    );
+
+    CREATE TABLE restaurante_schema.Produtos (
+        id SERIAL,
+        nome VARCHAR(255) NOT NULL,
+        categoria VARCHAR(255),
+        preco DECIMAL(10, 2) NOT NULL,
+        descricao TEXT,
+        imagem TEXT,
+        data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id)
+    );
+
+    CREATE TABLE restaurante_schema.Pedidos (
+        id SERIAL,
+        cliente_id INT,
+        status VARCHAR(50),
+        data_hora_inclusao_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        FOREIGN KEY (cliente_id) REFERENCES restaurante_schema.Clientes(id)
+    );
+
+    CREATE TABLE restaurante_schema.Pagamentos (
+        id SERIAL,
+        pedido_id INT NOT NULL,
+        valor DECIMAL(10, 2) NOT NULL,
+        id_mercado_pago VARCHAR(255),
+        status VARCHAR(50),
+        data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        FOREIGN KEY (pedido_id) REFERENCES restaurante_schema.Pedidos(id)
+    );
+
+    CREATE TABLE restaurante_schema.Associacao_Pedido_Produto (
+        pedido_id INT NOT NULL,
+        produtos_id INT NOT NULL,
+        quantidade INT NOT NULL,
+        preco DECIMAL(10, 2) NOT NULL,
+        PRIMARY KEY (pedido_id, produtos_id),
+        FOREIGN KEY (pedido_id) REFERENCES restaurante_schema.Pedidos(id),
+        FOREIGN KEY (produtos_id) REFERENCES restaurante_schema.Produtos(id)
+    );
 ```
 
-#### 2. Inicie o Docker
+---
 
-Abra o aplicativo do Docker:
+### 5. Configuração do Repositório `lambda-postech-authorizer`
 
-```bash
-open -a Docker
-```
+1. Atualize as variáveis de ambiente no ambiente `actions`.
+2. No arquivo `main.tf`, altere o nome do bucket na variável `bucket` (linha 3).
+3. Crie um Pull Request (PR) para a branch `main`.
+4. Aguarde a execução da **Pipeline** de CI/CD até a conclusão.
 
-#### 3. Acesse o Diretório de Configuração do Kubernetes
-```bash
-cd infra/kubernetes
-```
+---
 
-#### 4. Inicie o Minikube
+### 6. Configuração da Conexão RDS + EKS
 
-Se for a primeira vez utilizando:
-```bash
-minikube start --driver=docker
-```
+1. No painel da AWS, acesse o serviço **Amazon RDS** → **Databases** → `postgres-restaurante`.
+2. Copie o **endpoint** listado na aba **Connectivity & Security**.
+3. No painel da AWS, copie todas as credenciais
+4. Na máquina local, no arquivo `.aws` cole as credenciais e salve o arquivo
+5. No terminal, execute o comando abaixo para configurar o acesso ao cluster EKS:
 
-Se o Minikube já estiver configurado anteriormente:
-```bash
-minikube start
-```
+   ```bash
+   aws eks update-kubeconfig --region us-east-1 --name eks-fargate-eks_cluster_restaurante
+   ```
+   
 
-#### 5. Suba os Recursos do Projeto
+6. Crie uma nova branch no repositório `tech-challenge-sa`.
+7. Atualize as variáveis de ambiente no ambiente `actions`.
+8. No arquivo `./infra/kubernetes/restaurante-app/restaurante-app-configmap.yaml`, atualize o valor da variável `DB_HOST` com o endpoint copiado.
+9. Abra um PR da branch criada para a branch `main` e mergeie, dessa forma o pipeline de CI/CD irá realizar o deploy da aplicação.
 
-5.1. Suba o banco de dados PostgreSQL:
-```bash
-kubectl apply -f postgress
-```
+---
 
-5.2. Crie os segredos da aplicação:
+### 7. Acesso à Aplicação no Amazon EKS
 
-Abra o arquivo **infra/kubernetes/criar_secrets.txt**, copie todo o conteúdo e cole no terminal para executar os comandos de criação dos secrets.
+1. No painel da AWS, acesse o serviço **Amazon EKS**.
+2. Vá em **Clusters** → selecione o cluster `eks-fargate-eks_cluster_restaurante`.
+3. Localize o serviço `svc-restaurante-app`.
+4. Copie o valor da **URL do Load Balancer**. Essa será a URL base da API, utilizada posteriormente no **API Gateway**.
 
-5.3. Suba a aplicação principal:
-```bash
-kubectl apply -f restaurante-app
-```
+---
 
-#### 6. Verifique o Status dos Pods
-```bash
-kubectl get pods
-```
-Aguarde até que ambos os Pods estejam com o status Ready (ex: 1/1).
+### 8. Configuração do Repositório `infra-api-gateway`
 
-#### 7. Obtenha o IP do Minikube
-```bash
-minikube ip
-```
+1. Atualize as variáveis de ambiente no ambiente `actions`.
+2. Crie uma nova branch
+3. Na sua branch, no arquivo `main.tf`, altere o nome do bucket na variável `bucket` (linha 3).
+4. Acesse o workflow de [deploy](https://github.com/Pos-Tech-Turma-81/infra-api-gateway/actions/workflows/deploy.yaml)
+5. Clique em **Run Workflow**
+6. No painel, selecione a sua branch e no campo `URL base do backend` cole a **URL do Load Balancer** copiada no passo anterior (caso esteja com https, trocar para http)
+7. Clique em **Run Workflow** novamente
+8. Aguarde a execução da **Pipeline** de CI/CD até a conclusão.
 
-#### 8. Acesse a API via Swagger (Linux)
+---
 
-Acesse no navegador:
+### 9. Finalização e Desativação do Ambiente
 
-```bash
-http://192.168.49.2:31000/swagger-ui/index.html#/
-```
+Após a execução e validação da aplicação:
 
-> ⚠️ Todos os passos foram realizados com sucesso utilizando o Linux. Para Windows e Mac, é necessários os passos abaixo:
-
-#### 9. Acesse a API via Swagger (Windows e Mac)
-
-9.1. Redirecionar a porta do Minikube para o localhost:
-
-```bash
-kubectl port-forward svc/svc-restaurante-app 8080:8080
-```
-
-9.2. Acesse no navegador:
-
-```bash
-http://localhost:8080/swagger-ui/index.html#/
-```
+1. Acesse os repositórios `infra-restaurante-postech`, `lambda-postech-authorizer` e `infra-rds-postgres`.
+2. Abra uma **issue** do tipo **destroy** em cada um deles.
+3. Acesse o repositório `infra-api-gateway`
+4. Acesse o workflow de [destroy](https://github.com/Pos-Tech-Turma-81/infra-api-gateway/actions/workflows/destroy.yml)
+5. Clique em **Run Workflow**
+6. No painel, selecione a sua branch
+7. Clique em **Run Workflow** novamente
+8. Esses passos acionarão uma **GitHub Action** que desativará automaticamente o ambiente.
 
 ---
