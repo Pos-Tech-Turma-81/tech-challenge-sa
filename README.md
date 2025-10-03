@@ -373,20 +373,15 @@ Ative o ambiente de laboratório da AWS para permitir a execução das ações e
 
 ---
 
-### 4. Configuração do Repositório `lambda-postech-authorizer`
+### 4. Configuração Local do Banco de Dados
 
-1. Atualize as variáveis de ambiente no ambiente `actions`.
-2. No arquivo `main.tf`, altere o nome do bucket na variável `bucket` (linha 3).
-3. Crie um Pull Request (PR) para a branch `main`.
-4. Aguarde a execução da **Pipeline** de CI/CD até a conclusão.
-
----
-
-### 5. Configuração Local do Banco de Dados
-
+1. No painel da AWS, acesse o serviço **Amazon RDS** → **Databases** → `postgres-restaurante`.
+2. Copie o **endpoint** listado na aba **Connectivity & Security**.
 1. Realize a conexão com o banco PostgreSQL utilizando os dados abaixo:
 
    ```
+   Conexão tipo host
+   host: Endpoint copiado
    username: adminuser
    password: SenhaForte123!
    database: postgres_restaurante
@@ -453,19 +448,32 @@ CREATE TABLE restaurante_schema.Clientes (
 
 ---
 
+### 5. Configuração do Repositório `lambda-postech-authorizer`
+
+1. Atualize as variáveis de ambiente no ambiente `actions`.
+2. No arquivo `main.tf`, altere o nome do bucket na variável `bucket` (linha 3).
+3. Crie um Pull Request (PR) para a branch `main`.
+4. Aguarde a execução da **Pipeline** de CI/CD até a conclusão.
+
+---
+
 ### 6. Configuração da Conexão RDS + EKS
 
 1. No painel da AWS, acesse o serviço **Amazon RDS** → **Databases** → `postgres-restaurante`.
 2. Copie o **endpoint** listado na aba **Connectivity & Security**.
-3. No terminal, execute o comando abaixo para configurar o acesso ao cluster EKS:
+3. No painel da AWS, copie todas as credenciais
+4. Na máquina local, no arquivo `.aws` cole as credenciais e salve o arquivo
+5. No terminal, execute o comando abaixo para configurar o acesso ao cluster EKS:
 
    ```bash
    aws eks update-kubeconfig --region us-east-1 --name eks-fargate-eks_cluster_restaurante
    ```
+   
 
-4. Crie uma nova branch no repositório `tech-challenge-sa`.
-5. No arquivo `./infra/kubernetes/restaurante-app/restaurante-app-configmap.yaml`, atualize o valor da variável `DB_HOST` com o endpoint copiado.
-6. Abra um PR da branch criada para a branch `main` e mergeie, dessa forma o pipeline de CI/CD irá realizar o deploy da aplicação.
+6. Crie uma nova branch no repositório `tech-challenge-sa`.
+7. Atualize as variáveis de ambiente no ambiente `actions`.
+8. No arquivo `./infra/kubernetes/restaurante-app/restaurante-app-configmap.yaml`, atualize o valor da variável `DB_HOST` com o endpoint copiado.
+9. Abra um PR da branch criada para a branch `main` e mergeie, dessa forma o pipeline de CI/CD irá realizar o deploy da aplicação.
 
 ---
 
@@ -485,7 +493,7 @@ CREATE TABLE restaurante_schema.Clientes (
 3. Na sua branch, no arquivo `main.tf`, altere o nome do bucket na variável `bucket` (linha 3).
 4. Acesse o workflow de [deploy](https://github.com/Pos-Tech-Turma-81/infra-api-gateway/actions/workflows/deploy.yaml)
 5. Clique em **Run Workflow**
-6. No painel, selecione a sua branch e no campo `URL base do backend` cole a **URL do Load Balancer** copiada no passo anterior
+6. No painel, selecione a sua branch e no campo `URL base do backend` cole a **URL do Load Balancer** copiada no passo anterior (caso esteja com https, trocar para http)
 7. Clique em **Run Workflow** novamente
 8. Aguarde a execução da **Pipeline** de CI/CD até a conclusão.
 
